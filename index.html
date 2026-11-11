@@ -130,12 +130,37 @@
   .insights{display:grid;gap:8px}
   .insight{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
   .insight.bad{border-left-color:var(--bad)} .insight.good{border-left-color:var(--good)}
+  .trophies{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:8px}
+  .trophy{background:linear-gradient(160deg,#1c180c,#0f0e0a);border:1px solid rgba(212,175,55,.4);border-radius:14px;padding:12px 14px}
+  .trophy .tl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a;font-weight:700}
+  .trophy .tv{font:900 26px/1.15 Inter,system-ui;margin-top:4px;font-variant-numeric:tabular-nums}
+  .trophy .td{font-size:12px;color:var(--mute);margin-top:4px}
+  .hofsub{margin:-6px 0 10px}
+  .hofrow{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory}
+  .hofrow::-webkit-scrollbar{height:8px} .hofrow::-webkit-scrollbar-thumb{background:#2c2c33;border-radius:8px}
+  .hof{flex:0 0 210px;scroll-snap-align:start;border-radius:14px;padding:12px 13px;background:linear-gradient(180deg,#17171b,#0f0f12);border:1px solid #2a2a30;display:flex;flex-direction:column;gap:6px}
+  .hof .hc1{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px}
+  .hof .hc1 .em{font-size:18px}
+  .hof .hv{font:900 28px/1 Inter,system-ui;font-variant-numeric:tabular-nums}
+  .hof .hcards .mc{font-size:12px;padding:1px 4px;margin-right:2px;background:#f6f4ee;border-radius:3px;font-weight:800}
+  .hof .hcards .sep{display:inline-block;width:6px}
+  .hof .hd{font-size:12px;color:var(--ink);opacity:.85}
+  .hof .hm{font-size:11px;color:var(--mute)}
+  .hof.win{border-color:rgba(62,207,142,.35);background:linear-gradient(180deg,#112018,#0d120f)}
+  .hof.loss{border-color:rgba(255,92,92,.35);background:linear-gradient(180deg,#201112,#120d0d)}
+  .hof.ghost{opacity:.4;border-style:dashed;justify-content:center;align-items:center;text-align:center;min-height:170px}
   .bigdot{cursor:pointer;transition:r .1s}
   .bigdot:hover{r:6.5}
   #ctip{position:fixed;z-index:50;pointer-events:none;background:rgba(12,12,14,.96);border:1px solid rgba(212,175,55,.45);border-radius:7px;
     padding:4px 7px;font-size:10.5px;line-height:1.35;color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.55);white-space:nowrap;display:none}
   #ctip .mc{font-size:10px;font-weight:800;padding:0 3px;margin-right:2px;background:#f6f4ee;border-radius:3px}
-  #ctip .k{color:var(--mute)}
+  #ctip .k{color:var(--mute);font-size:10px}
+  #ctip .tc{display:flex;align-items:center;gap:1px}
+  #ctip .tsep{width:6px}
+  #ctip .tn{display:flex;gap:8px;align-items:baseline;margin-top:3px}
+  #ctip .tn b{font-size:13px}
+  #ctip .tt{margin-top:2px;padding-top:3px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:var(--mute)}
+  #ctip .tt span{font-weight:700}
   .money{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
   .money .inhand{font:800 22px/1 system-ui;color:var(--accent);font-variant-numeric:tabular-nums;min-width:70px}
   .money .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--mute)}
@@ -232,6 +257,7 @@
   <nav class="tabs">
     <a href="#" id="tabSession" class="on">This session<span class="live" id="tabLive"></span></a>
     <a href="#all-sessions" id="tabAll">All sessions</a>
+    <a href="#hall-of-fame" id="tabHof">🏆 Hall of Fame</a>
   </nav>
   <div id="viewSession">
 
@@ -370,6 +396,16 @@
   <div class="panel"><div class="form"><div class="full" id="cashbox"></div></div></div>
   </div><!-- /viewSession -->
 
+  <div id="viewHof" hidden>
+    <div class="note" id="hofNote"></div>
+    <div class="trophies" id="hofTrophies"></div>
+    <h2>🏆 Best wins, by hand</h2>
+    <div class="sub hofsub">Your biggest pot with each kind of hand. Scroll sideways →</div>
+    <div class="hofrow" id="hofWins"></div>
+    <h2>💀 Worst beats, by hand</h2>
+    <div class="sub hofsub">The most you've lost holding each kind of hand.</div>
+    <div class="hofrow" id="hofLosses"></div>
+  </div>
   <div id="viewAll" hidden>
     <div class="note" id="ovNote"></div>
     <div class="ovhero">
@@ -747,7 +783,7 @@ document.addEventListener("keydown", e=>{
   if (e.key==="]"){ setBlind("bb"); return; }
   if (e.key==="+"||e.key==="="){ setFolded(folded-1); return; }
   if (e.key==="-"){ setFolded(folded+1); return; }
-  if (viewIsAll()) return;
+  if (viewIsAll()||viewIsHof()) return;
   if (/^[0-9tjqkashdcfwlxTJQKASHDCFWLX $@]$/.test(e.key)&&!e.metaKey&&!e.ctrlKey) $("q").focus();
 });
 function clearAll(){ folded=0; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
@@ -932,7 +968,7 @@ function selectSession(id){
   if (unsubHands){ unsubHands(); unsubHands=null; }
   if (id){
     const t=setTimeout(()=>setNote("Can't reach your saved hands yet. They'll appear when the connection is back."),10000);
-    unsubHands=store.subHands(id, (list,meta)=>{ if (!meta||!meta.fromCache){ clearTimeout(t); setNote(""); } hands=list; renderSession(); renderAll(); },
+    unsubHands=store.subHands(id, (list,meta)=>{ if (!meta||!meta.fromCache){ clearTimeout(t); setNote(""); } hands=list; renderSession(); renderAll(); renderHof(); },
       e=>{ clearTimeout(t); setNote("Couldn't load hands for this session."); });
   }
   renderSession();
@@ -1219,10 +1255,14 @@ function bigDots(hs, x, y, pts){
 }
 function addTip(h, extra){ if (tipHands.size > 4000) tipHands.clear(); const id=++tipSeq; tipHands.set(id,{h,extra}); return id; }
 function tipHTML(h, extra){
-  const board = (h.pre||[]).concat(h.post||[]);
-  const eq = h.eqR!=null ? `${pct(h.eq)}→${pct(h.eqR)}` : pct(h.eq);
-  return `${miniCards(h.hero)}${board.length?` <span class="k">·</span> ${miniCards(board)}`:""}<br>
-    <b class="${h.net>0?"pos":"neg"}">${money(Math.round(h.net*100)/100)}</b> <span class="k">· ${RES_NAME[h.r]}${h.bomb?" 💣":""} · eq</span> ${eq}${extra?`<br>${extra}`:""}`;
+  const board=(h.pre||[]).concat(h.post||[]), r2=v=>Math.round(v*100)/100;
+  const sg=v=>`<span class="${v>0?"pos":v<0?"neg":""}">${money(r2(v))}</span>`;
+  const x=extra||{};
+  let t=`<div class="tc">${miniCards(h.hero)}${board.length?`<span class="tsep"></span>${miniCards(board)}`:""}</div>`;
+  t+=`<div class="tn"><b class="${h.net>0?"pos":"neg"}">${h.bomb?"💣 ":""}${money(r2(h.net))}</b><span class="k">${pct(h.eq)} eq</span></div>`;
+  if (x.bombs!=null) t+=`<div class="tt">Bomb pots total ${sg(x.bombs)}</div>`;
+  else if (x.sess!=null) t+=`<div class="tt">Session ${sg(x.sess)} · Total ${sg(x.all)}</div>`;
+  return t;
 }
 (function(){
   const tip=document.createElement("div"); tip.id="ctip"; document.body.appendChild(tip);
@@ -1262,24 +1302,70 @@ setInterval(()=>{ if (cur()&&!cur().endedAt){ renderClock(); renderStats(cur());
 const handsCache = {};   // sid -> hands of other sessions (the current one uses the live `hands`)
 let ovLoading=false, ovLoadedAt=0;
 function viewIsAll(){ return location.hash==="#all-sessions"; }
+function viewIsHof(){ return location.hash==="#hall-of-fame"; }
 function applyView(){
-  const all=viewIsAll();
-  $("viewSession").hidden=all; $("viewAll").hidden=!all;
-  $("tabSession").classList.toggle("on",!all); $("tabAll").classList.toggle("on",all);
-  if (all) loadAll(); else $("q").focus();
+  const all=viewIsAll(), hof=viewIsHof();
+  $("viewSession").hidden=all||hof; $("viewAll").hidden=!all; $("viewHof").hidden=!hof;
+  $("tabSession").classList.toggle("on",!all&&!hof); $("tabAll").classList.toggle("on",all); $("tabHof").classList.toggle("on",hof);
+  if (all||hof) loadAll(); else $("q").focus();
 }
-$("tabSession").onclick=e=>{ e.preventDefault(); if (viewIsAll()){ history.replaceState(null,"",location.pathname+location.search); applyView(); } };
+$("tabSession").onclick=e=>{ e.preventDefault(); if (viewIsAll()||viewIsHof()){ history.replaceState(null,"",location.pathname+location.search); applyView(); } };
 window.addEventListener("hashchange", applyView);
 async function loadAll(force){
   if (ovLoading) return;
-  if (!force && Date.now()-ovLoadedAt<60000 && sessions.every(s=>s.id===sid||handsCache[s.id])){ renderAll(); return; }
+  if (!force && Date.now()-ovLoadedAt<60000 && sessions.every(s=>s.id===sid||handsCache[s.id])){ renderAll(); renderHof(); return; }
   ovLoading=true; $("ovNote").textContent="Loading all sessions…"; renderAll();
   try{
-    for (const s of sessions){ if (s.id===sid) continue; handsCache[s.id]=await store.allHands(s.id); renderAll(); }
+    for (const s of sessions){ if (s.id===sid) continue; handsCache[s.id]=await store.allHands(s.id); renderAll(); renderHof(); }
     ovLoadedAt=Date.now(); $("ovNote").textContent="";
   }catch(e){ $("ovNote").textContent="Couldn't load every session. Showing what loaded."; }
-  ovLoading=false; renderAll();
+  ovLoading=false; renderAll(); renderHof();
 }
+// =================== Hall of Fame ===================
+const HOF_CATS=[[8,"Straight flush","👑"],[7,"Four of a kind","💎"],[6,"Full house","🏠"],[5,"Flush","🌊"],[4,"Straight","🪜"],[3,"Three of a kind","🎯"],[2,"Two pair","✌️"],[1,"Pair","🃏"],[0,"High card","🔺"],[-1,"Before the flop","⚡"]];
+function handCat(h){ const b=(h.pre||[]).concat(h.post||[]); if (b.length<3) return {cat:-1, text:"Pot taken before the flop"}; const sc=evalCards(h.hero.concat(b), 2+b.length); return {cat:Math.floor(sc/SHIFT), text:describe(sc)}; }
+function renderHof(){
+  if (!viewIsHof()) return;
+  const smap={}; sessions.forEach(x=>smap[x.id]=x);
+  const all=[]; sessions.forEach(x=>handsOf(x).forEach(h=>all.push({...h,_s:x})));
+  if (!all.length){ $("hofTrophies").innerHTML=""; $("hofWins").innerHTML=$("hofLosses").innerHTML=`<div class="empty">Log some hands and your highlights show up here.</div>`; return; }
+  const r2=v=>Math.round(v*100)/100;
+  const when=h=>{ const d=new Date(h.t); return `${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})} · ${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}`; };
+  const cardsHTML=h=>{ const b=(h.pre||[]).concat(h.post||[]); return `${miniCards(h.hero)}${b.length?`<span class="sep"></span>${miniCards(b)}`:""}`; };
+  all.forEach(h=>{ const c=handCat(h); h._cat=c.cat; h._txt=c.text; });
+  // trophies
+  const wins=all.filter(h=>h.net>0), losses=all.filter(h=>h.net<0);
+  const big=wins.slice().sort((a,b)=>b.net-a.net)[0];
+  const beat=all.filter(h=>h.r==="l" && h.net<0).sort((a,b)=>(b.eq||0)-(a.eq||0))[0];
+  const lucky=all.filter(h=>h.r==="w" && h.net>0 && (h.pre||[]).length>=3).sort((a,b)=>(a.eq||0)-(b.eq||0))[0];
+  const by={}; all.forEach(h=>{ const o=by[h.key]||(by[h.key]={n:0,net:0}); o.n++; o.net+=h.net||0; });
+  const fav=Object.entries(by).sort((a,b)=>b[1].n-a[1].n)[0];
+  const best=Object.entries(by).sort((a,b)=>b[1].net-a[1].net)[0];
+  const T=(l,v,d,cls="")=>`<div class="trophy"><div class="tl">${l}</div><div class="tv ${cls}">${v}</div><div class="td">${d}</div></div>`;
+  $("hofTrophies").innerHTML =
+    (big?T("💰 Biggest pot", money(r2(big.net)), `${showKeyH(big.key)} · ${big._txt}`, "pos"):"")+
+    (beat?T("💀 Worst beat", pct(beat.eq), `${showKeyH(beat.key)} lost ${money(r2(-beat.net),false)} at ${pct(beat.eq)} to win`, "neg"):"")+
+    (lucky?T("🍀 Luckiest win", pct(lucky.eq), `${showKeyH(lucky.key)} won ${money(r2(lucky.net),false)} from only ${pct(lucky.eq)}`, "pos"):"")+
+    (best?T("⭐ Money hand", showKeyH(best[0]), `${money(r2(best[1].net))} total over ${best[1].n} hand${best[1].n===1?"":"s"}`, best[1].net>=0?"pos":"neg"):"")+
+    (fav&&fav[1].n>=2?T("🔁 Dealt the most", showKeyH(fav[0]), `${fav[1].n} times · ${money(r2(fav[1].net))}`):"");
+  const has=(list)=>new Set(list.map(h=>h._cat));
+  const ordered=(list)=>{ const hs=has(list); return HOF_CATS.filter(c=>hs.has(c[0])).concat(HOF_CATS.filter(c=>!hs.has(c[0]))); };   // earned first, locked after
+  const row=(list, kind)=>ordered(list).map(([cat,name,em])=>{
+    const of=list.filter(h=>h._cat===cat);
+    if (!of.length) return `<div class="hof ghost"><div class="em" style="font-size:22px">${em}</div><div class="hd"><b>${name}</b></div><div class="hm">${kind==="win"?"Not yet 🔒":"Never 🙌"}</div></div>`;
+    const top = kind==="win" ? of.slice().sort((a,b)=>b.net-a.net)[0] : of.slice().sort((a,b)=>a.net-b.net)[0];
+    const tot = of.reduce((a,h)=>a+(h.net||0),0);
+    return `<div class="hof ${kind}"><div class="hc1"><span>${name}</span><span class="em">${em}</span></div>
+      <div class="hv ${kind==="win"?"pos":"neg"}">${money(r2(top.net))}</div>
+      <div class="hcards">${cardsHTML(top)}</div>
+      <div class="hd">${top._txt}${top.bomb?" · 💣":""}</div>
+      <div class="hm">${kind==="loss"?`you had ${pct(top.eq)} · `:""}${when(top)}</div>
+      <div class="hm">${of.length}× ${kind==="win"?"won":"lost"} with it · ${money(r2(tot))} total</div></div>`;
+  }).join("");
+  $("hofWins").innerHTML=row(wins,"win");
+  $("hofLosses").innerHTML=row(losses.filter(h=>h.r!=="f"||(h.pre||[]).length>=3),"loss");
+}
+function showKeyH(k){ return k==="TT"?"TT":String(k).replace(/T/g,"10"); }
 let openSid=null, openDays=null; const openDetails=new Set();   // which session is expanded, and which of its sections are open
 function sessionDetailHTML(s, st, hs){
   const c=x=>x>0?"pos":x<0?"neg":"";
@@ -1406,7 +1492,7 @@ function renderAll(){
         all.forEach((h,i)=>{
           if (h._sid!==ps){ sr=0; ps=h._sid; }
           sr+=h.net||0; if (h.bomb) br+=h.net||0;
-          const tot=`<span class="k">session so far</span> ${sg(sr)} <span class="k">· all-time</span> ${sg(a[i+1])}`;
+          const tot={sess:sr, all:a[i+1]};
           const cx=x(i+1).toFixed(1);
           if (h.bomb){
             // every bomb pot: a tiny dot, green if you won it, red if you lost it
@@ -1414,8 +1500,7 @@ function renderAll(){
             if ((h.net||0) <= -BIG_HAND){
               // big bomb pot loss: blue dot on the "without bomb pots" line, with the amount
               const by=y(nb[i+1]);
-              blue+=`<circle class="bigdot" data-tip="${addTip(h,`<span class="k">💣 bomb pots so far</span> ${sg(br)}<br>${tot}`)}" cx="${cx}" cy="${by.toFixed(1)}" r="4.5" fill="#6ea8fe" stroke="#0a0a0b" stroke-width="1.5"/>
-                <text x="${cx}" y="${(by-9).toFixed(1)}" fill="#6ea8fe" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">${money(r2(h.net))}</text>`;
+              blue+=`<circle class="bigdot" data-tip="${addTip(h,{bombs:br})}" cx="${cx}" cy="${by.toFixed(1)}" r="4.5" fill="#6ea8fe" stroke="#0a0a0b" stroke-width="1.5"/>`;
             }
           } else if (Math.abs(h.net||0) >= BIG_HAND){
             main+=`<circle class="bigdot" data-tip="${addTip(h,tot)}" cx="${cx}" cy="${y(a[i+1]).toFixed(1)}" r="4.5" fill="${h.net>0?"#3ecf8e":"#ff5c5c"}" stroke="#0a0a0b" stroke-width="1.5"/>`;
@@ -1473,13 +1558,13 @@ function renderAll(){
 }
 
 // =================== boot ===================
-buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
+buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()&&!viewIsHof()) $("q").focus();
 store.init().then(mode=>{
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
   store.subSessions((list,meta)=>{
     if (!meta||!meta.fromCache){ clearTimeout(t); sessionsLoaded=true; setNote(""); }
-    sessions=list; refreshBombLife(); if (viewIsAll()) loadAll();
+    sessions=list; refreshBombLife(); if (viewIsAll()||viewIsHof()) loadAll();
     if (!sid || !sessions.find(s=>s.id===sid)){
       const live=sessions.find(s=>!s.endedAt)||sessions[0];
       selectSession(live?live.id:null);
