@@ -12,6 +12,7 @@ No build step, no dependencies. Open `index.html` in a browser.
 - **Table tracking.** Max seats (2–10), how many are seated, and a "someone folded" counter that resets every hand.
 - **Blinds.** SB/BB toggles. A blind fold charges the blind automatically, and hands where you only put in the blind don't count as voluntary plays. It moves itself from SB to BB.
 - **Bomb pots.** Set the ante and player count once, then toggle bomb pot per hand. It goes straight to the flop, and bomb pots are tracked separately from voluntary play.
+- **Money in the hand.** A running total of what you've put in: the blinds and bomb pot ante are counted automatically, you add each bet or call, and folds and losses are charged that total. Also shows your estimated stack right now.
 - **Session tracking.** Buy-ins and rebuys, current stack, cash-out, profit, $/hr, hands/hr, bb/100, hands-played %, win rate when you play vs expected win rate (preflop equity), equity of folded hands, and folds that would have won.
 - **Visuals.** Running-profit chart, a 13×13 starting-hand grid colored by net result, and a full hand log with per-hand delete.
 
@@ -30,10 +31,14 @@ Cards are a rank (`2–9 t j q k a`, or `10`) plus a suit (`s h d c`). Spaces do
 | Split pot, up $10 | `asks 7c8c9d2s3h x10` |
 | Folded, then saw the runout | `qsjd f 9c8c2h4d5s` |
 | Bomb pot, folded on the flop (charges the ante) | `b qhqd 2c5h9s f` |
+| Put in $2 preflop and $4 on the flop, then folded (logs −$6) | `khjd $2 9s5c2d $4 f` |
+| Collected a $30 pot after putting in $12 (logs +$18) | `ahkd $2 7c8c9d $10 w@30` |
 
 Press **Enter** to log the hand. The line under the box shows exactly what will be logged before you press it.
 
-**Amounts are always net:** for a win, how much you came out ahead (pot minus what you put in); for a loss or fold, everything you put in.
+**Money in the hand:** type `$` and an amount each time you put chips in (or use **+ Put in** / **+1 BB**). With no amount after `f` or `l`, the hand is charged everything you put in. `w@30` means you collected a $30 pot, so it logs 30 minus what you put in.
+
+**Amounts after the result letter are always net:** for a win, how much you came out ahead (pot minus what you put in); for a loss or fold, everything you put in.
 
 ### Keys
 
@@ -44,6 +49,8 @@ Press **Enter** to log the hand. The line under the box shows exactly what will 
 | `-` / `+` | Someone folded / undo |
 | `[` / `]` | I'm the small blind / big blind |
 | `b` | Bomb pot (typed in the box) |
+| `$2` | Add $2 to what you've put in this hand |
+| `w@30` | Won, collected a $30 pot |
 
 ## Saving data
 

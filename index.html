@@ -62,6 +62,12 @@
   .bombrow.on{display:flex}
   .bombrow input{width:84px}
   .bombrow b{color:var(--accent)}
+  .money{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .money .inhand{font:800 22px/1 system-ui;color:var(--accent);font-variant-numeric:tabular-nums;min-width:70px}
+  .money .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--mute)}
+  .money input{width:84px}
+  .money .stack{margin-left:auto;text-align:right}
+  .money .stack b{font:800 18px/1 system-ui;font-variant-numeric:tabular-nums}
   .blindbtn{font-weight:800;min-width:52px}
   .blindbtn.on{background:#7fb7ff;color:#08182b;border-color:#7fb7ff}
   .tag.sb,.tag.bb{background:#16304d;color:var(--tie);margin-right:4px}
@@ -177,6 +183,7 @@
     <code>f</code> fold · <code>w40</code> won 40 · <code>l25</code> lost 25 · <code>x10</code> split (net +10).
     Examples: <code>7h2c f</code> (folded preflop) · <code>jsts 9h8d2c f</code> (folded the flop) · <code>ahkd 7c8c9d w60</code>.
     Cards typed <i>after</i> the result are the runout you saw after folding: <code>qsjd f 9c8c2h</code> tells you if you'd have won.<br>
+    <b>Money in the hand:</b> each time you bet or call, type <code>$</code> and the amount (<code>khjd $2 9s5c2d $4</code>) or use <b>+ Put in</b>. The blinds and bomb pot ante are counted for you. Then <code>f</code> or <code>l</code> with no amount charges the total, and <code>w@30</code> means you collected a $30 pot, so it logs your profit (30 minus what you put in).<br>
     <b>Blinds:</b> tap <b>SB</b> or <b>BB</b> (or press <span class="kbd">[</span> / <span class="kbd">]</span>) when you're in the blinds. Folding with no amount charges the blind, and hands where you only put in the blind (including checking the BB and folding on the flop) don't count as hands you played. After an SB hand it moves to BB on its own.<br>
     <b>Bomb pot:</b> type <code>b</code> (or tap 💣) and the hand goes straight to the flop: <code>b ahkd 7c8c9d w90</code>. Fold on the flop with no amount and it counts the ante as lost.<br>
     <span class="kbd">Esc</span> clears · <span class="kbd">-</span> someone folded (<span class="kbd">+</span> undo) · the fold count resets every hand · you can also tap the cards and buttons below.
@@ -189,6 +196,14 @@
         <div class="grp"><div class="lbl">Flop · Turn · River</div><div class="slots" id="bs"></div></div>
       </div>
       <div class="made" id="made"></div>
+      <div class="money">
+        <div><div class="lbl">In this hand</div><div class="inhand" id="inhand">$0</div></div>
+        <input id="addAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$ amt">
+        <button id="addBtn" title="Add what you just put in (or type $2 in the box)">+ Put in</button>
+        <button id="addBB" class="sm" title="Add one big blind">+1 BB</button>
+        <button id="addUndo" class="sm" title="Remove the last amount you added">Undo</button>
+        <div class="stack"><div class="lbl">Stack now ≈</div><b id="liveStack">–</b></div>
+      </div>
       <div class="actions">
         <input id="amt" type="number" inputmode="decimal" min="0" placeholder="amount">
         <button class="f" data-r="f">Fold</button>
@@ -385,16 +400,28 @@ function startSim(){
 // Grammar: cards (rank+suit), optional result letter f/w/l/x with optional amount, optional cards after.
 function parse(str){
   const s=str.toLowerCase(), n=s.length;
-  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false};
+  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false, adds:[], collect:null};
   let i=0;
   while (i<n){
     const ch=s[i];
     if (ch===" "||ch===","||ch==="\t"||ch==="|"){ i++; continue; }
     if (ch==="b"){ out.bomb=true; i++; continue; }
+    if (ch==="$"){
+      i++; let j=i; while (j<n && /[0-9.]/.test(s[j])) j++;
+      if (j===i){ out.partial=true; continue; }
+      const v=parseFloat(s.slice(i,j)); if (isNaN(v)){ out.bad="Bad $ amount"; break; }
+      out.adds.push(v); i=j; continue;
+    }
     if ("fwlx".includes(ch)){
       if (out.r){ out.bad="Only one result per hand"; break; }
       out.r=ch; out.at=out.cards.length; i++;
       while (s[i]===" ") i++;
+      if (s[i]==="@"){
+        i++; let j=i; while (j<n && /[0-9.]/.test(s[j])) j++;
+        if (j>i){ const v=parseFloat(s.slice(i,j)); if (isNaN(v)){ out.bad="Bad pot amount"; break; } out.collect=v; }
+        else out.partial=true;
+        i=j; continue;
+      }
       let j=i; while (j<n && /[0-9.]/.test(s[j])) j++;
       let end=j;
       if (j>i && j<n && SUITS.includes(s[j])){ end = (j-2>=i && s.slice(j-2,j)==="10") ? j-2 : j-1; }
@@ -420,7 +447,8 @@ function serialize(p){
   const before=p.cards.slice(0,at), after=p.cards.slice(at);
   let s = (p.bomb ? "b " : "") + before.slice(0,2).map(fmt).join("");
   if (before.length>2) s += " " + before.slice(2).map(fmt).join("");
-  if (p.r) s += " " + p.r + (p.amt!=null ? p.amt : "");
+  if (p.adds && p.adds.length) s += " " + p.adds.map(a=>"$"+a).join(" ");
+  if (p.r) s += " " + p.r + (p.collect!=null ? "@"+p.collect : (p.amt!=null ? p.amt : ""));
   if (after.length) s += " " + after.map(fmt).join("");
   return s;
 }
@@ -506,7 +534,8 @@ function renderPreview(){
   const net = handNet(P);
   const bl = (!P.bomb && blind) ? `<b>${blind.toUpperCase()}</b> · ` : "";
   const blWarn = (!P.bomb && blind && !blindAmtNow()) ? ` · <span class="neg">set the blinds in section 1 so it can charge the ${blind.toUpperCase()}</span>` : "";
-  el.innerHTML=`<span class="kbd">Enter</span> logs: ${P.bomb?"💣 ":""}${bl}<b>${handKey(P.cards.slice(0,2))}</b> · ${RES_NAME[P.r]} ${P.r==="f"?street:""} · <b class="${net>0?"pos":net<0?"neg":""}">${money(net)}</b>`+
+  const invTxt = (P.collect!=null) ? ` <span class="sub">(collected ${money(P.collect,false)} − put in ${money(invested(P),false)})</span>` : ((P.amt==null && (P.adds||[]).length && (P.r==="f"||P.r==="l")) ? ` <span class="sub">(what you put in)</span>` : "");
+  el.innerHTML=`<span class="kbd">Enter</span> logs: ${P.bomb?"💣 ":""}${bl}<b>${handKey(P.cards.slice(0,2))}</b> · ${RES_NAME[P.r]} ${P.r==="f"?street:""} · <b class="${net>0?"pos":net<0?"neg":""}">${money(net)}</b>${invTxt}`+
     (P.cards.length>P.at && P.at>=2 && P.r==="f" ? ` · plus the runout you saw after folding` : "") + blWarn;
 }
 function streetName(nb){ return nb===0?"preflop":nb===3?"on the flop":nb===4?"on the turn":nb===5?"on the river":`with ${nb} board cards`; }
@@ -514,12 +543,35 @@ function streetName(nb){ return nb===0?"preflop":nb===3?"on the flop":nb===4?"on
 let blind=null;   // "sb" | "bb" | null for the current hand
 function blindAmtNow(){ const s=cur(); if (!s||!blind) return null; const v = blind==="sb" ? s.sb : s.bb; return v>0 ? v : null; }
 function setBlind(b, toggle){ blind = (toggle && blind===b) ? null : b; renderBlind(); renderPreview(); }
-function renderBlind(){ $("sbBtn").classList.toggle("on",blind==="sb"); $("bbBtn").classList.toggle("on",blind==="bb"); }
+function renderBlind(){ $("sbBtn").classList.toggle("on",blind==="sb"); $("bbBtn").classList.toggle("on",blind==="bb"); renderMoney(); }
 // Net for the hand being typed: bomb pot rules, else a blind fold with no amount costs the blind.
+// Money you've put in this hand: posted blind or bomb ante, plus every $ you added.
+function invested(p){
+  const posted = p.bomb ? (bombAnte||0) : (blind ? (blindAmtNow()||0) : 0);
+  return Math.round((posted + (p.adds||[]).reduce((a,b)=>a+b,0))*100)/100;
+}
 function handNet(p){
+  if (p.amt==null && p.collect!=null) return Math.round((p.collect - invested(p))*100)/100;   // w@30: pot collected minus what you put in
+  if (p.amt==null && (p.r==="f"||p.r==="l") && (p.adds||[]).length) return -invested(p);    // fold/lose: charge what you put in
   if (p.bomb) return bombNet(p.r,p.amt);
   if (blind && p.r==="f" && p.amt==null) return -(blindAmtNow()||0);
   return netOf(p.r,p.amt);
+}
+function renderMoney(){
+  const inv = invested(P);
+  $("inhand").textContent = money(inv,false);
+  const s = cur();
+  const buy = ((s&&s.buyins)||[]).reduce((a,b)=>a+b,0);
+  if (!s || !buy){ $("liveStack").textContent="–"; $("liveStack").title="Add a buy-in in section 1"; return; }
+  const net = hands.reduce((a,h)=>a+(h.net||0),0);
+  const est = Math.round((buy + net - inv)*100)/100;
+  $("liveStack").textContent = money(est,false);
+  $("liveStack").title = `buy-ins ${money(buy,false)} ${net>=0?"+":"−"} ${money(Math.abs(net),false)} logged${inv?` − ${money(inv,false)} in this hand`:""}`;
+}
+function addMoney(v){
+  if (!(v>0)) return;
+  const p={...P, cards:P.cards.slice(), adds:[...(P.adds||[]), Math.round(v*100)/100]};
+  setText(serialize(p));
 }
 // A blind hand where all you lost was the blind is not a voluntary play.
 function blindOnly(h){ return !!h.blind && h.r==="f" && (h.net==null || -h.net <= (h.blindAmt||0) + 1e-9); }
@@ -536,7 +588,7 @@ function onInputChanged(){
   const prevCards=P.cards.join(), prevBomb=P.bomb;
   P=parse(text);
   $("q").classList.toggle("err",!!P.bad);
-  renderSlots(); renderPicker(); renderMade(); renderPreview(); renderBomb();
+  renderSlots(); renderPicker(); renderMade(); renderPreview(); renderBomb(); renderMoney();
   if (P.cards.join()!==prevCards || P.bomb!==prevBomb) startSim();
 }
 function setText(t){ $("q").value=t; onInputChanged(); $("q").focus(); }
@@ -556,10 +608,14 @@ document.addEventListener("keydown", e=>{
   if (e.key==="]"){ setBlind("bb"); return; }
   if (e.key==="+"||e.key==="="){ setFolded(folded-1); return; }
   if (e.key==="-"){ setFolded(folded+1); return; }
-  if (/^[0-9tjqkashdcfwlxTJQKASHDCFWLX ]$/.test(e.key)&&!e.metaKey&&!e.ctrlKey) $("q").focus();
+  if (/^[0-9tjqkashdcfwlxTJQKASHDCFWLX $@]$/.test(e.key)&&!e.metaKey&&!e.ctrlKey) $("q").focus();
 });
 function clearAll(){ folded=0; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
 $("clr").onclick=clearAll;
+$("addBtn").onclick=()=>{ const v=parseFloat($("addAmt").value); if (!(v>0)){ toast("Enter how much you put in",true); return; } $("addAmt").value=""; addMoney(v); };
+$("addAmt").addEventListener("keydown",e=>{ if (e.key==="Enter"){ e.preventDefault(); $("addBtn").click(); } });
+$("addBB").onclick=()=>{ const s=cur(); const bb=s&&s.bb>0?s.bb:null; if (!bb){ toast("Set the big blind in section 1 first",true); return; } addMoney(bb); };
+$("addUndo").onclick=()=>{ if (!(P.adds||[]).length) return; const p={...P, cards:P.cards.slice(), adds:P.adds.slice(0,-1)}; setText(serialize(p)); };
 $("sbBtn").onclick=()=>{ setBlind("sb",true); $("q").focus(); };
 $("bbBtn").onclick=()=>{ setBlind("bb",true); $("q").focus(); };
 function seatCount(){ return (P.bomb && bombPlayers>=2) ? bombPlayers : tableSize; }
@@ -600,7 +656,7 @@ $("call").addEventListener("input",renderVerdict);
 document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
   const a=parseFloat($("amt").value);
   const p={...P, cards:P.cards.slice()};
-  p.r=b.dataset.r; p.at = P.r ? P.at : P.cards.length; p.amt = isNaN(a) ? (P.r?P.amt:null) : a;
+  p.r=b.dataset.r; p.at = P.r ? P.at : P.cards.length; p.amt = isNaN(a) ? (P.r?P.amt:null) : a; if (!isNaN(a)) p.collect=null;
   $("q").value=serialize(p); onInputChanged(); commit();
 });
 
@@ -744,6 +800,7 @@ async function commit(){
   const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:handNet(p), key:handKey(hero),
     bomb:!!p.bomb, ante:p.bomb?bombAnte:null, players:p.bomb?bombPlayers:null,
     blind: (!p.bomb && blind) ? blind : null, blindAmt: (!p.bomb && blind) ? blindAmtNow() : null,
+    invested: invested(p), collect: p.collect ?? null,
     eqPre:+eqPre.toFixed(4), eq:+eq.toFixed(4), eqR: eqR==null?null:+eqR.toFixed(4) };
   const id = await ensureSession();
   if (!id) return;
@@ -858,7 +915,7 @@ function renderSession(){
     $("sdy").onclick=async()=>{ const id=sid; sd.innerHTML=`<span class="sub">Deleting…</span>`;
       try{ await store.deleteSession(id); toast("Session deleted"); }catch(e){ toast("Couldn't delete the session",true); renderSession(); } };
   };
-  renderStats(s); renderLog(); renderGrid(); renderChart(); renderClock();
+  renderStats(s); renderLog(); renderGrid(); renderChart(); renderClock(); renderMoney();
 }
 function renderClock(){
   const s=cur(); if (!s){ $("sclock").textContent=""; return; }
