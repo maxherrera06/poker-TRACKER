@@ -944,6 +944,21 @@ if(!window.__framed){
 
   .qeq{font:800 15px Inter,system-ui;white-space:nowrap}
   body.padmode #guide,body.padmode #guideShow{display:none!important}
+
+  /* one entry method at a time */
+  .playhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:34px 0 14px}
+  .playhead h2{margin:0}
+  .modeseg{display:inline-grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px}
+  .modeseg button{border:none;background:none;padding:8px 18px;font-weight:800;font-size:14px;color:var(--mute);border-radius:999px}
+  .modeseg button.on{background:#fff;color:#000}
+  body.padmode .actions,body.padmode #picker,body.padmode #pickToggle,body.padmode .howto,body.padmode #preview{display:none!important}
+  body:not(.padmode) #qpad{display:none!important}
+  .qmore{display:flex;gap:6px;margin-top:8px}
+  .qmore[hidden]{display:none!important}
+  .qmore button{flex:1;padding:9px 6px;font-size:13px}
+  .qmore button.on{background:var(--accent);border-color:var(--accent)}
+  .qmore .icw{margin-right:4px}
+  #qType{display:none}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -986,7 +1001,8 @@ if(!window.__framed){
     </div>
   </div>
 
-  <h2>Play a hand</h2>
+  <div class="playhead"><h2>Play a hand</h2>
+    <div class="modeseg" id="modeSeg" role="tablist" aria-label="How to enter hands"><button type="button" data-mode="tap">Tap</button><button type="button" data-mode="type">Type</button></div></div>
   <div class="guide" id="guide">
     <div class="gsteps">
       <div class="gs"><b>1</b><div><div class="gt">Type your two cards</div><code>ah kd</code><span class="gx">= A♥ K♦</span></div></div>
@@ -1013,6 +1029,11 @@ if(!window.__framed){
       <button type="button" class="qfold" id="qFold">Fold</button>
       <button type="button" class="qwon" id="qWon">Won</button>
       <button type="button" class="qlost" id="qLost">Lost</button>
+    </div>
+    <div class="qmore" id="qMore">
+      <button type="button" class="sm" id="qAll">Everyone folded</button>
+      <button type="button" class="sm" id="qSplit">Split</button>
+      <button type="button" class="sm" id="qBomb">💣 Bomb pot</button>
     </div>
     <div class="qamt" id="qAmt" hidden>
       <div class="qamtrow"><span class="qamtlbl" id="qAmtLbl">Won</span><span class="qcur">$</span><input id="qAmtIn" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"><button type="button" class="pri" id="qAmtGo">Log hand</button><button type="button" class="sm" id="qAmtX" title="Cancel">✕</button></div>
@@ -1246,7 +1267,7 @@ if(!window.__framed){
     <div class="msec">
       <div class="mlabel">On this device</div>
       <label class="tog"><input type="checkbox" id="edGuide"><span></span>Show the 3-step hand guide</label>
-      <label class="tog"><input type="checkbox" id="edPicker"><span></span>Show the tap keypad <small>Tap cards and results instead of typing</small></label>
+      <label class="tog"><input type="checkbox" id="edPicker"><span></span>Tap mode for entering hands <small>Off = type them instead. You can also switch with Tap | Type on the Play tab.</small></label>
     </div>
     <div class="msec">
       <div class="mlabel">Your data</div>
@@ -1839,6 +1860,8 @@ function setPad(on){
   // with the keypad on, tapping the box doesn't pop up the phone keyboard
   if (on) $("q").setAttribute("inputmode","none"); else $("q").removeAttribute("inputmode");
   document.body.classList.toggle("padmode",on);
+  $("q").placeholder = on ? "Tap your cards below" : "Type your cards, like  ah kd";
+  $("modeSeg").querySelectorAll("button").forEach(b=>b.classList.toggle("on",(b.dataset.mode==="tap")===on));
   renderPad();
 }
 function addCard(c){
@@ -1854,7 +1877,8 @@ function renderPad(){
   $("qSuits").querySelectorAll("button").forEach(b=>{ const su=+b.dataset.su; b.disabled=qRank==null||used.has(qRank*4+su); });
   $("qSuits").classList.toggle("ready",qRank!=null);
   const ready=P.cards.length>=2;
-  ["qFold","qWon","qLost"].forEach(id=>$(id).disabled=!ready||(!!P.r&&P.r!=="f"));
+  ["qFold","qWon","qLost","qAll","qSplit"].forEach(id=>$(id).disabled=!ready||(!!P.r&&P.r!=="f"));
+  $("qBomb").classList.toggle("on",!!P.bomb);
   $("qFold").textContent = blind && !P.bomb && n===2 ? `Fold (${blind.toUpperCase()})` : "Fold";
   const last=hands.length?hands.slice().sort((a,b)=>b.t-a.t)[0]:null;
   $("qUndo").hidden=!last; $("qUndoInfo").textContent=last?`${last.key} · ${money(Math.round((last.net||0)*100)/100)}`:"";
@@ -1866,27 +1890,30 @@ $("qRanks").addEventListener("click",e=>{ const b=e.target.closest("button"); if
 $("qSuits").addEventListener("click",e=>{ const b=e.target.closest("button"); if (!b||b.disabled||qRank==null) return; addCard(qRank*4+(+b.dataset.su)); qRank=null; renderPad(); });
 $("qBack").onclick=()=>{ if (qRank!=null){ qRank=null; renderPad(); return; } if (!P.cards.length&&!P.r) return;
   const p={...P,cards:P.cards.slice()}; if (p.r && p.cards.length<=p.at){ p.r=null; p.amt=null; p.collect=null; } else p.cards.pop(); $("q").value=serialize(p); onInputChanged(); };
-$("qType").onclick=()=>{ $("q").removeAttribute("inputmode"); $("q").focus(); };
+$("qType").onclick=()=>{ setPad(false); $("q").focus(); };
 $("qFold").onclick=()=>{
   if (P.cards.length<2) return;
   const p={...P,cards:P.cards.slice()}; p.r="f"; p.at=P.r?P.at:P.cards.length; p.amt=null; p.collect=null;
   $("q").value=serialize(p); onInputChanged(); commit();
 };
 function openAmt(r){
-  qResult=r; $("qAmt").hidden=false; $("qActs").hidden=true;
-  $("qAmtLbl").textContent = r==="w"?"Won":"Lost"; $("qAmtLbl").className="qamtlbl "+(r==="w"?"pos":"neg");
+  qResult=r; $("qAmt").hidden=false; $("qActs").hidden=true; $("qMore").hidden=true;
+  $("qAmtLbl").textContent = r==="w"?"Won":r==="x"?"Split":"Lost"; $("qAmtLbl").className="qamtlbl "+(r==="w"?"pos":r==="x"?"":"neg");
   $("qMode").hidden = r!=="w";
   const inv=invested(P);
   $("qAmtIn").placeholder = r==="l" && inv>0 ? `${inv} (what you put in)` : "0";
   setMode(qMode); $("qAmtIn").value=""; $("qAmtIn").focus();
 }
-function closeAmt(){ qResult=null; $("qAmt").hidden=true; $("qActs").hidden=false; }
+function closeAmt(){ qResult=null; $("qAmt").hidden=true; $("qActs").hidden=false; $("qMore").hidden=false; }
 function setMode(m){ qMode=m; $("qMode").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));
   $("qModeHint").textContent = m==="net" ? "What you're up on this hand" : "The whole pot you raked in. I'll subtract what you put in."; }
 $("qMode").addEventListener("click",e=>{ const b=e.target.closest("button[data-m]"); if (b){ setMode(b.dataset.m); $("qAmtIn").focus(); } });
 $("qWon").onclick=()=>openAmt("w");
 $("qLost").onclick=()=>openAmt("l");
 $("qAmtX").onclick=closeAmt;
+$("qSplit").onclick=()=>openAmt("x");
+$("qAll").onclick=()=>everyoneFolded();
+$("qBomb").onclick=()=>{ $("bombBtn").click(); setTimeout(renderPad,0); };
 function logAmt(){
   const v=parseFloat($("qAmtIn").value);
   if (qResult==="w" && !(v>=0)){ toast("Type how much you won",true); $("qAmtIn").focus(); return; }
@@ -1905,6 +1932,7 @@ $("qUndo").onclick=async()=>{
   try{ await store.deleteHand(sid,last.id); toast(`Removed ${last.key} · ${money(Math.round((last.net||0)*100)/100)}`); }catch(e){ toast("Couldn't undo. Try again.",true); }
 };
 setTimeout(()=>setPad(padOn()),0);
+$("modeSeg").addEventListener("click",e=>{ const b=e.target.closest("button[data-mode]"); if (!b) return; const tap=b.dataset.mode==="tap"; setPad(tap); if (!tap) $("q").focus(); });
 
 let autoPot=false;
 function renderBomb(){
