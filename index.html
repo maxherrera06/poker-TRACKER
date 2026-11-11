@@ -981,6 +981,28 @@ if(!window.__framed){
   .fmhidden .ic{stroke:var(--mute);width:18px;height:18px;flex:0 0 18px}
   .fmfoot{margin-top:14px;display:flex;justify-content:flex-end}
   @media (max-width:760px){ .bstat.pts b{font-size:17px} }
+
+  /* guided tour */
+  .tut{position:fixed;inset:0;z-index:300;pointer-events:none}
+  .tut[hidden]{display:none!important}
+  .tutb{position:fixed;background:rgba(0,0,0,.72);pointer-events:auto}
+  .tutring{position:fixed;border-radius:18px;box-shadow:0 0 0 2px var(--accent),0 0 0 7px rgba(52,120,246,.25);pointer-events:none;transition:all .18s ease}
+  .tutcard{position:fixed;pointer-events:auto;background:#1b1b1e;border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:16px 18px;box-shadow:0 24px 60px rgba(0,0,0,.7)}
+  .tutcard.center{width:min(380px,calc(100vw - 24px))}
+  .tuttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .tutstep{font-size:12px;color:var(--accent2);font-weight:800}
+  .tutskip{background:none;border:none;color:var(--mute);font-size:12.5px;padding:2px 0;font-weight:600}
+  .tuttitle{font:800 20px -apple-system,Inter,system-ui;letter-spacing:-.4px;margin-bottom:6px}
+  .tuttext{color:#d1d1d6;font-size:14.5px;line-height:1.5}
+  .tuttext code{background:#2a2a2e;padding:1px 6px;border-radius:6px;font-size:13px}
+  .tutdo{margin-top:10px;font-size:13px;font-weight:700;color:#ffd60a;display:flex;align-items:center;gap:8px}
+  .tutdo::before{content:"";width:8px;height:8px;border-radius:50%;background:#ffd60a;animation:tpulse2 1.2s infinite}
+  @keyframes tpulse2{50%{opacity:.25}}
+  .tutdo[hidden],.tutnav [hidden],.tutskip[hidden]{display:none!important}
+  .tutnav{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+  .tutnav .pri{padding:11px 20px}
+  body.touring .tabs{pointer-events:none}
+  .meacts #meTour{background:transparent;border-color:rgba(255,255,255,.18);color:#c5cbe0}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1188,7 +1210,7 @@ if(!window.__framed){
         <div class="mepills" id="mePills"></div>
         <div class="melevel" id="meLevel"></div>
       </div>
-      <div class="meacts"><button id="meEdit">Edit profile</button><button class="pri" id="meShare">Invite friends</button></div>
+      <div class="meacts"><button id="meEdit">Edit profile</button><button class="pri" id="meShare">Invite friends</button><button id="meTour" class="sm">Take the tour</button></div>
     </div>
     <h2>Overview</h2>
     <div class="metiles" id="meTiles"></div>
@@ -1265,6 +1287,17 @@ if(!window.__framed){
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="tut" id="tut" hidden>
+  <div class="tutb" id="tutB0"></div><div class="tutb" id="tutB1"></div><div class="tutb" id="tutB2"></div><div class="tutb" id="tutB3"></div>
+  <div class="tutring" id="tutRing"></div>
+  <div class="tutcard" id="tutCard" role="dialog" aria-live="polite">
+    <div class="tuttop"><span class="tutstep" id="tutStep"></span><button type="button" class="tutskip" id="tutSkip">Skip tour</button></div>
+    <div class="tuttitle" id="tutTitle"></div>
+    <div class="tuttext" id="tutText"></div>
+    <div class="tutdo" id="tutDo" hidden>Do it to continue</div>
+    <div class="tutnav"><button type="button" id="tutBack">Back</button><button type="button" class="pri" id="tutNext">Next</button></div>
+  </div>
+</div>
 <div class="modal" id="editModal" hidden>
   <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="editH">
     <div class="mtop"><h2 id="editH">Edit profile</h2><button class="mclose" data-close title="Close">✕</button></div>
@@ -2885,7 +2918,7 @@ async function frInit(){
   return true;
 }
 async function syncProfile(force, patch){
-  const sb=store.client; if (!sb||!store.user) return;
+  const sb=store.client; if (!sb||!store.user||TUT.on) return;
   const p={...myProfile(), ...(patch||{})};
   let uname=cleanName(p.username); if (uname.length<2) uname="player"+Math.floor(1000+Math.random()*9000);
   const row={ id:store.user.id, username:uname, avatar:+p.avatar||0, title:p.title||null, points:myPoints(), updated_at:new Date().toISOString() };
@@ -2905,7 +2938,7 @@ async function syncProfile(force, patch){
 }
 let syncT=null;
 function scheduleSync(){
-  if (store.mode!=="cloud"||syncT||FR.ready===false) return;
+  if (TUT.on||store.mode!=="cloud"||syncT||FR.ready===false) return;
   syncT=setTimeout(async()=>{
     syncT=null;
     try{
@@ -3078,6 +3111,124 @@ document.addEventListener("keydown",e=>{
   if (/^[1-4]$/.test(e.key) && prac.spot && !prac.answered){ e.preventDefault(); pracAnswer(prac.spot.choices[+e.key-1]); }
   else if (e.key==="Enter" && prac.answered && document.activeElement!==$("pNext")){ e.preventDefault(); pracNew(); }
 });
+
+// =================== guided tour (sandboxed: nothing is saved) ===================
+const TUT={ on:false, i:0, sessions:[], hands:{}, handSub:null, saved:null, latest:null, raf:0, poll:0 };
+// While the tour runs, every write goes to a throwaway copy instead of your account.
+(()=>{
+  const wrap=(k,fn)=>{ const orig=store[k].bind(store); store[k]=(...a)=>TUT.on?fn(...a):orig(...a); };
+  const apply=()=>{ sessions=TUT.sessions.map(x=>({...x})).sort((a,b)=>b.startedAt-a.startedAt);
+    if (TUT.handSub) TUT.handSub((TUT.hands[sid]||[]).slice(),{fromCache:false}); renderSession(); renderAll(); renderHof(); };
+  wrap("addSession",async d=>{ const id="tour-"+Date.now().toString(36); TUT.sessions.push({id,...d}); TUT.hands[id]=[]; setTimeout(apply,0); return id; });
+  wrap("updateSession",async (id,patch)=>{ const x=TUT.sessions.find(z=>z.id===id); if (x) Object.assign(x,patch); setTimeout(apply,0); });
+  wrap("addHand",async (id,d)=>{ (TUT.hands[id]=TUT.hands[id]||[]).push({id:"th"+Math.random().toString(36).slice(2,8),...d}); setTimeout(apply,0); });
+  wrap("deleteHand",async (id,hid)=>{ TUT.hands[id]=(TUT.hands[id]||[]).filter(h=>h.id!==hid); setTimeout(apply,0); });
+  wrap("deleteSession",async id=>{ TUT.sessions=TUT.sessions.filter(z=>z.id!==id); delete TUT.hands[id]; setTimeout(apply,0); });
+  wrap("allHands",async id=>(TUT.hands[id]||[]).slice());
+  wrap("bombHands",async id=>(TUT.hands[id]||[]).filter(h=>h.bomb));
+  wrap("subHands",(id,cb)=>{ TUT.handSub=cb; setTimeout(()=>cb((TUT.hands[id]||[]).slice(),{fromCache:false}),0); return ()=>{ if (TUT.handSub===cb) TUT.handSub=null; }; });
+})();
+const go=h=>{ if (location.hash!==h) location.hash=h; };
+const TOUR=[
+  { title:"Welcome to Lucky Odds 👋", text:"A 2-minute tour. You'll tap the real buttons, and nothing you enter is saved. It all resets when you finish.", next:"Start the tour" },
+  { view:"#play", sel:"#modeSeg", title:"Two ways to log hands", text:"<b>Tap</b> gives you a card keypad. <b>Type</b> lets you type hands like <code>ah kd</code>. We'll use Tap. You can switch anytime.", before:()=>setPad(true) },
+  { view:"#play", sel:"#fstakes", title:"Pick your stakes", text:"Choose <b>$0.50 / $1</b> from the list.", wait:()=>{ const c=cur(); return !!(c&&c.bb>0); } },
+  { view:"#play", sel:".buybig", title:"Add your buy-in", text:"Type <b>100</b>, then tap <b>Add buy-in</b>.", wait:()=>{ const c=cur(); return !!(c&&(c.buyins||[]).length); } },
+  { view:"#play", sel:"#qpad", title:"Deal yourself a hand", text:"Tap <b>A</b> then <b>♠</b>, then <b>K</b> then <b>♠</b>.", wait:()=>P.cards.length>=2 },
+  { view:"#play", sel:"#action", title:"Your odds, instantly", text:"Your chance to win and a suggestion update with every card. It also shows in the keypad header.", },
+  { view:"#play", sel:".opp1", title:"Who's still in", text:"Set how many are <b>seated</b>, and tap <b>−</b> under Opponents each time someone folds. Fewer opponents, better odds." },
+  { view:"#play", sel:"#qpad", title:"Here comes the flop", text:"Tap <b>Q ♠</b>, <b>J ♠</b>, then <b>2 ♦</b>.", wait:()=>P.cards.length>=5 },
+  { view:"#play", sel:"#beats", title:"Hands that beat you", text:"Every holding that's ahead of you right now. With a flush draw and two overs, a lot can still beat you." },
+  { view:"#play", sel:"#qpad", title:"You won the pot", text:"Tap <b>Won</b>, type <b>40</b>, then <b>Log hand</b>. (Pick <b>Pot I collected</b> instead if you know the whole pot.)", wait:()=>hands.length>=1 },
+  { view:"#play", sel:".qfoot", title:"Mis-tapped?", text:"<b>Undo last hand</b> takes it back. Leave this one for now." },
+  { view:"#play", sel:"#tiltBox", title:"The tilt meter", text:"Warns you when you're chasing, playing too many hands after a loss, or giving back a win." },
+  { view:"#play", sel:"#stats", title:"This session at a glance", text:"Profit, hands you play, and how often you win them." },
+  { view:"#play", sel:"#cashbox", title:"Leaving the table", text:"Cash out here. <b>Cash out & rebuy</b> starts a fresh stretch at the same game." },
+  { view:"#all-sessions", sel:"#ovStats", title:"Stats", text:"Your all-time profit and the numbers that matter. <b>All stats</b> has everything else." },
+  { view:"#all-sessions", sel:"#ovSessions", title:"Every session, by day", text:"Tap a day, then a session, for its chart, hand log, and biggest pots." },
+  { view:"#hall-of-fame", sel:"#hofTrophies", title:"Hall of Fame", text:"Biggest pot, worst beat, luckiest win. Tap any of them to see the hand." },
+  { view:"#practice", sel:".prac", title:"Practice", text:"Guess your odds in random spots to build your instincts. Right answers earn points." },
+  { view:"#friends", sel:".frhead", title:"Friends", text:"Find people by username or send an invite link. The leaderboard ranks everyone by <b>points</b>." },
+  { view:"#me", sel:".mehero", title:"Your profile", text:"Avatar, points and level. The <b>eye</b> hides your money from friends. <b>Edit profile</b> has the rest." },
+  { title:"You're all set 🎉", text:"The practice hand and session are gone. Go log a real one.", next:"Start playing" }
+];
+function startTour(){
+  if (TUT.on) return;
+  let padPref=null, pracSaved=null; try{ padPref=localStorage.getItem("po_pad"); pracSaved=localStorage.getItem("po_prac"); }catch(e){}
+  TUT.saved={ sessions, hands, sid, hash:location.hash, padPref, pracSaved, prac:{score:prac.score,best:prac.best,streak:prac.streak}, blind, folded, tableSize, maxSeats, openDays, openSid };
+  TUT.on=true; TUT.sessions=[]; TUT.hands={}; TUT.latest=null;
+  if (unsubHands){ unsubHands(); unsubHands=null; }
+  sid=null; sessions=[]; hands=[]; blind=null; folded=0; openDays=null; openSid=null;
+  clearAll(); renderBlind(); renderSession(); closeAllModals();
+  $("tut").hidden=false; document.body.classList.add("touring");
+  tourShow(0); tourLoop();
+}
+function endTour(){
+  if (!TUT.on) return;
+  const sv=TUT.saved; TUT.on=false;
+  cancelAnimationFrame(TUT.raf); clearInterval(TUT.poll);
+  $("tut").hidden=true; document.body.classList.remove("touring");
+  try{ if (sv.padPref==null) localStorage.removeItem("po_pad"); else localStorage.setItem("po_pad",sv.padPref);
+       if (sv.pracSaved==null) localStorage.removeItem("po_prac"); else localStorage.setItem("po_prac",sv.pracSaved);
+       localStorage.setItem("po_tut","done"); }catch(e){}
+  Object.assign(prac,sv.prac); prac.spot=null;
+  if (unsubHands){ unsubHands(); unsubHands=null; }
+  TUT.handSub=null; TUT.sessions=[]; TUT.hands={};
+  sessions=TUT.latest||sv.sessions; hands=[]; sid=null; blind=sv.blind; folded=0; openDays=sv.openDays; openSid=sv.openSid;
+  setMaxSeats(sv.maxSeats,false); tableSize=sv.tableSize;
+  setPad(padOn()); clearAll(); renderBlind();
+  selectSession(sv.sid && sessions.find(x=>x.id===sv.sid) ? sv.sid : (sessions.find(x=>!x.endedAt)||sessions[0]||{}).id||null);
+  renderAll(); renderHof(); renderAvatarTop();
+  go("#play");
+}
+function closeAllModals(){ document.querySelectorAll(".modal:not([hidden])").forEach(closeModal); }
+function tourShow(i){
+  TUT.i=Math.max(0,Math.min(TOUR.length-1,i)); const st=TOUR[TUT.i];
+  closeAllModals();
+  if (st.view) go(st.view);
+  if (st.before) st.before();
+  $("tutStep").textContent = TUT.i===0||TUT.i===TOUR.length-1 ? "" : `${TUT.i} of ${TOUR.length-2}`;
+  $("tutTitle").textContent=st.title; $("tutText").innerHTML=st.text;
+  $("tutBack").hidden = TUT.i===0||TUT.i===TOUR.length-1;
+  $("tutSkip").hidden = TUT.i===TOUR.length-1;
+  $("tutNext").textContent = st.next || (TUT.i===TOUR.length-2?"Finish":"Next");
+  setTimeout(()=>{ const el=st.sel&&document.querySelector(st.sel); if (el) el.scrollIntoView({block:"center",behavior:"smooth"}); },60);
+  tourWaitCheck();
+}
+function tourWaitCheck(){
+  const st=TOUR[TUT.i], waiting=!!(st.wait&&!st.wait());
+  $("tutNext").hidden=waiting; $("tutDo").hidden=!waiting;
+}
+function tourLoop(){
+  clearInterval(TUT.poll);
+  TUT.poll=setInterval(()=>{ if (!TUT.on) return; const st=TOUR[TUT.i];
+    if (st.wait && st.wait() && !$("tutDo").hidden){ $("tutDo").hidden=true; setTimeout(()=>{ if (TUT.on&&TOUR[TUT.i]===st) tourShow(TUT.i+1); },550); } },250);
+  const frame=()=>{ if (!TUT.on) return; tourPlace(); TUT.raf=requestAnimationFrame(frame); };
+  TUT.raf=requestAnimationFrame(frame);
+}
+function tourPlace(){
+  const st=TOUR[TUT.i], el=st.sel&&document.querySelector(st.sel), W=innerWidth, H=innerHeight, pad=8;
+  const B=[0,1,2,3].map(k=>$("tutB"+k)), ring=$("tutRing"), card=$("tutCard");
+  let r=el&&el.offsetParent!==null?el.getBoundingClientRect():null;
+  if (!r||!r.width){ B[0].style.cssText=`left:0;top:0;width:${W}px;height:${H}px`; B[1].style.cssText=B[2].style.cssText=B[3].style.cssText="display:none"; ring.style.display="none";
+    card.style.cssText=`left:50%;top:50%;transform:translate(-50%,-50%)`; card.classList.add("center"); return; }
+  card.classList.remove("center");
+  const x1=Math.max(0,r.left-pad), y1=Math.max(0,r.top-pad), x2=Math.min(W,r.right+pad), y2=Math.min(H,r.bottom+pad);
+  B[0].style.cssText=`left:0;top:0;width:${W}px;height:${y1}px`;
+  B[1].style.cssText=`left:0;top:${y2}px;width:${W}px;height:${Math.max(0,H-y2)}px`;
+  B[2].style.cssText=`left:0;top:${y1}px;width:${x1}px;height:${Math.max(0,y2-y1)}px`;
+  B[3].style.cssText=`left:${x2}px;top:${y1}px;width:${Math.max(0,W-x2)}px;height:${Math.max(0,y2-y1)}px`;
+  ring.style.cssText=`display:block;left:${x1}px;top:${y1}px;width:${x2-x1}px;height:${y2-y1}px`;
+  const cw=Math.min(380,W-24), ch=card.offsetHeight||180;
+  let left=Math.min(Math.max(12,r.left+r.width/2-cw/2),W-cw-12);
+  let top = (H-y2>ch+24) ? y2+12 : (y1>ch+24 ? y1-ch-12 : H-ch-12);
+  card.style.cssText=`left:${left}px;top:${Math.max(12,top)}px;width:${cw}px`;
+}
+$("tutNext").onclick=()=>{ if (TUT.i>=TOUR.length-1) endTour(); else tourShow(TUT.i+1); };
+$("tutBack").onclick=()=>tourShow(TUT.i-1);
+$("tutSkip").onclick=endTour;
+$("meTour").onclick=startTour;
+document.addEventListener("keydown",e=>{ if (TUT.on && e.key==="Escape"){ e.stopImmediatePropagation(); } },true);
 
 // =================== Hall of Fame ===================
 const HOF_CATS=[[8,"Straight flush","👑"],[7,"Four of a kind","💎"],[6,"Full house","🏠"],[5,"Flush","🌊"],[4,"Straight","🪜"],[3,"Three of a kind","🎯"],[2,"Two pair","✌️"],[1,"Pair","🃏"],[0,"High card","🔺"],[-1,"Before the flop","⚡"]];
@@ -3368,10 +3519,12 @@ function setupAccountBar(mode){
 }
 store.init().then(mode=>{
   setupAccountBar(mode); renderAvatarTop();
+  setTimeout(()=>{ let done=null; try{ done=localStorage.getItem("po_tut"); }catch(e){} if (!done && !TUT.on) startTour(); },1400);
   if (mode==="cloud") setTimeout(()=>{ handleInvite().catch(()=>{}); loadAll().then(()=>scheduleSync()).catch(()=>{}); },800);
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
   store.subSessions((list,meta)=>{
+    if (TUT.on){ TUT.latest=list; return; }
     if (!meta||!meta.fromCache){ clearTimeout(t); sessionsLoaded=true; setNote(""); }
     sessions=list; refreshBombLife(); if (viewIsAll()||viewIsHof()) loadAll();
     if (!sid || !sessions.find(s=>s.id===sid)){
