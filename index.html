@@ -96,13 +96,21 @@
   button.bomb.on{background:var(--accent);color:#1a1405;border-color:var(--accent);font-weight:700}
   .tag.b{background:#3a3010;color:var(--accent);margin-right:4px}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+  .action{border-radius:14px;padding:12px 14px;margin-bottom:14px;border:2px solid var(--line);background:#0f2019}
+  .action .a{font:900 34px/1 system-ui;letter-spacing:1px}
+  .action .why{font-size:13px;color:var(--ink);margin-top:6px;opacity:.9}
+  .action .hint2{font-size:11.5px;color:var(--mute);margin-top:4px}
+  .action.fold{border-color:var(--bad);background:#2a1210}.action.fold .a{color:#ff8a80}
+  .action.call{border-color:var(--good);background:#0f2a1c}.action.call .a{color:var(--good)}
+  .action.raise,.action.bet{border-color:var(--accent);background:#2a2410}.action.raise .a,.action.bet .a{color:var(--accent)}
+  .action.check{border-color:var(--tie);background:#0f1f30}.action.check .a{color:var(--tie)}
   .big{font:800 56px/1 system-ui,sans-serif;letter-spacing:-1px}
   .sub{color:var(--mute);font-size:12.5px}
   .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#20352c;margin:10px 0 6px}
   .bar div{height:100%;transition:width .12s}
   .legend{display:flex;gap:12px;font-size:13px;flex-wrap:wrap}
   .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
-  .opp{display:flex;align-items:center;gap:8px;margin:14px 0}
+  .opp{display:flex;align-items:center;gap:8px;margin:14px 0;flex-wrap:wrap}
   .opp button{width:36px;padding:6px 0;font-weight:700}
   .opp .n{font:800 22px/1 system-ui;width:28px;text-align:center}
   .dist div.r{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;font-size:12.5px;margin:3px 0}
@@ -253,6 +261,8 @@
     </div>
 
     <div class="panel">
+      <div class="action" id="action"><div class="a" id="actionA">—</div><div class="why" id="actionWhy">Enter your cards to get a suggestion.</div>
+        <div class="hint2">Put the bet you face in <b>To call</b> below (leave it empty if nobody has bet).</div></div>
       <div class="sub">Your equity</div>
       <div class="big" id="eq">—</div>
       <div class="bar"><div id="bw" style="background:var(--good);width:0"></div><div id="bt" style="background:var(--tie);width:0"></div><div id="bl" style="background:var(--bad);width:0"></div></div>
@@ -568,7 +578,27 @@ function renderResults(empty){
     h+=`<div class="r"><span>${CAT[c]}</span><span class="t"><i style="width:${(p*100).toFixed(2)}%"></i></span><span class="p">${pct(p)}</span></div>`; }
   $("dist").innerHTML=h; renderVerdict();
 }
+// Suggested action from equity vs pot odds (opponents assumed to hold random hands).
+function renderAction(){
+  const box=$("action"), A=$("actionA"), W=$("actionWhy");
+  const set=(cls,a,why)=>{ box.className="action "+cls; A.textContent=a; W.innerHTML=why; };
+  if (P.cards.length<2 || !res.n){ set("","—","Enter your cards to get a suggestion."); return; }
+  const eq=res.eq/res.n, n=effOpps(), fair=1/(n+1);
+  // "Strong" scales with table size: heads-up ~62%+, vs 8 players ~33%+.
+  const strong = fair + (1-fair)*0.25, veryStrong = fair + (1-fair)*0.35;
+  const pot=parseFloat($("pot").value)||0, call=parseFloat($("call").value)||0;
+  if (call>0){
+    const need=call/(pot+call);
+    if (eq<need) set("fold","FOLD",`You have <b>${pct(eq)}</b> but need <b>${pct(need)}</b> to call ${money(call,false)}.`);
+    else if (eq>=veryStrong && eq>=need+0.2) set("raise","RAISE",`You have <b>${pct(eq)}</b> and only need <b>${pct(need)}</b>. You're well ahead, so build the pot.`);
+    else set("call","CALL",`You have <b>${pct(eq)}</b>, more than the <b>${pct(need)}</b> needed to call ${money(call,false)}.`);
+  } else {
+    if (eq>=strong) set("bet","BET",`You have <b>${pct(eq)}</b> vs ${n} opponent${n>1?"s":""}, well above an even share (${pct(fair)}). Bet for value.`);
+    else set("check","CHECK",`You have <b>${pct(eq)}</b> vs ${n} opponent${n>1?"s":""} (even share is ${pct(fair)}). Check and see the next card for free.`);
+  }
+}
 function renderVerdict(){
+  renderAction();
   const pot=parseFloat($("pot").value), call=parseFloat($("call").value), v=$("verdict");
   if (!(pot>0)||!(call>0)){ v.innerHTML=`<span class="sub">Enter the pot and the amount to call to see the equity you need.</span>`; return; }
   const need=call/(pot+call);

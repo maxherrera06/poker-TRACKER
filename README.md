@@ -7,6 +7,7 @@ No build step, no dependencies. Open `index.html` in a browser.
 ## Features
 
 - **Live equity.** Monte Carlo simulation, up to 400k runouts, against however many opponents are still in. It shows win/tie/lose, your current made hand, and your chances of finishing with each hand type by the river.
+- **Suggested action.** A big CALL / FOLD / RAISE badge when you face a bet (your equity vs the equity the pot odds require), and CHECK / BET when nobody has bet (your equity vs an even share for the number of opponents). It assumes opponents hold random hands.
 - **Pot odds.** Enter the pot and the amount to call to see the equity you need and whether calling is +EV.
 - **Fast keyboard entry.** One text box for the whole hand (see below). A tap-to-pick card grid is available for phones.
 - **Table tracking.** Max seats (2–10), how many are seated, and a "someone folded" counter that resets every hand.
