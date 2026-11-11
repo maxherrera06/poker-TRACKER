@@ -2,7 +2,25 @@
 
 A live Texas Hold'em odds calculator and session tracker in a single HTML file, in a matte black and gold design. Type your cards as the hand plays out and your equity updates on every keystroke. Log each hand when it ends, including folds, blinds and bomb pots, and the page tracks your whole session: buy-ins, profit, $/hour, hands played, and how your results compare to your equity.
 
-No build step, no dependencies. Open `index.html` in a browser.
+No build step. Open `index.html` in a browser, or use the hosted version at **https://maxherrera06.github.io/poker-tracker/**.
+
+## Accounts
+
+The app opens on a **Log in / Create account** screen. Sign up with your email and a password and your sessions save to your own account, so you can log in from any computer or phone. Nobody else can see your sessions.
+
+- **Export backup** downloads every session and hand as a `.json` file. **Import backup** loads one into the account you're signed in to (sessions already in the account are skipped, so importing twice is safe).
+- **Forgot password?** emails you a reset link.
+
+### Setting up accounts (one time, for whoever hosts the app)
+
+Accounts run on a free [Supabase](https://supabase.com) project:
+
+1. Create a project at supabase.com.
+2. Open **SQL Editor → New query**, paste in [`supabase/setup.sql`](supabase/setup.sql), and run it. It creates the `sessions` and `hands` tables and the row-level security rules that keep every user's data private.
+3. In **Authentication → URL Configuration**, set **Site URL** to where the app is hosted (for example `https://maxherrera06.github.io/poker-tracker/`) so confirmation and reset emails link back to it.
+4. In **Project Settings → API**, copy the **Project URL** and the **anon public** key into `SUPABASE_URL` and `SUPABASE_ANON_KEY` near the top of the script in `index.html`. The anon key is meant to be public; the security rules protect the data.
+
+With those two values left empty, the app skips the login screen and saves in the browser only.
 
 ## Features
 

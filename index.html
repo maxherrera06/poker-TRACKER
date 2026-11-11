@@ -270,11 +270,39 @@
   @media (max-width:860px){.two{grid-template-columns:1fr}}
   .empty{color:var(--mute);font-size:13px;padding:16px}
   .confirm{display:inline-flex;gap:6px;align-items:center}
+  /* accounts */
+  .auth[hidden],.acct [hidden],.authbox [hidden]{display:none!important}
+  .acct{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;font-size:13px;color:var(--mute);margin:-6px 0 10px}
+  .acct b{color:var(--ink);font-weight:600}
+  .acct button{padding:5px 10px;font-size:12.5px}
+  .auth{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;
+    background:radial-gradient(900px 500px at 50% 0,rgba(212,175,55,.12),transparent 70%),rgba(5,5,6,.96)}
+  .authbox{width:100%;max-width:380px;background:var(--card);border:1px solid #3a3320;border-radius:18px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .authbox .alogo{font:italic 700 26px Georgia,serif;color:var(--accent);text-align:center;margin:0 0 4px}
+  .authbox .asub{text-align:center;color:var(--mute);font-size:13px;margin:0 0 18px}
+  .atabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#0b0b0d;border:1px solid var(--line);border-radius:10px;padding:4px;margin-bottom:16px}
+  .atabs button{border:none;background:none;color:var(--mute);font-weight:700}
+  .atabs button.on{background:#1f1c12;color:var(--accent)}
+  .authbox label{display:block;font-size:12px;color:var(--mute);margin:10px 0 4px}
+  .authbox input{width:100%;font:500 15px system-ui;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0b0b0d;color:var(--ink)}
+  .authbox input:focus{border-color:var(--accent);outline:none}
+  .authbox .go{width:100%;margin-top:16px;padding:12px;font-weight:800;background:var(--accent);color:#111;border:none;border-radius:10px}
+  .authbox .go:disabled{opacity:.6}
+  .authbox .amsg{min-height:18px;font-size:13px;margin-top:10px;text-align:center}
+  .authbox .amsg.bad{color:var(--bad)} .authbox .amsg.good{color:var(--good)}
+  .authbox .alink{display:block;text-align:center;margin-top:10px;font-size:12.5px;color:var(--mute);background:none;border:none;width:100%;text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1 class="brand"><span class="suit">♠</span><span class="logo">Max's <i>Lucky</i> Odds</span><span class="tag2">Texas Hold'em · Odds &amp; Session Tracker</span></h1>
+  <div class="acct" id="acct">
+    <span id="acctWho"></span>
+    <button id="bkExport" title="Download all your sessions and hands as a file">⬇ Export backup</button>
+    <button id="bkImport" title="Load sessions from a backup file into this account">⬆ Import backup</button>
+    <input type="file" id="bkFile" accept=".json,application/json" hidden>
+    <button id="signOut" hidden>Sign out</button>
+  </div>
   <nav class="tabs">
     <a href="#" id="tabSession" class="on">This session<span class="live" id="tabLive"></span></a>
     <a href="#all-sessions" id="tabAll">All sessions</a>
@@ -458,6 +486,22 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="auth" id="auth" hidden>
+  <form class="authbox" id="authForm" autocomplete="on">
+    <p class="alogo">♠ Lucky Odds</p>
+    <p class="asub">Log in to save your sessions to your account</p>
+    <div class="atabs"><button type="button" id="aLogin" class="on">Log in</button><button type="button" id="aSignup">Create account</button></div>
+    <label for="aEmail">Email</label>
+    <input id="aEmail" type="email" autocomplete="email" required>
+    <label for="aPass">Password</label>
+    <input id="aPass" type="password" autocomplete="current-password" minlength="6" required>
+    <div id="aConfirmRow" hidden><label for="aPass2">Confirm password</label>
+    <input id="aPass2" type="password" autocomplete="new-password" minlength="6"></div>
+    <button class="go" id="aGo" type="submit">Log in</button>
+    <div class="amsg" id="aMsg"></div>
+    <button type="button" class="alink" id="aForgot">Forgot password?</button>
+  </form>
+</div>
 
 <script>
 (() => {
@@ -937,14 +981,94 @@ $("pot").addEventListener("input",()=>{ autoPot=false; });
 let toastT;
 function toast(msg,bad){ const t=$("toast"); t.textContent=msg; t.className="toast show"+(bad?" bad":""); clearTimeout(toastT); toastT=setTimeout(()=>t.className="toast",2200); }
 
+// =================== accounts (Supabase) ===================
+// Paste your Supabase project's URL and anon (public) key here to turn on accounts.
+// The anon key is safe to publish: row-level security (supabase/setup.sql) keeps
+// every user's sessions private to them.
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+
+function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=()=>rej(new Error("load")); document.head.appendChild(s); }); }
+
+// Shows the login / create-account screen until someone is signed in. Resolves with the signed-in user.
+function authGate(sb){
+  return new Promise(resolve=>{
+    const box=$("auth"), msg=$("aMsg"), go=$("aGo");
+    let mode="login";
+    const say=(t,kind)=>{ msg.textContent=t||""; msg.className="amsg"+(kind?" "+kind:""); };
+    function setMode(m){
+      mode=m;
+      $("aLogin").classList.toggle("on",m==="login"); $("aSignup").classList.toggle("on",m==="signup");
+      $("aConfirmRow").hidden = m==="login";
+      $("aEmail").hidden = m==="reset"; document.querySelector('label[for=aEmail]').hidden = m==="reset";
+      $("aForgot").hidden = m!=="login";
+      document.querySelector(".atabs").hidden = m==="reset";
+      $("aPass").autocomplete = m==="login" ? "current-password" : "new-password";
+      go.textContent = m==="login" ? "Log in" : m==="signup" ? "Create account" : "Set new password";
+      document.querySelector('label[for=aPass]').textContent = m==="reset" ? "New password" : "Password";
+      say("");
+    }
+    $("aLogin").onclick=()=>setMode("login");
+    $("aSignup").onclick=()=>setMode("signup");
+    $("aForgot").onclick=async()=>{
+      const email=$("aEmail").value.trim();
+      if (!email){ say("Type your email first, then tap Forgot password.","bad"); return; }
+      const { error } = await sb.auth.resetPasswordForEmail(email,{ redirectTo: location.origin+location.pathname });
+      say(error ? error.message : "Check your email for a link to reset your password.", error?"bad":"good");
+    };
+    const done=user=>{ box.hidden=true; resolve(user); };
+    sb.auth.onAuthStateChange((ev,session)=>{ if (ev==="PASSWORD_RECOVERY"){ box.hidden=false; setMode("reset"); } });
+    $("authForm").onsubmit=async e=>{
+      e.preventDefault();
+      const email=$("aEmail").value.trim(), pass=$("aPass").value, pass2=$("aPass2").value;
+      if (mode!=="login" && pass!==pass2){ say("Passwords don't match.","bad"); return; }
+      if (pass.length<6){ say("Use at least 6 characters.","bad"); return; }
+      go.disabled=true; say("…");
+      try{
+        if (mode==="login"){
+          const { data, error } = await sb.auth.signInWithPassword({ email, password:pass });
+          if (error) throw error; done(data.user);
+        } else if (mode==="signup"){
+          const { data, error } = await sb.auth.signUp({ email, password:pass, options:{ emailRedirectTo: location.origin+location.pathname } });
+          if (error) throw error;
+          if (data.session) done(data.user);
+          else { setMode("login"); $("aEmail").value=email; say("Account made. Check your email to confirm it, then log in.","good"); }
+        } else {
+          const { data, error } = await sb.auth.updateUser({ password:pass });
+          if (error) throw error; toast("Password updated"); done(data.user);
+        }
+      }catch(err){ say(/invalid login/i.test(err.message)?"Wrong email or password.":err.message,"bad"); }
+      finally{ go.disabled=false; }
+    };
+    setMode("login");
+    sb.auth.getSession().then(({data})=>{
+      if (data.session && !/type=recovery/.test(location.hash)) done(data.session.user);
+      else { box.hidden=false; if (!/type=recovery/.test(location.hash)) $("aEmail").focus(); }
+    });
+  });
+}
+
 // =================== storage ===================
-// Saved storage (claude db) when available; otherwise this browser only.
+// Saved storage: claude db inside claude.ai, your Supabase account when configured, otherwise this browser only.
 const store = (() => {
-  let db=null, mode="pending";
+  let db=null, sb=null, user=null, mode="pending";
   const mem = { sessions:{}, hands:{} };
   const sesSubs=new Set(), handSubs=new Map();
   function memLoad(){ try{ const j=JSON.parse(localStorage.getItem("po_tracker")||"null"); if (j){ mem.sessions=j.sessions||{}; mem.hands=j.hands||{}; } }catch(e){} }
-  function memSave(){ try{ localStorage.setItem("po_tracker",JSON.stringify(mem)); }catch(e){} }
+  function memSave(){ if (mode==="cloud") return; try{ localStorage.setItem("po_tracker",JSON.stringify(mem)); }catch(e){} }
+  async function cloudAll(table){
+    const out=[]; for (let from=0;;from+=1000){
+      const { data, error } = await sb.from(table).select("*").range(from,from+999);
+      if (error) throw error; out.push(...data); if (data.length<1000) return out;
+    }
+  }
+  async function cloudLoad(){
+    const [ss,hs]=await Promise.all([cloudAll("sessions"),cloudAll("hands")]);
+    mem.sessions={}; mem.hands={};
+    for (const r of ss) mem.sessions[r.id]=r.data;
+    for (const r of hs) (mem.hands[r.session_id]=mem.hands[r.session_id]||{})[r.id]=r.data;
+  }
+  const chk=({error})=>{ if (error) throw error; };
   function memSessions(){ return Object.entries(mem.sessions).map(([id,d])=>({id,...d})).sort((a,b)=>b.startedAt-a.startedAt); }
   function memHands(sid){ return Object.entries(mem.hands[sid]||{}).map(([id,d])=>({id,...d})).sort((a,b)=>a.t-b.t); }
   function memNotify(sid){ memSave(); sesSubs.forEach(cb=>cb(memSessions())); if (sid&&handSubs.has(sid)) handSubs.get(sid).forEach(cb=>cb(memHands(sid))); }
@@ -958,10 +1082,41 @@ const store = (() => {
       let api=null;
       for (let i=0;i<30 && !(window.claude&&typeof window.claude.use==="function");i++) await new Promise(r=>setTimeout(r,100));
       if (window.claude&&typeof window.claude.use==="function"){ try{ api=await window.claude.use("db"); }catch(e){ api=null; } }
-      if (api){ db=api; mode="db"; } else { mode="local"; memLoad(); }
-      return mode;
+      if (api){ db=api; mode="db"; return mode; }
+      if (SUPABASE_URL && SUPABASE_ANON_KEY){
+        try{
+          if (!window.supabase) await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");
+          sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+          user=await authGate(sb); mode="cloud"; await cloudLoad(); return mode;
+        }catch(e){ toast("Couldn't reach your account. Saving in this browser for now.",true); }
+      }
+      mode="local"; memLoad(); return mode;
     },
     get mode(){ return mode; },
+    get user(){ return user; },
+    async signOut(){ if (sb) await sb.auth.signOut(); location.reload(); },
+    // Backup file: every session with its hands.
+    async exportAll(){
+      const list = mode==="db" ? (await db.collection("sessions").limit(1000).get()).docs.map(d=>({id:d.id,...d.data()})) : memSessions();
+      const out=[]; for (const s of list){ const {id,...data}=s; out.push({id,data,hands:(await this.allHands(id)).map(({id,...d})=>({id,data:d}))}); }
+      return { app:"lucky-odds", version:1, exportedAt:new Date().toISOString(), sessions:out };
+    },
+    async importAll(bk){
+      if (!bk||!Array.isArray(bk.sessions)) throw new Error("That file isn't a Lucky Odds backup.");
+      const have=new Set(Object.values(mem.sessions).map(s=>s.startedAt));
+      let ns=0, nh=0;
+      for (const s of bk.sessions){
+        if (mode!=="db" && have.has(s.data.startedAt)) continue;   // already imported
+        const id=await this.addSession(s.data, true);
+        const rows=s.hands.map(h=>({ id:rid(), data:h.data }));
+        if (mode==="cloud"){
+          for (let i=0;i<rows.length;i+=500) chk(await sb.from("hands").insert(rows.slice(i,i+500).map(r=>({id:r.id,session_id:id,data:r.data}))));
+          mem.hands[id]={}; rows.forEach(r=>mem.hands[id][r.id]=r.data);
+        } else for (const r of rows) await this.addHand(id, r.data, true);
+        ns++; nh+=rows.length;
+      }
+      memNotify(); return { ns, nh };
+    },
     subSessions(cb, err){
       if (mode==="db") return db.collection("sessions").orderBy("startedAt","desc").limit(200)
         .onSnapshot(s=>cb(s.docs.map(d=>({id:d.id,...d.data()})), s.metadata), err);
@@ -973,20 +1128,27 @@ const store = (() => {
       if (!handSubs.has(sid)) handSubs.set(sid,new Set()); handSubs.get(sid).add(cb);
       setTimeout(()=>cb(memHands(sid),{fromCache:false}),0); return ()=>handSubs.get(sid).delete(cb);
     },
-    async addSession(data){
+    async addSession(data, quiet){
       if (mode==="db"){ const ref=db.collection("sessions").doc(); await retry(()=>ref.set(data)); return ref.id; }
-      const id=rid(); mem.sessions[id]=data; memNotify(); return id;
+      const id=rid();
+      if (mode==="cloud") chk(await sb.from("sessions").insert({ id, data }));
+      mem.sessions[id]=data; if (!quiet) memNotify(); return id;
     },
     updateSession(sid, patch){
       if (mode==="db") return queued("s/"+sid, ()=>retry(()=>db.doc("sessions/"+sid).update(patch)));
-      Object.assign(mem.sessions[sid],patch); memNotify(sid); return Promise.resolve();
+      Object.assign(mem.sessions[sid],patch); memNotify(sid);
+      if (mode==="cloud") return queued("s/"+sid, async()=>chk(await sb.from("sessions").update({ data:mem.sessions[sid] }).eq("id",sid)));
+      return Promise.resolve();
     },
-    async addHand(sid, data){
+    async addHand(sid, data, quiet){
       if (mode==="db"){ const ref=db.collection("sessions/"+sid+"/hands").doc(); await retry(()=>ref.set(data)); return ref.id; }
-      (mem.hands[sid]=mem.hands[sid]||{})[rid()]=data; memNotify(sid);
+      const id=rid();
+      if (mode==="cloud") chk(await sb.from("hands").insert({ id, session_id:sid, data }));
+      (mem.hands[sid]=mem.hands[sid]||{})[id]=data; if (!quiet) memNotify(sid); return id;
     },
     async deleteHand(sid, hid){
       if (mode==="db") return queued("h/"+hid, ()=>retry(()=>db.doc(`sessions/${sid}/hands/${hid}`).delete()));
+      if (mode==="cloud") chk(await sb.from("hands").delete().eq("id",hid));
       delete (mem.hands[sid]||{})[hid]; memNotify(sid);
     },
     async allHands(sid){
@@ -1003,6 +1165,7 @@ const store = (() => {
         for (const d of hs.docs) await retry(()=>db.doc(`sessions/${sid}/hands/${d.id}`).delete());
         await retry(()=>db.doc("sessions/"+sid).delete()); return;
       }
+      if (mode==="cloud") chk(await sb.from("sessions").delete().eq("id",sid));   // hands cascade
       delete mem.sessions[sid]; delete mem.hands[sid]; memNotify();
     }
   };
@@ -1027,7 +1190,7 @@ function selectSession(id){
   }
   renderSession();
 }
-function setNote(s){ $("snote").textContent = s || (store.mode==="local" ? "Saving in this browser only. Open this page on claude.ai to save your sessions to your account." : ""); }
+function setNote(s){ $("snote").textContent = s || (store.mode==="local" ? "Saving in this browser only. Use Export backup to keep a copy." : ""); }
 
 async function newSession(buyin, base){
   const prev=base||cur()||sessions[0];
@@ -1714,7 +1877,38 @@ function renderAll(){
 
 // =================== boot ===================
 buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()&&!viewIsHof()) $("q").focus();
+function setupAccountBar(mode){
+  const u=store.user;
+  $("acctWho").innerHTML = mode==="cloud" && u ? `Signed in as <b>${esc(u.email)}</b>` : "";
+  $("signOut").hidden = mode!=="cloud";
+  $("bkImport").hidden = mode==="db";
+  $("signOut").onclick=()=>store.signOut();
+  $("bkExport").onclick=async()=>{
+    try{
+      const bk=await store.exportAll();
+      const filename=`lucky-odds-backup-${new Date().toISOString().slice(0,10)}.json`, json=JSON.stringify(bk);
+      let dl=null;
+      if (store.mode==="db" && window.claude && typeof window.claude.use==="function"){ try{ dl=await window.claude.use("downloads"); }catch(e){} }
+      if (dl) await dl.save({ filename, data:json });
+      else {
+        const a=document.createElement("a");
+        a.href=URL.createObjectURL(new Blob([json],{type:"application/json"})); a.download=filename;
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+      toast(`Backup saved: ${bk.sessions.length} sessions, ${bk.sessions.reduce((n,s)=>n+s.hands.length,0)} hands`);
+    }catch(e){ toast("Couldn't make the backup",true); }
+  };
+  $("bkImport").onclick=()=>$("bkFile").click();
+  $("bkFile").onchange=async()=>{
+    const f=$("bkFile").files[0]; $("bkFile").value=""; if (!f) return;
+    try{
+      const { ns, nh } = await store.importAll(JSON.parse(await f.text()));
+      toast(ns ? `Imported ${ns} sessions and ${nh} hands` : "Those sessions are already in this account");
+    }catch(e){ toast(e.message&&/backup/.test(e.message)?e.message:"Couldn't import that file",true); }
+  };
+}
 store.init().then(mode=>{
+  setupAccountBar(mode);
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
   store.subSessions((list,meta)=>{
