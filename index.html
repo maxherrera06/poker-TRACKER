@@ -3,46 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live Poker Odds</title>
+<title>Max's Lucky Odds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d1512; --felt:#123a2b; --felt2:#0f2f23; --line:#1f5a42; --card:#0b1813;
-    --ink:#e9f2ee; --mute:#8fb3a3; --accent:#f2c14e; --good:#4fd18b; --bad:#ef6a5f; --tie:#7fb7ff;
+    --bg:#0a0a0b; --felt:#17171a; --felt2:#0d0d0f; --line:#2a2a30; --card:#111113;
+    --ink:#ececee; --mute:#8b8b95; --accent:#d4af37; --good:#3ecf8e; --bad:#ff5c5c; --tie:#7fb7ff;
     --s:#1b1b1b; --h:#d63b3b; --d:#2a6fd6; --c:#1f9a52;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  body{margin:0;color:var(--ink);font:15px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+       background:radial-gradient(1200px 500px at 50% -120px,rgba(212,175,55,.08),transparent 70%),var(--bg);background-attachment:fixed;min-height:100vh}
+  .brand{display:flex;align-items:baseline;gap:12px;margin:6px 0 14px;flex-wrap:wrap}
+  .brand .logo{font:600 40px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.5px;
+       background:linear-gradient(180deg,#f3dc8a 0%,#d4af37 45%,#9c7a1e 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand .logo i{font-style:italic}
+  .brand .suit{font-size:26px;color:var(--accent);filter:drop-shadow(0 0 8px rgba(212,175,55,.35))}
+  .brand .tag2{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mute)}
+  .panel,.stat,.chart,.log,.table,.money,.insight,.sd details{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 30px rgba(0,0,0,.35)}
+  input:focus,select:focus{outline:none;border-color:var(--accent)!important}
+  ::selection{background:rgba(212,175,55,.35)}
   .wrap{max-width:1100px;margin:0 auto;padding:16px}
-  h1{font-size:18px;margin:0 0 12px;letter-spacing:.3px;color:var(--mute);font-weight:600}
-  h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mute);margin:28px 0 10px;font-weight:700}
+  h1{margin:0;font-weight:400}
+  h2{font-size:12.5px;text-transform:uppercase;letter-spacing:2px;color:#cbb26a;margin:30px 0 12px;font-weight:700}
   h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);margin:16px 0 8px;font-weight:600}
   .entry{display:flex;gap:8px;align-items:center;margin-bottom:6px}
   #q{flex:1;min-width:0;font:600 22px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:12px 14px;border-radius:10px;
-     border:2px solid var(--line);background:#08100d;color:var(--ink);outline:none;letter-spacing:1px}
+     border:2px solid var(--line);background:#0b0b0d;color:var(--ink);outline:none;letter-spacing:1px}
   #q:focus{border-color:var(--accent)}
   #q.err{border-color:var(--bad)}
-  button{font:inherit;color:var(--ink);background:#173b2d;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
-  button:hover{background:#1d4a38}
-  button.pri{background:var(--accent);color:#1a1405;border-color:var(--accent);font-weight:700}
+  button{font:inherit;color:var(--ink);background:#1a1a1f;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
+  button:hover{background:#25252c}
+  button.pri{background:var(--accent);color:#1a1406;border-color:var(--accent);font-weight:700}
   button.sm{padding:4px 8px;font-size:12.5px}
   button.danger{border-color:#6b2d28;color:#ffb4ad;background:#2a1513}
-  input[type=number],input[type=text]{font:600 15px system-ui;padding:8px;border-radius:8px;border:1px solid var(--line);background:#08100d;color:var(--ink);min-width:0}
-  select{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:#08100d;color:var(--ink);max-width:100%}
+  input[type=number],input[type=text]{font:600 15px system-ui;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b0d;color:var(--ink);min-width:0}
+  select{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b0b0d;color:var(--ink);max-width:100%}
   .preview{min-height:22px;font-size:13.5px;color:var(--mute);margin:2px 0 6px}
   .preview b{color:var(--ink)}
-  .hint{color:var(--mute);font-size:12.5px;margin:0 0 14px}
-  .hint code{background:#0a1a14;padding:1px 5px;border-radius:4px;color:var(--ink)}
-  .kbd{font-family:ui-monospace,monospace;border:1px solid #2f6f55;border-bottom-width:2px;padding:0 5px;border-radius:4px;font-size:11.5px}
+  .hint{color:var(--mute);font-size:12.5px;margin:8px 0 4px}
+  .howto{margin:0 0 14px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#0f0f12}
+  .howto summary{cursor:pointer;font-size:13px;font-weight:700;color:#cbb26a;list-style:none}
+  .howto summary::-webkit-details-marker{display:none}
+  .howto summary::before{content:"▸ ";color:var(--accent)}
+  .howto[open] summary::before{content:"▾ "}
+  .hint code{background:#18181c;padding:1px 5px;border-radius:4px;color:var(--ink)}
+  .kbd{font-family:ui-monospace,monospace;border:1px solid #3a3a42;border-bottom-width:2px;padding:0 5px;border-radius:4px;font-size:11.5px}
   .grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
   @media (max-width:860px){.grid{grid-template-columns:1fr}}
-  .table{background:radial-gradient(ellipse at center,var(--felt),var(--felt2));border:1px solid var(--line);border-radius:18px;padding:16px}
+  .table{background:linear-gradient(160deg,#18181b 0%,#0e0e10 60%,#0b0b0d 100%);border:1px solid var(--line);border-radius:18px;padding:16px}
   .row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
   .grp .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);margin-bottom:6px}
   .slots{display:flex;gap:6px}
-  .slot{width:52px;height:72px;border-radius:8px;border:2px dashed #2f6f55;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  .slot{width:52px;height:72px;border-radius:8px;border:2px dashed #3a3a42;display:flex;flex-direction:column;align-items:center;justify-content:center;
         cursor:pointer;user-select:none;font-weight:700;background:rgba(0,0,0,.12);position:relative}
   .slot.next{border-color:var(--accent);border-style:solid}
-  .slot.filled{background:#fbfbf7;border:2px solid #fbfbf7}
+  .slot.filled{background:#f6f4ee;border:2px solid #f6f4ee}
   .slot.after{opacity:.55}
   .slot.after::after{content:"after";position:absolute;bottom:-15px;font-size:9.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
   .slot .r{font-size:24px;line-height:1}
@@ -50,15 +67,15 @@
   .gap{width:6px}
   .made{margin-top:14px;font-size:15px;color:var(--accent);min-height:21px;font-weight:600}
   .picker{margin-top:12px;display:grid;grid-template-columns:repeat(13,1fr);gap:4px}
-  .pc{aspect-ratio:3/4;border-radius:6px;background:#fbfbf7;border:none;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  .pc{aspect-ratio:3/4;border-radius:6px;background:#f6f4ee;border:none;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
       font-weight:700;font-size:14px;line-height:1.05;cursor:pointer;color:inherit}
-  .pc:hover{outline:2px solid var(--accent);background:#fbfbf7}
+  .pc:hover{outline:2px solid var(--accent);background:#f6f4ee}
   .pc.used{opacity:.15;cursor:default;outline:none}
   .S{color:var(--s)} .H{color:var(--h)} .D{color:var(--d)} .C{color:var(--c)}
   .actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;align-items:center}
   .actions input{width:96px}
   .actions .f{border-color:#555}.actions .w{border-color:var(--good)}.actions .l{border-color:var(--bad)}.actions .x{border-color:var(--tie)}
-  .bombrow{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;background:rgba(242,193,78,.08);border:1px solid rgba(242,193,78,.45);border-radius:10px;padding:8px 10px;font-size:13px}
+  .bombrow{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.45);border-radius:10px;padding:8px 10px;font-size:13px}
   .bombrow.on{display:flex}
   .bombwarn{display:none;margin-top:10px;background:#3a1210;border:2px solid var(--bad);border-radius:12px;padding:12px 14px}
   .bombwarn.on{display:block}
@@ -79,10 +96,10 @@
   .legend2 i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
   .stable{width:100%;border-collapse:collapse;font-size:13px}
   .stable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);padding:8px;font-weight:600;border-bottom:1px solid var(--line)}
-  .stable td{padding:8px;border-top:1px solid #16352a;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .stable tr.cur td{background:rgba(242,193,78,.06)}
+  .stable td{padding:8px;border-top:1px solid #1f1f24;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .stable tr.cur td{background:rgba(212,175,55,.06)}
   .stable tr.drow{cursor:pointer}
-  .stable tr.drow td{background:#10241c;font-weight:700;border-top:2px solid var(--line)}
+  .stable tr.drow td{background:#18181d;font-weight:700;border-top:2px solid var(--line)}
   .stable tr.drow td:first-child::before{content:"▸";display:inline-block;width:16px;color:var(--mute);transition:transform .15s}
   .stable tr.drow.open td:first-child::before{transform:rotate(90deg);color:var(--accent)}
   .stable tr.srow td:first-child{padding-left:26px}
@@ -92,8 +109,8 @@
   .stable tr.srow:hover td{background:rgba(255,255,255,.03)}
   .stable tr.srow td:first-child::before{content:"▸";display:inline-block;width:14px;color:var(--mute);transition:transform .15s}
   .stable tr.srow.open td:first-child::before{transform:rotate(90deg);color:var(--accent)}
-  .stable tr.srow.open td{background:rgba(242,193,78,.08)}
-  .stable tr.sdet>td{padding:0;white-space:normal;background:#0a1511}
+  .stable tr.srow.open td{background:rgba(212,175,55,.08)}
+  .stable tr.sdet>td{padding:0;white-space:normal;background:#0d0d10}
   .sd{padding:14px 16px 16px;border-left:3px solid var(--accent)}
   .sd .stats{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:10px 0}
   .sd .stat .v{font-size:19px}
@@ -105,7 +122,7 @@
   .sd summary .sub{font-weight:400;margin-left:auto}
   .sd .dbody{padding:0 12px 12px}
   .sd .dbody table{width:100%;border-collapse:collapse;font-size:12.5px}
-  .sd .dbody td,.sd .dbody th{padding:5px 6px;border-top:1px solid #16352a;white-space:nowrap;text-align:left}
+  .sd .dbody td,.sd .dbody th{padding:5px 6px;border-top:1px solid #1f1f24;white-space:nowrap;text-align:left}
   .sd .dbody th{font-size:10.5px;text-transform:uppercase;color:var(--mute);font-weight:600;border-top:none}
   .sd .head{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--mute)}
   .sd .head b{color:var(--ink)}
@@ -122,10 +139,10 @@
   .blindbtn{font-weight:800;min-width:52px}
   .blindbtn.on{background:#7fb7ff;color:#08182b;border-color:#7fb7ff}
   .tag.sb,.tag.bb{background:#16304d;color:var(--tie);margin-right:4px}
-  button.bomb.on{background:var(--accent);color:#1a1405;border-color:var(--accent);font-weight:700}
+  button.bomb.on{background:var(--accent);color:#1a1406;border-color:var(--accent);font-weight:700}
   .tag.b{background:#3a3010;color:var(--accent);margin-right:4px}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
-  .action{border-radius:14px;padding:12px 14px;margin-bottom:14px;border:2px solid var(--line);background:#0f2019}
+  .action{border-radius:14px;padding:12px 14px;margin-bottom:14px;border:2px solid var(--line);background:#141418}
   .action .a{font:900 34px/1 system-ui;letter-spacing:1px}
   .action .why{font-size:13px;color:var(--ink);margin-top:6px;opacity:.9}
   .action .hint2{font-size:11.5px;color:var(--mute);margin-top:4px}
@@ -135,7 +152,7 @@
   .action.check{border-color:var(--tie);background:#0f1f30}.action.check .a{color:var(--tie)}
   .big{font:800 56px/1 system-ui,sans-serif;letter-spacing:-1px}
   .sub{color:var(--mute);font-size:12.5px}
-  .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#20352c;margin:10px 0 6px}
+  .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#232329;margin:10px 0 6px}
   .bar div{height:100%;transition:width .12s}
   .legend{display:flex;gap:12px;font-size:13px;flex-wrap:wrap}
   .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
@@ -143,14 +160,14 @@
   .opp button{width:36px;padding:6px 0;font-weight:700}
   .opp .n{font:800 22px/1 system-ui;width:28px;text-align:center}
   .dist div.r{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;font-size:12.5px;margin:3px 0}
-  .dist .t{height:8px;background:#1c3027;border-radius:4px;overflow:hidden}
+  .dist .t{height:8px;background:#232329;border-radius:4px;overflow:hidden}
   .dist .t i{display:block;height:100%;background:var(--accent);transition:width .12s}
   .dist .p{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
   .pot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .pot label{font-size:12px;color:var(--mute)}
   .pot input{width:100%}
   .verdict{margin-top:8px;font-weight:700;font-size:15px}
-  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1d4a38;border:1px solid var(--good);padding:10px 16px;border-radius:10px;
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#25252c;border:1px solid var(--good);padding:10px 16px;border-radius:10px;
          font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
   .toast.show{opacity:1}
   .toast.bad{border-color:var(--bad);background:#3a1a17}
@@ -164,7 +181,7 @@
   .form .full{grid-column:1/-1}
   .form4 .full{grid-column:1/-1}
   .form input{width:100%}
-  .step{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#1a1405;align-items:center;justify-content:center;font-size:12px;margin-right:6px}
+  .step{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#1a1406;align-items:center;justify-content:center;font-size:12px;margin-right:6px}
   .form4{grid-template-columns:2fr 1fr 1fr 1fr}
   .form4 .wide{grid-column:auto}
   @media (max-width:640px){.form4{grid-template-columns:1fr 1fr}.form4 .wide{grid-column:1/-1}}
@@ -172,7 +189,7 @@
   .buyrow input{flex:0 1 180px}
   .sgrid .stats{align-content:start}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
-  .chip{background:#173b2d;border:1px solid var(--line);border-radius:14px;padding:3px 4px 3px 10px;font-size:13px;display:inline-flex;align-items:center;gap:4px}
+  .chip{background:#1a1a1f;border:1px solid var(--line);border-radius:14px;padding:3px 4px 3px 10px;font-size:13px;display:inline-flex;align-items:center;gap:4px}
   .chip button{background:none;border:none;padding:0 6px;color:var(--mute)}
   .inl{display:flex;gap:6px}
   .inl input{flex:1}
@@ -185,15 +202,15 @@
   .chart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px}
   .log{background:var(--card);border:1px solid var(--line);border-radius:12px;max-height:520px;overflow:auto}
   .log table{width:100%;border-collapse:collapse;font-size:13px}
-  .log th{position:sticky;top:0;background:#0f2019;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);padding:8px;font-weight:600}
-  .log td{padding:6px 8px;border-top:1px solid #16352a;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .log th{position:sticky;top:0;background:#141418;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);padding:8px;font-weight:600}
+  .log td{padding:6px 8px;border-top:1px solid #1f1f24;white-space:nowrap;font-variant-numeric:tabular-nums}
   .log td.cards{font-family:ui-monospace,monospace;font-weight:700}
-  .log .mc{background:#fbfbf7;border-radius:3px;padding:0 3px;margin-right:2px}
+  .log .mc{background:#f6f4ee;border-radius:3px;padding:0 3px;margin-right:2px}
   .log td .del{background:none;border:none;color:var(--mute);padding:0 4px}
   .tag{display:inline-block;border-radius:5px;padding:1px 6px;font-size:11.5px;font-weight:700}
-  .tag.f{background:#2a2f2d;color:#bbb}.tag.w{background:#16402a;color:var(--good)}.tag.l{background:#3d1b18;color:var(--bad)}.tag.x{background:#16304d;color:var(--tie)}
+  .tag.f{background:#26262b;color:#bbb}.tag.w{background:#16402a;color:var(--good)}.tag.l{background:#3d1b18;color:var(--bad)}.tag.x{background:#16304d;color:var(--tie)}
   .hg{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;max-width:640px}
-  .hc{aspect-ratio:1;border-radius:3px;font-size:10.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#13241d;color:#56786a;line-height:1.05;cursor:default}
+  .hc{aspect-ratio:1;border-radius:3px;font-size:10.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#141418;color:#5c5c66;line-height:1.05;cursor:default}
   .hc b{font-size:11px}
   .hc small{font-size:9.5px;opacity:.9}
   .hc.has{color:var(--ink)}
@@ -205,7 +222,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Live Poker Odds + Session Tracker · Texas Hold'em</h1>
+  <h1 class="brand"><span class="suit">♠</span><span class="logo">Max's <i>Lucky</i> Odds</span><span class="tag2">Texas Hold'em · Odds &amp; Session Tracker</span></h1>
   <nav class="tabs">
     <a href="#" id="tabSession" class="on">This session<span class="live" id="tabLive"></span></a>
     <a href="#all-sessions" id="tabAll">All sessions</a>
@@ -241,7 +258,7 @@
     <button id="clr" title="Clear (Esc)">Clear</button>
   </div>
   <div class="preview" id="preview"></div>
-  <p class="hint">
+  <details class="howto"><summary>How to enter hands <span class="sub">· cards, results, $ amounts, blinds, bomb pots, shortcuts</span></summary><p class="hint">
     <b>Cards:</b> rank <code>2–9 t j q k a</code> + suit <code>s h d c</code>, e.g. <code>ahkd 7c8c9d</code>. Odds update as you type.<br>
     <b>Log the hand:</b> add a result where you acted, then press <span class="kbd">Enter</span>:
     <code>f</code> fold · <code>w40</code> won 40 · <code>l25</code> lost 25 · <code>x10</code> split (net +10).
@@ -251,7 +268,7 @@
     <b>Blinds:</b> tap <b>SB</b> or <b>BB</b> (or press <span class="kbd">[</span> / <span class="kbd">]</span>) when you're in the blinds. Folding with no amount charges the blind, and hands where you only put in the blind (including checking the BB and folding on the flop) don't count as hands you played. After an SB hand it moves to BB on its own.<br>
     <b>Bomb pot:</b> type <code>b</code> (or tap 💣) and the hand goes straight to the flop: <code>b ahkd 7c8c9d w90</code>. Fold on the flop with no amount and it counts the ante as lost.<br>
     <span class="kbd">Esc</span> clears · <span class="kbd">-</span> someone folded (<span class="kbd">+</span> undo) · the fold count resets every hand · you can also tap the cards and buttons below.
-  </p>
+  </p></details>
 
   <div class="grid">
     <div class="table">
@@ -308,9 +325,9 @@
       <div class="opp" style="margin-top:-6px">
         <span class="sub" style="width:96px">Folded so far</span>
         <button id="fm">−</button><span class="n" id="fn">0</span><button id="fp">+</button>
-        <button id="fold1" class="sm" style="white-space:nowrap" title="Someone folded (-)">Someone folded</button>
       </div>
-      <div class="sub" style="margin:-4px 0 12px">You vs <b id="on" style="color:var(--ink);font-size:15px">1</b> still in<span id="oppInfo"></span></div>
+      <div class="sub" style="margin:-4px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>You vs <b id="on" style="color:var(--ink);font-size:15px">1</b> still in<span id="oppInfo"></span></span>
+        <button id="fold1" class="sm" style="white-space:nowrap;margin-left:auto" title="Someone folded (-)">Someone folded</button></div>
       <h3>Pot odds</h3>
       <div class="pot">
         <div><label>Pot (before the call)</label><input id="pot" type="number" inputmode="decimal" min="0" placeholder="e.g. 100"></div>
@@ -1128,7 +1145,7 @@ function handRowHTML(h, withDel){
     <td title="Preflop ${pct(h.eqPre)} vs ${h.opps}">${eqTxt}</td>${withDel?`<td><button class="del" data-id="${esc(h.id)}" title="Delete hand">×</button></td>`:""}</tr>`;
 }
 // Running-net chart for a list of hands; bomb pots are marked with red dots.
-function netChartSVG(hs, H=170){
+function netChartSVG(hs, H=170, bounds=[]){
   if (hs.length<2) return `<div class="empty" style="padding:8px">The chart appears once there are a couple of hands.</div>`;
   const pts=[0]; let run=0; hs.forEach(h=>{ run+=h.net||0; pts.push(run); });
   const W=1000,pad=52, mn=Math.min(0,...pts), mx=Math.max(0,...pts), span=(mx-mn)||1;
@@ -1138,12 +1155,13 @@ function netChartSVG(hs, H=170){
   const dots=hs.map((h,i)=>h.bomb?`<circle cx="${x(i+1)}" cy="${y(pts[i+1])}" r="4" fill="var(--bad)"><title>💣 ${h.key} ${money(h.net)}</title></circle>`:"").join("");
   const r2=v=>Math.round(v*100)/100;
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
-    <line x1="${pad}" x2="${W-70}" y1="${y(0)}" y2="${y(0)}" stroke="#2f6f55" stroke-dasharray="3 4"/>
-    <text x="${pad-6}" y="${y(mx)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">${money(r2(mx),false)}</text>
-    ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">−${money(r2(-mn),false)}</text>`:""}
+    <line x1="${pad}" x2="${W-70}" y1="${y(0)}" y2="${y(0)}" stroke="#3a3a42" stroke-dasharray="3 4"/>
+    <text x="${pad-6}" y="${y(mx)+4}" fill="#8b8b95" font-size="11" text-anchor="end">${money(r2(mx),false)}</text>
+    ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8b8b95" font-size="11" text-anchor="end">−${money(r2(-mn),false)}</text>`:""}
+    ${bounds.map(i=>`<line x1="${x(i)}" x2="${x(i)}" y1="6" y2="${H-16}" stroke="#3a3a42" stroke-dasharray="3 5"/>`).join("")}
     <path d="${path}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${dots}
     <text x="${x(pts.length-1)+8}" y="${y(run)+4}" fill="${col}" font-size="13" font-weight="700">${money(r2(run))}</text>
-    <text x="${pad}" y="${H-2}" fill="#8fb3a3" font-size="11">hand 1</text><text x="${W-70}" y="${H-2}" fill="#8fb3a3" font-size="11" text-anchor="end">hand ${hs.length}</text>
+    <text x="${pad}" y="${H-2}" fill="#8b8b95" font-size="11">hand 1</text><text x="${W-70}" y="${H-2}" fill="#8b8b95" font-size="11" text-anchor="end">hand ${hs.length}</text>
   </svg>`;
 }
 function renderLog(){
@@ -1173,7 +1191,7 @@ function renderGrid(){
     let style="", cls="hc";
     if (o){ cls+=" has";
       const a=0.25+0.6*Math.min(1,Math.abs(o.net)/maxAbs);
-      style = o.net>0?`background:rgba(79,209,139,${a})`: o.net<0?`background:rgba(239,106,95,${a})`:`background:#2a4a3d`; }
+      style = o.net>0?`background:rgba(79,209,139,${a})`: o.net<0?`background:rgba(239,106,95,${a})`:`background:#2c2c33`; }
     const tip = o ? `${k}: dealt ${o.n}, played ${o.played}, won ${o.won}, net ${money(o.net)}` : `${k}: not dealt yet`;
     g+=`<div class="${cls}" style="${style}" title="${tip}"><b>${k.replace(/[so]$/,"")}</b><small>${o?o.n:(k.length===3?k[2]:"")}</small></div>`;
   }
@@ -1190,9 +1208,9 @@ function renderChart(){
   const path=pts.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
   const col = run>=0?"var(--good)":"var(--bad)";
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
-    <line x1="${pad}" x2="${W-6}" y1="${y(0)}" y2="${y(0)}" stroke="#2f6f55" stroke-dasharray="3 4"/>
-    <text x="${pad-4}" y="${y(mx)+4}" fill="#8fb3a3" font-size="10" text-anchor="end">${money(mx,false)}</text>
-    <text x="${pad-4}" y="${y(mn)+4}" fill="#8fb3a3" font-size="10" text-anchor="end">${money(mn,false)}</text>
+    <line x1="${pad}" x2="${W-6}" y1="${y(0)}" y2="${y(0)}" stroke="#3a3a42" stroke-dasharray="3 4"/>
+    <text x="${pad-4}" y="${y(mx)+4}" fill="#8b8b95" font-size="10" text-anchor="end">${money(mx,false)}</text>
+    <text x="${pad-4}" y="${y(mn)+4}" fill="#8b8b95" font-size="10" text-anchor="end">${money(mn,false)}</text>
     <path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>
     <circle cx="${x(pts.length-1)}" cy="${y(run)}" r="3.5" fill="${col}"/>
     <text x="${W-8}" y="${Math.max(12,y(run)-8)}" fill="${col}" font-size="12" font-weight="700" text-anchor="end">${money(run)}</text>
@@ -1262,6 +1280,35 @@ function sessionDetailHTML(s, st, hs){
     ${bombs.length?sec("bomb","💣 Bomb pots",`${bombs.length} played · ${money(r2(st.bombNet))}`, `<table>${thead}${bombs.slice().sort((a,b)=>b.t-a.t).map(h=>handRowHTML(h,false)).join("")}</table>`):""}
   </div>`;
 }
+function dayDetailHTML(d){
+  const c=x=>x>0?"pos":x<0?"neg":"", r2=v=>Math.round(v*100)/100;
+  const ordered=d.rows.slice().sort((a,b)=>a.s.startedAt-b.s.startedAt);
+  const hs=[], bounds=[];
+  ordered.forEach((r,i)=>{ if (i && hs.length) bounds.push(hs.length); r.hs.slice().sort((a,b)=>a.t-b.t).forEach(h=>hs.push(h)); });
+  const T=computeStats(null,hs);
+  const profit=d.rows.reduce((a,r)=>a+r.st.profit,0), hours=d.rows.reduce((a,r)=>a+r.st.hours,0);
+  const newMoney=d.rows.reduce((a,r)=>a+r.st.buy,0);
+  let g="";
+  g+=statBox("Day profit", money(r2(profit)), `${d.rows.length} session${d.rows.length===1?"":"s"}`, c(profit));
+  g+=statBox("Per hour", hours>0.05?money(r2(profit/hours)):"–", dur(hours), c(profit));
+  g+=statBox("Hands", hs.length, hours>0.05?`${(hs.length/hours).toFixed(0)}/hr`:"");
+  g+=statBox("Played", T.vpip==null?"–":pct(T.vpip), `${T.played} of ${T.normal}`);
+  g+=statBox("Won when played", T.winRate==null?"–":pct(T.winRate), T.expWin==null?"":`expected ${pct(T.expWin)}`, T.winRate!=null&&T.expWin!=null?(T.winRate>=T.expWin?"pos":"neg"):"");
+  if (T.bombs) g+=statBox("💣 Bomb pots", `${T.bombWon}/${T.bombs}`, `net <span class="${c(T.bombNet)}">${money(r2(T.bombNet))}</span>`);
+  g+=statBox("Without bomb pots", money(r2(T.handsNet-T.bombNet)), "from logged hands", c(T.handsNet-T.bombNet));
+  const wins=hs.filter(h=>h.net>0).sort((a,b)=>b.net-a.net).slice(0,5), losses=hs.filter(h=>h.net<0).sort((a,b)=>a.net-b.net).slice(0,5);
+  const thead=`<thead><tr><th>Time</th><th>Hand</th><th>Board</th><th>Result</th><th>Net</th><th>Equity</th></tr></thead>`;
+  const k=`day:${d.k}:big`;
+  return `<div class="sd">
+    <div class="head"><b>${dayLabel(d.ts)}</b><span>Bought in ${money(r2(newMoney),false)} across ${d.rows.length} session${d.rows.length===1?"":"s"}</span><span class="sub">(rebuys count each time)</span></div>
+    <div class="stats">${g}</div>
+    <div class="chart" style="margin-top:0"><div class="sub">The whole day, hand by hand · dashed lines = new session${T.bombs?' · <span style="color:var(--bad)">●</span> = bomb pot':""}</div>${netChartSVG(hs,190,bounds)}</div>
+    <details data-k="${esc(k)}"${openDetails.has(k)?" open":""}><summary><span>Biggest pots of the day</span><span class="sub">${wins.length} wins · ${losses.length} losses</span></summary>
+      <div class="dbody"><div class="sub" style="margin:4px 0">Wins</div><table>${thead}${wins.map(h=>handRowHTML(h,false)).join("")||'<tr><td class="sub">None</td></tr>'}</table>
+      <div class="sub" style="margin:10px 0 4px">Losses</div><table>${thead}${losses.map(h=>handRowHTML(h,false)).join("")||'<tr><td class="sub">None</td></tr>'}</table></div></details>
+    <div class="sub" style="margin-top:10px">Sessions this day are listed below. Click one for its own details.</div>
+  </div>`;
+}
 function handsOf(s){ return s.id===sid ? hands : (handsCache[s.id]||[]); }
 function renderAll(){
   if (!viewIsAll()) return;
@@ -1307,17 +1354,17 @@ function renderAll(){
     const path=arr=>arr.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
     const last=a.length-1;
     el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
-      <line x1="${pad}" x2="${W-70}" y1="${y(0)}" y2="${y(0)}" stroke="#2f6f55"/>
-      ${bounds.map(i=>`<line x1="${x(i)}" x2="${x(i)}" y1="8" y2="${H-18}" stroke="#2f6f55" stroke-dasharray="3 5"/>`).join("")}
-      <text x="${pad-6}" y="${y(mx)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">${money(Math.round(mx*100)/100,false)}</text>
-      <text x="${pad-6}" y="${y(0)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">$0</text>
-      ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">−${money(Math.round(-mn*100)/100,false)}</text>`:""}
+      <line x1="${pad}" x2="${W-70}" y1="${y(0)}" y2="${y(0)}" stroke="#3a3a42"/>
+      ${bounds.map(i=>`<line x1="${x(i)}" x2="${x(i)}" y1="8" y2="${H-18}" stroke="#3a3a42" stroke-dasharray="3 5"/>`).join("")}
+      <text x="${pad-6}" y="${y(mx)+4}" fill="#8b8b95" font-size="11" text-anchor="end">${money(Math.round(mx*100)/100,false)}</text>
+      <text x="${pad-6}" y="${y(0)+4}" fill="#8b8b95" font-size="11" text-anchor="end">$0</text>
+      ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8b8b95" font-size="11" text-anchor="end">−${money(Math.round(-mn*100)/100,false)}</text>`:""}
       <path d="${path(nb)}" fill="none" stroke="var(--tie)" stroke-width="2" stroke-dasharray="6 4" stroke-linejoin="round"/>
       <path d="${path(a)}" fill="none" stroke="${r1>=0?"var(--good)":"var(--bad)"}" stroke-width="2.6" stroke-linejoin="round"/>
       <text x="${x(last)+8}" y="${y(r1)+4}" fill="${r1>=0?"var(--good)":"var(--bad)"}" font-size="13" font-weight="700">${money(Math.round(r1*100)/100)}</text>
       <text x="${x(last)+8}" y="${y(r2)+4}" fill="var(--tie)" font-size="13" font-weight="700">${money(Math.round(r2*100)/100)}</text>
-      <text x="${pad}" y="${H-3}" fill="#8fb3a3" font-size="11">hand 1</text>
-      <text x="${W-70}" y="${H-3}" fill="#8fb3a3" font-size="11" text-anchor="end">hand ${all.length}</text>
+      <text x="${pad}" y="${H-3}" fill="#8b8b95" font-size="11">hand 1</text>
+      <text x="${W-70}" y="${H-3}" fill="#8b8b95" font-size="11" text-anchor="end">hand ${all.length}</text>
     </svg>`;
   }
   // insights
@@ -1349,7 +1396,7 @@ function renderAll(){
       const open=openDays.has(d.k);
       return `<tr class="drow ${open?"open":""}" data-day="${esc(d.k)}"><td>${dayLabel(d.ts)}</td><td>${d.rows.length} session${d.rows.length===1?"":"s"}</td><td>${stakes||"–"}</td><td>${dur(Hh)}</td><td>${N}</td><td></td><td></td>
         <td class="${c(P)}"><b>${money(Math.round(P*100)/100)}</b></td><td class="${c(B)}">${B?money(Math.round(B*100)/100):""}</td></tr>`+
-        (open ? d.rows.map(sessRow).join("") : "");
+        (open ? `<tr class="sdet"><td colspan="9">${dayDetailHTML(d)}</td></tr>` + d.rows.map(sessRow).join("") : "");
     }).join("")+`</tbody>`;
   $("ovSessions").querySelectorAll("tr.drow").forEach(tr=>tr.onclick=()=>{ const k=tr.dataset.day; if (openDays.has(k)) openDays.delete(k); else openDays.add(k); renderAll(); });
   $("ovSessions").querySelectorAll("tr.srow").forEach(tr=>tr.onclick=()=>{ openSid = openSid===tr.dataset.sid ? null : tr.dataset.sid; renderAll(); });
