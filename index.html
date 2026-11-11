@@ -1015,6 +1015,34 @@ if(!window.__framed){
   .fwin>b{font:800 16px Inter,system-ui}
   .fmnone{padding:6px 2px}
   @media (max-width:760px){ .fwin{flex-wrap:wrap} .fwc{flex-basis:100%} }
+
+  /* table simulator */
+  .pracseg{margin:4px 0 6px}
+  .pracseg button{padding:8px 16px}
+  .simgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+  .simtable{display:grid;gap:18px;padding:22px;background:radial-gradient(500px 260px at 50% 45%,rgba(38,82,190,.28),transparent 70%),var(--surface)!important}
+  .simopps{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .simopp{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--mute)}
+  .simopp .slot{width:42px;height:58px}
+  .slot.back{border:none;background:repeating-linear-gradient(45deg,#2f6fe8 0 6px,#2a5fc8 6px 12px);box-shadow:inset 0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.4)}
+  .simmid{text-align:center}
+  .simpot{font-size:13px;color:var(--mute);margin-bottom:8px} .simpot b{color:#fff;font-size:18px}
+  .simboard{justify-content:center}
+  .simstreet{margin-top:8px;font-weight:800;color:var(--accent2);font-size:13px}
+  .simhero{text-align:center} .simhero .pcards{justify-content:center}
+  .simmade{margin-top:8px;font-weight:700;color:var(--accent2);min-height:20px}
+  .simodds .big{font-size:52px}
+  .simengine{font-size:12.5px;color:var(--mute);margin:8px 0 14px} .simengine b{color:#fff}
+  .simq{font-size:14.5px;margin-bottom:10px}
+  .simbtns{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+  .simbtns button{height:52px;font-size:16px;font-weight:800;border-radius:16px}
+  .simbtns button:only-child{grid-column:1/-1}
+  .simfb{margin-top:12px;display:grid;gap:8px}
+  .simafter{font-size:14px}
+  .simsetup{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+  .simsetup select{width:auto;padding:6px 10px}
+  .simsetup .sm{margin-left:auto}
+  @media (max-width:760px){ .simgrid{grid-template-columns:minmax(0,1fr)} .simodds .big{font-size:44px} .simopp .slot{width:34px;height:48px} }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1244,6 +1272,8 @@ if(!window.__framed){
   </div>
 
   <div id="viewPrac" hidden>
+    <div class="modeseg pracseg" id="pracSeg"><button type="button" data-pm="guess" class="on">Guess the odds</button><button type="button" data-pm="sim">Table simulator</button></div>
+    <div id="pracGuess">
     <div class="prachead"><div><h2 style="margin-top:6px">Guess the odds</h2>
       <p class="sub" style="margin:-6px 0 0">Look at the spot, pick your chance to win. Builds the feel for when to call.</p></div>
       <div class="pscore"><div><span id="pScore">0</span><small>right</small></div><div><span id="pStreak">0</span><small>streak</small></div><div><span id="pBest">0</span><small>best streak</small></div></div></div>
@@ -1257,6 +1287,30 @@ if(!window.__framed){
       <div class="pchoices" id="pChoices"></div>
       <div class="pres" id="pRes"></div>
       <div class="pnav"><span class="sub" id="pHint">Pick an answer, or press 1–4</span><button class="pri" id="pNext" hidden>Next spot</button></div>
+    </div>
+    </div>
+    <div id="pracSim" hidden>
+      <div class="prachead"><div><h2 style="margin-top:6px">Table simulator</h2>
+        <p class="sub" style="margin:-6px 0 0">The app deals a hand and plays it out. Watch the live odds, then call or fold each bet.</p></div>
+        <div class="pscore"><div><span id="sChips">1,000</span><small>chips</small></div><div><span id="sRight">–</span><small>good decisions</small></div><div><span id="sHands">0</span><small>hands</small></div></div></div>
+      <div class="simgrid">
+        <div class="panel simtable">
+          <div class="simopps" id="sOpps"></div>
+          <div class="simmid"><div class="simpot">Pot <b id="sPot">$0</b></div><div class="pcards simboard" id="sBoard"></div><div class="simstreet" id="sStreet"></div></div>
+          <div class="simhero"><div class="plbl">Your hand</div><div class="pcards" id="sHero"></div><div class="simmade" id="sMade"></div></div>
+        </div>
+        <div class="panel simodds">
+          <div class="sub">Your chance to win</div>
+          <div class="big" id="sEq">–</div>
+          <div class="bar"><div id="sbw" style="background:var(--good);width:0"></div><div id="sbt" style="background:var(--tie);width:0"></div><div id="sbl" style="background:var(--bad);width:0"></div></div>
+          <div class="legend"><span><span class="dot" style="background:var(--good)"></span>Win <b id="sW">–</b></span><span><span class="dot" style="background:var(--tie)"></span>Tie <b id="sT">–</b></span><span><span class="dot" style="background:var(--bad)"></span>Lose <b id="sL">–</b></span></div>
+          <div class="simengine" id="sEngine"></div>
+          <div class="simact" id="sAct"></div>
+          <div class="simfb" id="sFb"></div>
+          <div class="simsetup"><label class="sub" for="sOppN">Opponents</label><select id="sOppN"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select>
+            <button type="button" class="sm" id="sReset">Reset chips</button></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -3132,10 +3186,104 @@ function pracAnswer(v){
 function pracStart(){ if (!prac.spot) pracNew(); else pracRender(); }
 $("pNext").onclick=pracNew;
 document.addEventListener("keydown",e=>{
-  if (!viewIsPrac()||e.target.matches("input,select,textarea")) return;
+  if (!viewIsPrac()||$("pracGuess").hidden||e.target.matches("input,select,textarea")) return;
   if (/^[1-4]$/.test(e.key) && prac.spot && !prac.answered){ e.preventDefault(); pracAnswer(prac.spot.choices[+e.key-1]); }
   else if (e.key==="Enter" && prac.answered && document.activeElement!==$("pNext")){ e.preventDefault(); pracNew(); }
 });
+
+// =================== Practice: table simulator (the app deals; live odds) ===================
+const SIM={ st:null, chips:1000, good:0, dec:0, hands:0, gen:0 };
+try{ const j=JSON.parse(localStorage.getItem("po_sim")||"null"); if (j) Object.assign(SIM,{chips:j.chips??1000,good:j.good||0,dec:j.dec||0,hands:j.hands||0}); }catch(e){}
+function simSave(){ try{ localStorage.setItem("po_sim",JSON.stringify({chips:SIM.chips,good:SIM.good,dec:SIM.dec,hands:SIM.hands})); }catch(e){} }
+const STREET=["Preflop","Flop","Turn","River","Showdown"];
+function simDeal(){
+  const n=+$("sOppN").value||2;
+  const deck=[...Array(52).keys()]; for (let i=51;i>0;i--){ const j=(Math.random()*(i+1))|0; [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  const hero=deck.slice(0,2), opps=[]; for (let o=0;o<n;o++) opps.push(deck.slice(2+o*2,4+o*2));
+  const runout=deck.slice(2+n*2, 7+n*2);
+  SIM.st={ hero, opps, runout, n, street:0, pot:1.5, invested:0, folded:false, done:false, bet:0, eq:null, log:[] };
+  $("sFb").innerHTML="";
+  SIM.hands++; simSave(); simStreet();
+}
+function simBoard(){ const s=SIM.st; return s.runout.slice(0,[0,3,4,5,5][s.street]); }
+function simStreet(){
+  const s=SIM.st; s.bet=0;
+  if (s.street>=4){ simShowdown(); return; }
+  // an opponent bets most of the time; sometimes it checks to you
+  if (Math.random()<0.7){ const f=[0.33,0.5,0.66,0.75,1][(Math.random()*5)|0]; s.bet=Math.max(1,Math.round(s.pot*f)); }
+  simRender(); simOdds();
+}
+function simOdds(){
+  const s=SIM.st, myGen=++SIM.gen, board=simBoard();
+  const acc={n:0,eq:0,w:0,t:0,l:0}, run=makeSim(s.hero,board,s.n), TARGET=200000;
+  let ms=0;
+  (function chunk(){
+    if (myGen!==SIM.gen) return;
+    const t0=performance.now(); do { run(2000,acc); } while (performance.now()-t0<12 && acc.n<TARGET);
+    ms+=performance.now()-t0;
+    const eq=acc.eq/acc.n; s.eq=eq;
+    $("sEq").textContent=pct(eq); $("sEq").className="big "+(eq>=1/(s.n+1)?"pos":"neg");
+    $("sbw").style.width=(acc.w/acc.n*100)+"%"; $("sbt").style.width=(acc.t/acc.n*100)+"%"; $("sbl").style.width=(acc.l/acc.n*100)+"%";
+    $("sW").textContent=pct(acc.w/acc.n); $("sT").textContent=pct(acc.t/acc.n); $("sL").textContent=pct(acc.l/acc.n);
+    $("sEngine").innerHTML=`<b>${acc.n.toLocaleString()}</b> runouts in <b>${ms.toFixed(0)} ms</b> · ${Math.round(acc.n/Math.max(ms,1)*1000).toLocaleString()}/sec`;
+    if (acc.n<TARGET) setTimeout(chunk,0); else simRender();
+  })();
+}
+function simRender(){
+  const s=SIM.st; if (!s) return;
+  const big=cs=>cs.map(c=>`<div class="slot filled">${cardHTML(c)}</div>`).join(""), board=simBoard();
+  $("sHero").innerHTML=big(s.hero);
+  $("sBoard").innerHTML=big(board)+Array(5-board.length).fill(`<div class="slot ghost"></div>`).join("");
+  $("sStreet").textContent=STREET[Math.min(s.street,4)];
+  $("sPot").textContent=money(Math.round(s.pot*100)/100,false);
+  $("sMade").textContent=board.length?describe(evalCards(s.hero.concat(board),2+board.length)):"";
+  const show=s.done&&!s.folded;
+  $("sOpps").innerHTML=s.opps.map((o,i)=>`<div class="simopp"><div class="pcards">${show||s.revealAll?big(o):`<div class="slot back"></div><div class="slot back"></div>`}</div><span>Player ${i+1}${s.winners&&s.winners.includes(i)?" · wins":""}</span></div>`).join("");
+  const chips=Math.round(SIM.chips*100)/100;
+  $("sChips").textContent=chips.toLocaleString(); $("sChips").className=chips>=1000?"pos":"neg";
+  $("sRight").textContent=SIM.dec?Math.round(SIM.good/SIM.dec*100)+"%":"–"; $("sHands").textContent=SIM.hands;
+  const ready=s.eq!=null && SIM.gen>0;
+  if (s.done){ $("sAct").innerHTML=`<button class="pri" id="sNext">Deal next hand</button>`; $("sNext").onclick=simDeal; return; }
+  if (s.bet>0){
+    const need=s.bet/(s.pot+s.bet*2);
+    $("sAct").innerHTML=`<div class="simq">Player bets <b>${money(s.bet,false)}</b> into ${money(Math.round(s.pot*100)/100,false)}. Calling needs <b>${(need*100).toFixed(0)}%</b>.</div>
+      <div class="simbtns"><button class="qfold" id="sFold">Fold</button><button class="qwon" id="sCall">Call ${money(s.bet,false)}</button></div>`;
+    $("sFold").onclick=()=>simDecide(false); $("sCall").onclick=()=>simDecide(true);
+  } else {
+    $("sAct").innerHTML=`<div class="simq">Checked to you.</div><div class="simbtns"><button class="pri" id="sChk">Check · next card</button></div>`;
+    $("sChk").onclick=()=>{ $("sFb").innerHTML=""; s.street++; simStreet(); };
+  }
+}
+function simDecide(call){
+  const s=SIM.st; if (!s||s.done||s.eq==null) return;
+  SIM.gen++; // stop the engine
+  const need=s.bet/(s.pot+s.bet*2), right = call ? s.eq>=need : s.eq<need;
+  SIM.dec++; if (right) SIM.good++;
+  $("sFb").innerHTML=`<div class="tk ${right?"good":"bad"}"><div class="tkl">${right?"Good decision":"Not the best decision"}</div>
+    <div class="tkt">You had <b>${pct(s.eq)}</b> and needed ${(need*100).toFixed(0)}%. ${call?(right?"Calling makes money long term.":"Folding saves money long term."):(right?"Folding saves money long term.":"Calling would have made money long term.")}</div></div>`;
+  if (call){ SIM.chips-=s.bet; s.invested+=s.bet; s.pot+=s.bet*2; s.street++; simSave(); simStreet(); }
+  else { s.folded=true; s.done=true; s.revealAll=true; s.street=4;
+    const r=simWinners(); $("sFb").innerHTML+=`<div class="sub simafter">You folded. ${r.heroBest?"You would have won this one.":"You would have lost anyway."}</div>`;
+    simSave(); simRender(); }
+}
+function simWinners(){
+  const s=SIM.st, b=s.runout, hs=evalCards(s.hero.concat(b),7), os=s.opps.map(o=>evalCards(o.concat(b),7)), best=Math.max(hs,...os);
+  s.winners=os.map((v,i)=>v===best?i:-1).filter(i=>i>=0);
+  return { heroBest: hs===best, split: hs===best && s.winners.length>0, hs, best };
+}
+function simShowdown(){
+  const s=SIM.st; s.street=4; s.done=true;
+  const r=simWinners();
+  if (r.heroBest){ const share=s.pot/(1+s.winners.length); SIM.chips+=share; $("sFb").innerHTML+=`<div class="sub simafter">${r.split?"Split pot":"You win"} <b class="pos">${money(Math.round((share-s.invested)*100)/100)}</b> with ${describe(r.hs)}.</div>`; }
+  else $("sFb").innerHTML+=`<div class="sub simafter">Beaten by ${describe(r.best)}. You lose <b class="neg">${money(-Math.round(s.invested*100)/100)}</b>.</div>`;
+  simSave(); simRender();
+  $("sEq").textContent=r.heroBest?(r.split?"Split":"Won"):"Lost";
+}
+$("sReset").onclick=()=>{ Object.assign(SIM,{chips:1000,good:0,dec:0,hands:0}); simSave(); simDeal(); toast("Chips reset to 1,000"); };
+$("sOppN").onchange=()=>{ if (!SIM.st||SIM.st.done||SIM.st.street===0) simDeal(); };
+$("pracSeg").addEventListener("click",e=>{ const b=e.target.closest("button[data-pm]"); if (!b) return;
+  const sim=b.dataset.pm==="sim"; $("pracSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  $("pracGuess").hidden=sim; $("pracSim").hidden=!sim; if (sim && !SIM.st) simDeal(); });
 
 // =================== guided tour (sandboxed: nothing is saved) ===================
 const TUT={ on:false, i:0, sessions:[], hands:{}, handSub:null, saved:null, latest:null, raf:0, poll:0 };

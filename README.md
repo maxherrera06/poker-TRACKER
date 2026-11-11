@@ -33,6 +33,7 @@ With those two values left empty, the app skips the login screen and saves in th
 
 ## Features
 
+- **Table simulator (Practice).** The app deals a hand against 1–5 players and plays it out street by street. The odds engine runs live (about 2 million runouts per second) while you call or fold each bet. Every decision is graded against the pot odds, then the hand runs out so you see the result. Chips, hands played and your good-decision rate are tracked. Nothing here touches your real sessions.
 - **Guided tour.** New accounts get a 2-minute walkthrough that has you tap the real buttons: stakes, buy-in, dealing a hand, the flop, logging a win, then every tab. It runs in a sandbox, so nothing you enter is saved, and your real sessions come back when it ends. Replay it from **Me → Take the tour**.
 - **Tap keypad (phones).** Tap a rank then a suit for each card, then **Fold** in one tap, or **Won** / **Lost** with the exact amount (as profit, or the whole pot you collected). Your live chance to win shows in the keypad. **Undo last hand** fixes a mis-tap. A preflop fold is 5 taps. Turn it on or off under Me → Edit profile.
 - **Friends tab.** Search people by username, send and accept friend requests, and see a leaderboard of you and your friends (points, all-time result, hands, last played). **Invite friends** shares a link like `…/poker-TRACKER/?invite=yourname`; whoever opens it and signs in sends you a request automatically.
