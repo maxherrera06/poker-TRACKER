@@ -130,6 +130,12 @@
   .insights{display:grid;gap:8px}
   .insight{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
   .insight.bad{border-left-color:var(--bad)} .insight.good{border-left-color:var(--good)}
+  .bigdot{cursor:pointer;transition:r .1s}
+  .bigdot:hover{r:6.5}
+  #ctip{position:fixed;z-index:50;pointer-events:none;background:rgba(12,12,14,.96);border:1px solid rgba(212,175,55,.45);border-radius:7px;
+    padding:4px 7px;font-size:10.5px;line-height:1.35;color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.55);white-space:nowrap;display:none}
+  #ctip .mc{font-size:10px;font-weight:800;padding:0 3px;margin-right:2px;background:#f6f4ee;border-radius:3px}
+  #ctip .k{color:var(--mute)}
   .money{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
   .money .inhand{font:800 22px/1 system-ui;color:var(--accent);font-variant-numeric:tabular-nums;min-width:70px}
   .money .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--mute)}
@@ -346,7 +352,7 @@
     </div>
     <div class="stats" id="stats"></div>
   </div>
-  <div class="chart"><div class="sub" style="margin-bottom:4px">Running net from logged hands</div><div id="chart"></div></div>
+  <div class="chart"><div class="sub" style="margin-bottom:4px">Running net from logged hands · dots = hands won or lost $7+ (hover for details)</div><div id="chart"></div></div>
   <div class="two">
     <div>
       <h3>Hand log</h3>
@@ -1159,7 +1165,7 @@ function netChartSVG(hs, H=170, bounds=[]){
     <text x="${pad-6}" y="${y(mx)+4}" fill="#8b8b95" font-size="11" text-anchor="end">${money(r2(mx),false)}</text>
     ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8b8b95" font-size="11" text-anchor="end">−${money(r2(-mn),false)}</text>`:""}
     ${bounds.map(i=>`<line x1="${x(i)}" x2="${x(i)}" y1="6" y2="${H-16}" stroke="#3a3a42" stroke-dasharray="3 5"/>`).join("")}
-    <path d="${path}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${dots}
+    <path d="${path}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${dots}${bigDots(hs, x, y, pts)}
     <text x="${x(pts.length-1)+8}" y="${y(run)+4}" fill="${col}" font-size="13" font-weight="700">${money(r2(run))}</text>
     <text x="${pad}" y="${H-2}" fill="#8b8b95" font-size="11">hand 1</text><text x="${W-70}" y="${H-2}" fill="#8b8b95" font-size="11" text-anchor="end">hand ${hs.length}</text>
   </svg>`;
@@ -1199,6 +1205,36 @@ function renderGrid(){
   const top=Object.entries(by).sort((a,b)=>b[1].n-a[1].n||b[1].net-a[1].net).slice(0,8);
   $("topHands").innerHTML = top.length ? `<h3>Most dealt</h3><div class="sub">`+top.map(([k,o])=>`<b style="color:var(--ink)">${k}</b> ×${o.n} (played ${o.played}, won ${o.won}, <span class="${o.net>0?"pos":o.net<0?"neg":""}">${money(o.net)}</span>)`).join(" · ")+`</div>` : "";
 }
+// Dots on the profit charts for every big hand (won or lost $7+). Hover / tap for a tiny summary.
+const BIG_HAND = 7;
+const tipHands = new Map(); let tipSeq = 0;
+function bigDots(hs, x, y, pts){
+  if (tipHands.size > 4000) tipHands.clear();
+  return hs.map((h,i)=>{
+    if (!(Math.abs(h.net||0) >= BIG_HAND)) return "";
+    const id = ++tipSeq; tipHands.set(id, h);
+    return `<circle class="bigdot" data-tip="${id}" cx="${x(i+1).toFixed(1)}" cy="${y(pts[i+1]).toFixed(1)}" r="4.5" fill="${h.net>0?"#3ecf8e":"#ff5c5c"}" stroke="#0a0a0b" stroke-width="1.5"/>`;
+  }).join("");
+}
+function tipHTML(h){
+  const board = (h.pre||[]).concat(h.post||[]);
+  const eq = h.eqR!=null ? `${pct(h.eq)}→${pct(h.eqR)}` : pct(h.eq);
+  return `${miniCards(h.hero)}${board.length?` <span class="k">·</span> ${miniCards(board)}`:""}<br>
+    <b class="${h.net>0?"pos":"neg"}">${money(Math.round(h.net*100)/100)}</b> <span class="k">· ${RES_NAME[h.r]}${h.bomb?" 💣":""} · eq</span> ${eq}`;
+}
+(function(){
+  const tip=document.createElement("div"); tip.id="ctip"; document.body.appendChild(tip);
+  let pinned=null;
+  const place=(e)=>{ const r=tip.getBoundingClientRect(); let L=e.clientX+12, T=e.clientY-r.height-10;
+    if (L+r.width>innerWidth-6) L=e.clientX-r.width-12; if (T<6) T=e.clientY+14; tip.style.left=L+"px"; tip.style.top=T+"px"; };
+  const show=(el,e)=>{ const h=tipHands.get(+el.dataset.tip); if (!h) return; tip.innerHTML=tipHTML(h); tip.style.display="block"; place(e); };
+  document.addEventListener("pointerover",e=>{ const d=e.target.closest&&e.target.closest(".bigdot"); if (d && e.pointerType!=="touch") show(d,e); });
+  document.addEventListener("pointermove",e=>{ if (tip.style.display==="block" && !pinned && e.target.closest&&e.target.closest(".bigdot")) place(e); });
+  document.addEventListener("pointerout",e=>{ const d=e.target.closest&&e.target.closest(".bigdot"); if (d && !pinned) tip.style.display="none"; });
+  document.addEventListener("click",e=>{ const d=e.target.closest&&e.target.closest(".bigdot");
+    if (d){ e.stopPropagation(); pinned=d; show(d,e); } else if (pinned){ pinned=null; tip.style.display="none"; } }, true);
+  window.addEventListener("scroll",()=>{ if (pinned){ pinned=null; tip.style.display="none"; } }, {passive:true});
+})();
 function renderChart(){
   const el=$("chart");
   if (hands.length<2){ el.innerHTML=`<div class="empty" style="padding:8px">The chart appears once you've logged a couple of hands.</div>`; return; }
@@ -1212,6 +1248,7 @@ function renderChart(){
     <text x="${pad-4}" y="${y(mx)+4}" fill="#8b8b95" font-size="10" text-anchor="end">${money(mx,false)}</text>
     <text x="${pad-4}" y="${y(mn)+4}" fill="#8b8b95" font-size="10" text-anchor="end">${money(mn,false)}</text>
     <path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>
+    ${bigDots(hands, x, y, pts)}
     <circle cx="${x(pts.length-1)}" cy="${y(run)}" r="3.5" fill="${col}"/>
     <text x="${W-8}" y="${Math.max(12,y(run)-8)}" fill="${col}" font-size="12" font-weight="700" text-anchor="end">${money(run)}</text>
   </svg>`;
@@ -1361,6 +1398,7 @@ function renderAll(){
       ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8b8b95" font-size="11" text-anchor="end">−${money(Math.round(-mn*100)/100,false)}</text>`:""}
       <path d="${path(nb)}" fill="none" stroke="var(--tie)" stroke-width="2" stroke-dasharray="6 4" stroke-linejoin="round"/>
       <path d="${path(a)}" fill="none" stroke="${r1>=0?"var(--good)":"var(--bad)"}" stroke-width="2.6" stroke-linejoin="round"/>
+      ${bigDots(all, x, y, a)}
       <text x="${x(last)+8}" y="${y(r1)+4}" fill="${r1>=0?"var(--good)":"var(--bad)"}" font-size="13" font-weight="700">${money(Math.round(r1*100)/100)}</text>
       <text x="${x(last)+8}" y="${y(r2)+4}" fill="var(--tie)" font-size="13" font-weight="700">${money(Math.round(r2*100)/100)}</text>
       <text x="${pad}" y="${H-3}" fill="#8b8b95" font-size="11">hand 1</text>
