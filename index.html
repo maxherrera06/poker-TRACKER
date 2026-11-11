@@ -345,6 +345,7 @@
         <button class="w" data-r="w">Won</button>
         <button class="l" data-r="l">Lost</button>
         <button class="x" data-r="x">Split</button>
+        <button class="w" id="allFold" title="Everyone else folded and you took the pot (or press e in the box)">Everyone folded 🙌</button>
         <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣 Bomb pot</button>
       </div>
       <div class="bombwarn" id="bombwarn">
@@ -800,6 +801,7 @@ $("q").addEventListener("keydown", e=>{
   if (e.key==="+"||e.key==="="){ e.preventDefault(); setFolded(folded-1); }
   else if (e.key==="-"||e.key==="_"){ e.preventDefault(); setFolded(folded+1); }
   else if (e.key==="Enter"){ e.preventDefault(); commit(); }
+  else if (e.key==="e" && !e.metaKey && !e.ctrlKey){ e.preventDefault(); everyoneFolded(); }
 });
 document.addEventListener("keydown", e=>{
   if (e.key==="Escape"){ clearAll(); e.preventDefault(); return; }
@@ -855,6 +857,32 @@ $("fp").onclick=()=>setFolded(folded+1);
 $("fold1").onclick=()=>{ setFolded(folded+1); $("q").focus(); };
 $("pot").addEventListener("input",renderVerdict);
 $("call").addEventListener("input",renderVerdict);
+// Everyone else folded: you take the pot without a showdown.
+// Preflop it works out what you collect from the blinds; after the flop it uses the amount box,
+// or the pot minus what you put in.
+let uncontestedNext=false;
+function everyoneFolded(){
+  if (P.cards.length<2){ toast("Enter your two cards first",true); return; }
+  const s=cur(), sbA=s&&s.sb>0?s.sb:null, bbA=s&&s.bb>0?s.bb:null;
+  const typed=parseFloat($("amt").value);
+  const boardN=(P.r?P.at:P.cards.length)-2;
+  let net=null, how="";
+  if (!isNaN(typed)) { net=Math.abs(typed); how="amount you typed"; }
+  else if (P.amt!=null) { net=Math.abs(P.amt); how="amount you typed"; }
+  else if (P.collect!=null) { net=Math.max(0, P.collect-invested(P)); how="pot minus what you put in"; }
+  else if (boardN===0 && !P.bomb){
+    if (!sbA||!bbA){ toast("Set the blinds in section 1 so I can work out what you won",true); return; }
+    net = blind==="bb" ? sbA : blind==="sb" ? bbA : sbA+bbA;   // you win the other blinds
+    how = blind==="bb" ? "the small blind" : blind==="sb" ? "the big blind" : "both blinds";
+  } else { $("amt").focus(); toast("Type how much you won in the amount box, then tap again",true); return; }
+  const p={...P, cards:P.cards.slice()};
+  if (!p.r) p.at=p.cards.length;
+  p.r="w"; p.amt=Math.round(net*100)/100; p.collect=null;
+  uncontestedNext=true;
+  $("q").value=serialize(p); onInputChanged(); commit();
+  setTimeout(()=>{ uncontestedNext=false; },0);
+}
+$("allFold").onclick=everyoneFolded;
 document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
   const a=parseFloat($("amt").value);
   const p={...P, cards:P.cards.slice()};
@@ -1030,7 +1058,7 @@ async function commit(){
   const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:handNet(p), key:handKey(hero),
     bomb:!!p.bomb, ante:p.bomb?bombAnte:null, players:p.bomb?bombPlayers:null,
     blind: (!p.bomb && blind) ? blind : null, blindAmt: (!p.bomb && blind) ? blindAmtNow() : null,
-    invested: invested(p), collect: p.collect ?? null,
+    invested: invested(p), collect: p.collect ?? null, uncontested: !!uncontestedNext,
     eqPre:+eqPre.toFixed(4), eq:+eq.toFixed(4), eqR: eqR==null?null:+eqR.toFixed(4) };
   const id = await ensureSession();
   if (!id) return;
@@ -1293,7 +1321,7 @@ function handRowHTML(h, withDel){
   const run = h.post&&h.post.length ? ` <span class="sub">→</span> ${miniCards(h.post)}` : "";
   const eqTxt = h.eqR!=null ? `${pct(h.eq)} <span class="sub">→ ${pct(h.eqR)}</span>` : pct(h.eq);
   return `<tr><td class="sub">${tm}</td><td class="cards">${miniCards(h.hero)}</td><td class="cards">${miniCards(h.pre)}${run}</td>
-    <td>${h.blind?`<span class="tag ${h.blind}">${h.blind.toUpperCase()}</span>`:""}${h.bomb?`<span class="tag b" title="Bomb pot ${money(h.ante,false)} × ${h.players}">💣</span>`:""}<span class="tag ${h.r}">${RES_NAME[h.r]}</span>${street}</td><td class="${h.net>0?"pos":h.net<0?"neg":""}">${h.net?money(h.net):""}</td>
+    <td>${h.blind?`<span class="tag ${h.blind}">${h.blind.toUpperCase()}</span>`:""}${h.bomb?`<span class="tag b" title="Bomb pot ${money(h.ante,false)} × ${h.players}">💣</span>`:""}<span class="tag ${h.r}">${RES_NAME[h.r]}${h.uncontested?" 🙌":""}</span>${street}</td><td class="${h.net>0?"pos":h.net<0?"neg":""}">${h.net?money(h.net):""}</td>
     <td title="Preflop ${pct(h.eqPre)} vs ${h.opps}">${eqTxt}</td>${withDel?`<td><button class="del" data-id="${esc(h.id)}" title="Delete hand">×</button></td>`:""}</tr>`;
 }
 // Running-net chart for a list of hands; bomb pots are marked with red dots.
@@ -1325,7 +1353,7 @@ function renderLog(){
     const run = h.post&&h.post.length ? ` <span class="sub">→</span> ${miniCards(h.post)}` : "";
     const eqTxt = h.eqR!=null ? `${pct(h.eq)} <span class="sub">→ ${pct(h.eqR)}</span>` : pct(h.eq);
     return `<tr><td class="sub">${tm}</td><td class="cards">${miniCards(h.hero)}</td><td class="cards">${miniCards(h.pre)}${run}</td>
-      <td>${h.blind?`<span class="tag ${h.blind}">${h.blind.toUpperCase()}</span>`:""}${h.bomb?`<span class="tag b" title="Bomb pot ${money(h.ante,false)} × ${h.players}">💣</span>`:""}<span class="tag ${h.r}">${RES_NAME[h.r]}</span>${street}</td><td class="${h.net>0?"pos":h.net<0?"neg":""}">${h.net?money(h.net):""}</td>
+      <td>${h.blind?`<span class="tag ${h.blind}">${h.blind.toUpperCase()}</span>`:""}${h.bomb?`<span class="tag b" title="Bomb pot ${money(h.ante,false)} × ${h.players}">💣</span>`:""}<span class="tag ${h.r}">${RES_NAME[h.r]}${h.uncontested?" 🙌":""}</span>${street}</td><td class="${h.net>0?"pos":h.net<0?"neg":""}">${h.net?money(h.net):""}</td>
       <td title="Preflop ${pct(h.eqPre)} vs ${h.opps}">${eqTxt}</td><td><button class="del" data-id="${esc(h.id)}" title="Delete hand">×</button></td></tr>`;
   }).join("");
   el.innerHTML=`<table><thead><tr><th>Time</th><th>Hand</th><th>Board</th><th>Result</th><th>Net</th><th>Equity</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;

@@ -37,6 +37,7 @@ Cards are a rank (`2–9 t j q k a`, or `10`) plus a suit (`s h d c`). Spaces do
 | Split pot, up $10 | `asks 7c8c9d2s3h x10` |
 | Folded, then saw the runout | `qsjd f 9c8c2h4d5s` |
 | Bomb pot, folded on the flop (charges the ante) | `b qhqd 2c5h9s f` |
+| Everyone folded to you (preflop: wins the blinds automatically) | tap **Everyone folded 🙌** or press `e` |
 | Put in $2 preflop and $4 on the flop, then folded (logs −$6) | `khjd $2 9s5c2d $4 f` |
 | Collected a $30 pot after putting in $12 (logs +$18) | `ahkd $2 7c8c9d $10 w@30` |
 
