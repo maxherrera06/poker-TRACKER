@@ -182,6 +182,10 @@
   .seat .st2{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px;font-size:11.5px}
   .seat .stt{color:var(--mute)} .seat .seq{font-weight:800;font-variant-numeric:tabular-nums}
   .seat .st2{align-items:center}
+  .seat.emptyseat{border-style:dashed;background:transparent;opacity:.75;cursor:default}
+  .seat.emptyseat .emp{font-size:11.5px;color:var(--mute);margin:6px 0}
+  .seat .join{width:100%}
+  .seat .leave{color:#ff9a8f}
   .seat.me{border-color:var(--accent);background:linear-gradient(180deg,rgba(212,175,55,.14),rgba(212,175,55,.04))}
   .seat.me .youtag{font:800 11px/1 Inter;letter-spacing:1.5px;color:var(--accent);margin-top:8px}
   .seat.fold{opacity:.38} .seat.fold .stt{color:var(--bad)}
@@ -590,24 +594,39 @@ function vpipTip(v){
 }
 
 // =================== seats ===================
-let seatCfg = { me:null, btn:null, vpip:{} };
-try { const j=JSON.parse(localStorage.getItem("po_seats")||"null"); if (j) seatCfg={me:j.me??null, btn:j.btn??null, vpip:j.vpip||{}}; } catch(e){}
+let seatCfg = { me:null, btn:null, vpip:{}, empty:null };
+try { const j=JSON.parse(localStorage.getItem("po_seats")||"null"); if (j) seatCfg={me:j.me??null, btn:j.btn??null, vpip:j.vpip||{}, empty:j.empty||null}; } catch(e){}
+// Seats are numbered 1..max seats; empty ones are skipped for positions and the dealer button.
+function allSeats(){ return Array.from({length:maxSeats},(_,i)=>i+1); }
+function occupied(){ return allSeats().filter(x=>!(seatCfg.empty&&seatCfg.empty[x])); }
+function ensureEmptyMap(){
+  if (seatCfg.empty) return;
+  seatCfg.empty={}; allSeats().forEach(x=>{ if (x>tableSize) seatCfg.empty[x]=true; });     // first run: seats above the old count are empty
+}
+// Make the number of filled seats match n, adding or removing from the highest seat numbers (never you or the dealer).
+function matchSeatCount(n){
+  ensureEmptyMap();
+  let occ=occupied();
+  while (occ.length<n){ const x=allSeats().find(y=>seatCfg.empty[y]); if (!x) break; delete seatCfg.empty[x]; occ=occupied(); }
+  while (occ.length>Math.max(2,n)){ const x=occ.slice().reverse().find(y=>y!==seatCfg.me && y!==seatCfg.btn); if (!x) break; seatCfg.empty[x]=true; delete seatCfg.vpip[x]; occ=occupied(); }
+}
+function syncTableSize(){ const n=occupied().length; if (n!==tableSize){ tableSize=n; try{localStorage.setItem("po_table",tableSize);}catch(e){} if (sid) saveField("table",tableSize); } }
 function saveSeats(){ try{ localStorage.setItem("po_seats", JSON.stringify(seatCfg)); }catch(e){} }
 let seatAct = {};        // this hand: seat -> "fold" | "raise" (default "in")
 let foldStack = [];
 let seatEdit = false;
-function mapOn(){ return seatCfg.me>=1 && seatCfg.btn>=1 && seatCfg.me<=tableSize && seatCfg.btn<=tableSize; }
-function clockwiseFrom(start){ const N=tableSize, o=[]; for (let i=0;i<N;i++) o.push(((start-1+i)%N)+1); return o; }
+function mapOn(){ const occ=occupied(); return occ.includes(seatCfg.me) && occ.includes(seatCfg.btn) && occ.length>=2; }
+function clockwiseFrom(start){ const occ=occupied(); let i=occ.findIndex(x=>x>=start); if (i<0) i=0; return occ.slice(i).concat(occ.slice(0,i)); }
 function posLabels(){
-  const m={}; if (!(seatCfg.btn>=1 && seatCfg.btn<=tableSize)) return m;
-  const N=tableSize, o=clockwiseFrom(seatCfg.btn);
+  const m={}; if (!occupied().includes(seatCfg.btn)) return m;
+  const o=clockwiseFrom(seatCfg.btn), N=o.length;
   if (N===2){ m[o[0]]="BTN"; m[o[1]]="BB"; return m; }
   m[o[0]]="BTN"; m[o[1]]="SB"; m[o[2]]="BB";
   const k=N-3, names={0:[],1:["UTG"],2:["UTG","CO"],3:["UTG","HJ","CO"],4:["UTG","LJ","HJ","CO"],5:["UTG","MP","LJ","HJ","CO"],6:["UTG","UTG+1","MP","LJ","HJ","CO"],7:["UTG","UTG+1","UTG+2","MP","LJ","HJ","CO"]}[k]||[];
   for (let i=0;i<k;i++) m[o[3+i]]=names[i];
   return m;
 }
-function preflopOrder(){ const o=clockwiseFrom(seatCfg.btn||1); return tableSize===2 ? o : o.slice(3).concat(o.slice(0,3)); }
+function preflopOrder(){ const o=clockwiseFrom(seatCfg.btn||1); return o.length===2 ? o : o.slice(3).concat(o.slice(0,3)); }
 function myPos(){ return mapOn() ? posLabels()[seatCfg.me] : null; }
 function actedBefore(seat){ const o=preflopOrder(); return o.indexOf(seat) < o.indexOf(seatCfg.me); }
 function foldedCount(){ return mapOn() && !P.bomb ? Object.values(seatAct).filter(v=>v==="fold").length : folded; }
@@ -1040,9 +1059,10 @@ function renderSeats(){
   $("seatEditBtn").textContent = edit ? "Done" : "Edit seats";
   $("seatHelp").innerHTML = P.bomb ? "Bomb pot: everyone's in with any two cards. Use − to remove players who fold on the flop." :
     (!on ? "Set up once: tap <b>★</b> on your seat and <b>D</b> on the dealer button. After that the dealer moves by itself every hand." :
-    (edit ? "Tap <b>★</b> or <b>D</b> to move your seat or the dealer." :
-     "Enter each player's <b>VPIP</b> (blank = 30%). Tap a player to switch them <b>In / Out</b>, and hit <b>R</b> if they raised. <span class=\"kbd\">-</span> takes out the next player to act."));
-  const order = on ? preflopOrder() : Array.from({length:tableSize},(_,i)=>i+1);
+    (edit ? "Tap <b>★</b> or <b>D</b> to move your seat or the dealer, and <b>Left</b> when someone gets up. Empty seats are skipped for positions and the dealer." :
+     "Enter each player's <b>VPIP</b> (blank = 30%). Tap a player to switch them <b>In / Out</b>, and hit <b>R</b> if they raised. <span class=\"kbd\">-</span> takes out the next player to act. Someone left or joined? Use <b>Edit seats → Left</b>, or <b>+ Player sat down</b> on an empty seat."));
+  const order = on ? preflopOrder() : occupied();
+  const empties = allSeats().filter(x=>seatCfg.empty && seatCfg.empty[x]);
   box.innerHTML = order.map(seat=>{
     const me=seat===seatCfg.me, st=me?"in":(seatAct[seat]||"in"), v=vpipOf(seat), lab=labels[seat];
     return `<div class="seat ${me?"me":""} ${st}" data-seat="${seat}">
@@ -1050,10 +1070,12 @@ function renderSeats(){
       ${me?'<div class="youtag">YOU</div>':`<label class="vp">VPIP <input class="vpipIn" data-seat="${seat}" type="number" inputmode="numeric" min="1" max="100" placeholder="30" value="${v??""}">%<span class="sty">${v!=null?styleOf(v):""}</span></label>`}
       <div class="st2">${me?"":`<button class="mini iob${st==="fold"?" out":""}" data-seat="${seat}" title="Tap when they fold / come back in">${st==="fold"?"Out":st==="raise"?"Raised":"In"}</button><span class="seq" id="seq-${seat}"></span>
         ${st!=="fold"?`<button class="mini rbtn${st==="raise"?" on":""}" data-seat="${seat}" title="They raised">R</button>`:""}`}</div>
-      <div class="st3"><button class="mini setme" data-seat="${seat}" title="This is my seat">★ me</button><button class="mini setd" data-seat="${seat}" title="Dealer button is here">D</button></div>
+      <div class="st3"><button class="mini setme" data-seat="${seat}" title="This is my seat">★ me</button><button class="mini setd" data-seat="${seat}" title="Dealer button is here">D</button>${me?"":`<button class="mini leave" data-seat="${seat}" title="This player left">Left</button>`}</div>
     </div>`;
-  }).join("");
-  box.querySelectorAll(".seat").forEach(el=>el.onclick=e=>{
+  }).join("") + empties.map(seat=>`<div class="seat emptyseat" data-seat="${seat}" title="Tap when someone sits here"><div class="st1"><span class="pl">Seat ${seat}</span></div><div class="emp">Empty</div><button class="mini join" data-seat="${seat}">+ Player sat down</button></div>`).join("");
+  box.querySelectorAll(".leave").forEach(b=>b.onclick=()=>setEmpty(+b.dataset.seat,true));
+  box.querySelectorAll(".join").forEach(b=>b.onclick=()=>setEmpty(+b.dataset.seat,false));
+  box.querySelectorAll(".seat:not(.emptyseat)").forEach(el=>el.onclick=e=>{
     if (e.target.closest("input,label,button")) return;
     const seat=+el.dataset.seat; if (seat===seatCfg.me || P.bomb) return;
     if (seatAct[seat]==="fold") delete seatAct[seat]; else { seatAct[seat]="fold"; foldStack.push(seat); }
@@ -1081,7 +1103,17 @@ function syncBlindFromSeat(){
   const p=myPos(), nb = p==="SB" ? "sb" : p==="BB" ? "bb" : (tableSize===2 && p==="BTN" ? "sb" : null);
   if (blind!==nb){ blind=nb; renderBlind(); renderPreview(); }
 }
-function advanceButton(){ if (!mapOn()) return; seatCfg.btn = seatCfg.btn % tableSize + 1; saveSeats(); syncBlindFromSeat(); }
+function advanceButton(){ if (!mapOn()) return; const o=clockwiseFrom(seatCfg.btn); seatCfg.btn = o[1]||o[0]; saveSeats(); syncBlindFromSeat(); }
+function setEmpty(seat, empty){
+  ensureEmptyMap();
+  if (empty){
+    if (seat===seatCfg.me){ toast("That's your seat",true); return; }
+    if (occupied().length<=2){ toast("At least 2 players need to be seated",true); return; }
+    if (seat===seatCfg.btn){ const o=clockwiseFrom(seat); seatCfg.btn=o[1]; }     // button moves on to the next player
+    seatCfg.empty[seat]=true; delete seatCfg.vpip[seat]; delete seatAct[seat];
+  } else { delete seatCfg.empty[seat]; delete seatCfg.vpip[seat]; }              // a new player sat down: fresh VPIP
+  saveSeats(); syncTableSize(); syncBlindFromSeat(); afterSeatChange();
+}
 function foldNext(){
   if (P.bomb || !mapOn()){ setFolded(folded+1); return; }
   const s=preflopOrder().find(x=>x!==seatCfg.me && !seatAct[x]);
@@ -1100,13 +1132,14 @@ function setFolded(n){
 }
 function setTable(n){
   if (P.bomb && bombPlayers>=2){ bombPlayers=Math.max(2,Math.min(maxSeats,n)); saveBomb(); }
-  else { tableSize=Math.max(2,Math.min(maxSeats,n)); try{localStorage.setItem("po_table",tableSize);}catch(e){} if (sid) saveField("table",tableSize); }
+  else { matchSeatCount(Math.max(2,Math.min(maxSeats,n))); saveSeats(); syncTableSize(); }
   folded=Math.min(folded, Math.max(0,seatCount()-2));
   syncBlindFromSeat(); renderOpp(); renderBomb(); renderPreview(); startSim();
 }
 function setMaxSeats(m, save){
   m=Math.max(2,Math.min(10,m)); const old=maxSeats; maxSeats=m;
   if (tableSize>m || tableSize===old) tableSize=m;
+  matchSeatCount(tableSize); saveSeats(); tableSize=occupied().length;
   try{ localStorage.setItem("po_max",m); localStorage.setItem("po_table",tableSize); }catch(e){}
   if (save && sid){ saveField("maxSeats",m); saveField("table",tableSize); }
   folded=Math.min(folded, Math.max(0,seatCount()-2));
@@ -1260,7 +1293,7 @@ function selectSession(id){
   sid=id; hands=[];
   const ss=sessions.find(x=>x.id===id);
   if (ss && ss.maxSeats>=2) maxSeats=ss.maxSeats;
-  if (ss && ss.table>=2) tableSize=Math.min(ss.table,maxSeats);
+  if (ss && ss.table>=2){ tableSize=Math.min(ss.table,maxSeats); if (occupied().length!==tableSize){ matchSeatCount(tableSize); saveSeats(); } tableSize=occupied().length; }
   if (ss){ renderOpp(); startSim(); }
   if (unsubHands){ unsubHands(); unsubHands=null; }
   if (id){
@@ -1752,7 +1785,7 @@ function renderAll(){
 }
 
 // =================== boot ===================
-buildPicker(); if (innerWidth<760) $("pickwrap").open=true; syncBlindFromSeat(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
+buildPicker(); if (innerWidth<760) $("pickwrap").open=true; ensureEmptyMap(); saveSeats(); tableSize=occupied().length; syncBlindFromSeat(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
 store.init().then(mode=>{
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
