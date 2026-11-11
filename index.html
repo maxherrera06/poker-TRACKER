@@ -6,6 +6,16 @@
 <title>Max's Lucky Odds</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+// Lock the app behind the login screen from the very first paint (not inside the claude.ai viewer).
+window.__framed=(function(){try{return window.self!==window.top}catch(e){return true}})();
+if(!window.__framed){
+  var h=document.documentElement; h.classList.add("locked");
+  try{ for(var i=0;i<localStorage.length;i++){ if(/^sb-.*-auth-token$/.test(localStorage.key(i))){ h.classList.add("checking"); break; } } }catch(e){}
+  window.__sbReady=new Promise(function(res,rej){ var s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+  window.__sbReady.catch(function(){});
+}
+</script>
 <style>
   :root{
     --bg:#0a0a0b; --felt:#17171a; --felt2:#0d0d0f; --line:#2a2a30; --card:#111113;
@@ -270,27 +280,120 @@
   @media (max-width:860px){.two{grid-template-columns:1fr}}
   .empty{color:var(--mute);font-size:13px;padding:16px}
   .confirm{display:inline-flex;gap:6px;align-items:center}
-  /* accounts */
+  /* ================= accounts ================= */
+  .acct{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;font-size:12.5px;color:var(--mute);margin:-4px 0 12px}
+  .acct b{color:#e9d9a6;font-weight:600}
+  .acct button{padding:6px 12px;font-size:12px;border-radius:999px}
   .auth[hidden],.acct [hidden],.authbox [hidden]{display:none!important}
-  .acct{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;font-size:13px;color:var(--mute);margin:-6px 0 10px}
-  .acct b{color:var(--ink);font-weight:600}
-  .acct button{padding:5px 10px;font-size:12.5px}
-  .auth{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;
-    background:radial-gradient(900px 500px at 50% 0,rgba(212,175,55,.12),transparent 70%),rgba(5,5,6,.96)}
-  .authbox{width:100%;max-width:380px;background:var(--card);border:1px solid #3a3320;border-radius:18px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-  .authbox .alogo{font:italic 700 26px Georgia,serif;color:var(--accent);text-align:center;margin:0 0 4px}
-  .authbox .asub{text-align:center;color:var(--mute);font-size:13px;margin:0 0 18px}
-  .atabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#0b0b0d;border:1px solid var(--line);border-radius:10px;padding:4px;margin-bottom:16px}
-  .atabs button{border:none;background:none;color:var(--mute);font-weight:700}
-  .atabs button.on{background:#1f1c12;color:var(--accent)}
-  .authbox label{display:block;font-size:12px;color:var(--mute);margin:10px 0 4px}
-  .authbox input{width:100%;font:500 15px system-ui;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0b0b0d;color:var(--ink)}
-  .authbox input:focus{border-color:var(--accent);outline:none}
-  .authbox .go{width:100%;margin-top:16px;padding:12px;font-weight:800;background:var(--accent);color:#111;border:none;border-radius:10px}
+  html.locked .wrap,html.locked .toast:not(.show){display:none!important}
+  html.locked .auth{display:flex!important}
+  html.checking .aform{display:none} html:not(.checking) .achecking{display:none}
+  .auth{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden;
+    background:
+      radial-gradient(1000px 620px at 50% 38%,rgba(32,58,44,.55),transparent 70%),
+      radial-gradient(700px 380px at 50% -10%,rgba(212,175,55,.16),transparent 70%),
+      #050506}
+  .auth::before{content:"";position:absolute;inset:0;opacity:.07;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .aglow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.10),transparent 65%);filter:blur(10px);animation:abreathe 6s ease-in-out infinite}
+  @keyframes abreathe{50%{transform:scale(1.08);opacity:.75}}
+  .asuits{position:absolute;inset:0;pointer-events:none;font-family:"Cormorant Garamond",Georgia,serif;color:rgba(212,175,55,.045)}
+  .asuits span{position:absolute;font-size:340px;line-height:1}
+  .asuits span:nth-child(1){left:-60px;top:-80px;transform:rotate(-14deg)}
+  .asuits span:nth-child(2){right:-50px;top:-40px;transform:rotate(12deg)}
+  .asuits span:nth-child(3){left:-30px;bottom:-120px;transform:rotate(10deg)}
+  .asuits span:nth-child(4){right:-70px;bottom:-100px;transform:rotate(-10deg)}
+  .authbox{position:relative;width:100%;max-width:400px;padding:34px 30px 26px;border-radius:22px;
+    background:linear-gradient(180deg,rgba(22,22,25,.92),rgba(10,10,12,.96)) padding-box,
+               linear-gradient(160deg,#f3dc8a,rgba(212,175,55,.25) 30%,rgba(212,175,55,.08) 60%,#b8922c) border-box;
+    border:1px solid transparent;box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:blur(12px);animation:arise .5s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes arise{from{opacity:0;transform:translateY(14px) scale(.985)}}
+  .acrest{width:54px;height:54px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:#1a1406;
+    background:radial-gradient(circle at 35% 30%,#fff4c4,#e8c65a 40%,#a8841f 100%);box-shadow:0 0 0 4px rgba(212,175,55,.12),0 8px 24px rgba(212,175,55,.25),inset 0 -3px 6px rgba(0,0,0,.25)}
+  .authbox .alogo{font:600 40px/1 "Cormorant Garamond",Georgia,serif;text-align:center;margin:0;letter-spacing:.5px;
+    background:linear-gradient(100deg,#9c7a1e 0%,#f6e3a1 35%,#d4af37 50%,#fff3c8 62%,#a8841f 100%);background-size:220% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
+  .authbox .alogo i{font-style:italic}
+  @keyframes shine{to{background-position:-220% 0}}
+  .aeyebrow{text-align:center;margin:10px 0 0;font-size:10.5px;letter-spacing:3.2px;text-transform:uppercase;color:#9d9277}
+  .arule{display:flex;align-items:center;gap:10px;margin:16px 0 18px;color:#d4af37;font-size:9px}
+  .arule::before,.arule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.55))}
+  .arule::after{transform:scaleX(-1)}
+  .achecking{display:flex;flex-direction:column;align-items:center;gap:12px;color:#bfb08a;font-size:13px;letter-spacing:.5px;padding:10px 0 6px}
+  .aspin{width:26px;height:26px;border-radius:50%;border:2px solid rgba(212,175,55,.2);border-top-color:#d4af37;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .atabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:rgba(0,0,0,.45);border:1px solid #26231a;border-radius:12px;padding:4px;margin-bottom:6px}
+  .atabs button{border:none;background:none;color:#8f8a7c;font-weight:700;font-size:13.5px;border-radius:9px;padding:9px}
+  .atabs button:hover{background:rgba(255,255,255,.03)}
+  .atabs button.on{background:linear-gradient(180deg,#2a2412,#1c180c);color:#f1d98a;box-shadow:inset 0 0 0 1px rgba(212,175,55,.35)}
+  .authbox label{display:block;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:#9d9277;margin:14px 0 6px;font-weight:600}
+  .authbox input{width:100%;font:500 15px Inter,system-ui;padding:13px 14px;border-radius:12px;border:1px solid #2a2820;background:rgba(0,0,0,.5);color:var(--ink);transition:border-color .15s,box-shadow .15s}
+  .authbox input::placeholder{color:#4d4a42}
+  .authbox input:focus{border-color:#d4af37;outline:none;box-shadow:0 0 0 4px rgba(212,175,55,.12)}
+  .authbox .go{position:relative;overflow:hidden;width:100%;margin-top:22px;padding:14px;font-weight:800;font-size:15px;letter-spacing:.6px;color:#1a1406;border:none;border-radius:12px;
+    background:linear-gradient(180deg,#f6e3a1 0%,#d4af37 48%,#b08a22 100%);box-shadow:0 10px 26px rgba(212,175,55,.28),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -2px 0 rgba(0,0,0,.18)}
+  .authbox .go::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:sweep 3.8s ease-in-out infinite}
+  @keyframes sweep{0%,60%{left:-60%}100%{left:130%}}
+  .authbox .go:hover{filter:brightness(1.06)}
   .authbox .go:disabled{opacity:.6}
-  .authbox .amsg{min-height:18px;font-size:13px;margin-top:10px;text-align:center}
-  .authbox .amsg.bad{color:var(--bad)} .authbox .amsg.good{color:var(--good)}
-  .authbox .alink{display:block;text-align:center;margin-top:10px;font-size:12.5px;color:var(--mute);background:none;border:none;width:100%;text-decoration:underline}
+  .authbox .amsg{min-height:18px;font-size:13px;margin-top:12px;text-align:center}
+  .authbox .amsg.bad{color:#ff8a80} .authbox .amsg.good{color:var(--good)}
+  .authbox .alink{display:block;text-align:center;margin-top:6px;font-size:12px;color:#8f8a7c;background:none;border:none;width:100%}
+  .authbox .alink:hover{color:#e9d9a6;background:none}
+  .afoot{position:relative;margin-top:18px;font-size:11.5px;color:#5f5b50;letter-spacing:.4px}
+
+  /* ================= premium finish ================= */
+  body{background:
+      radial-gradient(1100px 520px at 50% -160px,rgba(212,175,55,.11),transparent 70%),
+      radial-gradient(900px 600px at 100% 100%,rgba(30,52,40,.18),transparent 70%),
+      #070708;background-attachment:fixed}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .wrap{position:relative;z-index:1;max-width:1140px;padding:22px 18px 40px}
+  .brand{margin:8px 0 6px;padding-bottom:14px;border-bottom:1px solid transparent;
+    border-image:linear-gradient(90deg,rgba(212,175,55,.5),rgba(212,175,55,.08) 60%,transparent) 1}
+  .brand .logo{font-size:46px;background:linear-gradient(100deg,#a8841f 0%,#f6e3a1 30%,#d4af37 48%,#fff3c8 60%,#a8841f 100%);background-size:220% 100%;
+    -webkit-background-clip:text;background-clip:text;animation:shine 9s linear infinite}
+  .brand .suit{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:20px;color:#1a1406;align-self:center;filter:none;
+    background:radial-gradient(circle at 35% 30%,#fff4c4,#e8c65a 40%,#a8841f 100%);box-shadow:0 0 0 3px rgba(212,175,55,.12),0 6px 18px rgba(212,175,55,.22),inset 0 -2px 5px rgba(0,0,0,.25)}
+  .brand .tag2{color:#8f876f;letter-spacing:3px}
+  h2{font:600 19px/1.2 "Cormorant Garamond",Georgia,serif;letter-spacing:1.2px;text-transform:none;color:#e9d9a6;display:flex;align-items:center;gap:4px;margin:34px 0 14px}
+  h2::after{content:"";flex:1;height:1px;margin-left:12px;background:linear-gradient(90deg,rgba(212,175,55,.35),transparent)}
+  .step{width:26px;height:26px;font:800 12px Inter,system-ui;color:#1a1406;margin-right:8px;
+    background:radial-gradient(circle at 35% 30%,#fff1bd,#d4af37 55%,#9c7a1e);box-shadow:0 2px 8px rgba(212,175,55,.25)}
+  .panel,.stat,.chart,.log,.table,.tilt,.howto,.sd details,.insight{
+    background:linear-gradient(180deg,rgba(24,24,27,.92),rgba(13,13,15,.95));border-color:rgba(212,175,55,.13)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 18px 40px rgba(0,0,0,.45)}
+  .insight{border-left:3px solid var(--accent)!important}.insight.bad{border-left-color:var(--bad)!important}.insight.good{border-left-color:var(--good)!important}
+  .panel,.table{border-radius:20px}
+  .stat{border-radius:14px;position:relative;overflow:hidden}
+  .stat::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.45),transparent)}
+  .stat .k,.grp .lbl,.money .lbl,.stable th,.log th{color:#9d9277;letter-spacing:1.4px}
+  .stat .v{font-family:Inter,system-ui;letter-spacing:-.5px}
+  .big{font-family:Inter,system-ui;letter-spacing:-2px}
+  button{background:linear-gradient(180deg,#1d1d22,#141418);border-color:#2c2b30;border-radius:10px;transition:border-color .15s,background .15s,transform .05s}
+  button:hover{background:linear-gradient(180deg,#24242a,#18181d);border-color:rgba(212,175,55,.4)}
+  button:active{transform:translateY(1px)}
+  button.pri,button.bomb.on{background:linear-gradient(180deg,#f6e3a1 0%,#d4af37 50%,#b08a22 100%);border-color:#c9a43a;color:#1a1406;
+    box-shadow:0 6px 18px rgba(212,175,55,.22),inset 0 1px 0 rgba(255,255,255,.5)}
+  button.pri:hover{filter:brightness(1.06)}
+  input[type=number],input[type=text],select,#q{background:rgba(0,0,0,.45);border-color:#2a2820;border-radius:10px}
+  input:focus,select:focus,#q:focus{box-shadow:0 0 0 4px rgba(212,175,55,.1)}
+  #q{border-width:1px;padding:14px 16px;border-radius:14px;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+  #q:focus{box-shadow:inset 0 2px 8px rgba(0,0,0,.4),0 0 0 4px rgba(212,175,55,.12)}
+  .tabs{gap:4px;border-bottom:1px solid rgba(212,175,55,.15);margin-bottom:18px}
+  .tabs a{font-size:13.5px;letter-spacing:.4px;padding:11px 16px;border-bottom:2px solid transparent;transition:color .15s}
+  .tabs a.on{color:#f1d98a;border-image:linear-gradient(90deg,transparent,#d4af37,transparent) 1;border-bottom-width:2px;border-bottom-style:solid;text-shadow:0 0 18px rgba(212,175,55,.35)}
+  .slot{border-radius:10px;border-color:#34322c}
+  .slot.filled,.pc{background:linear-gradient(180deg,#fffdf6,#ece7d9);border-color:#fffdf6;box-shadow:0 6px 14px rgba(0,0,0,.45),inset 0 -2px 0 rgba(0,0,0,.08)}
+  .pc:hover{background:linear-gradient(180deg,#fffdf6,#ece7d9);outline:2px solid #d4af37}
+  .chip{background:linear-gradient(180deg,#1d1c18,#141310);border-color:rgba(212,175,55,.22)}
+  .trophy{background:linear-gradient(160deg,#241e0d,#100e08)!important;border-color:rgba(212,175,55,.45)!important;box-shadow:inset 0 1px 0 rgba(255,240,190,.08),0 14px 30px rgba(0,0,0,.45)}
+  .trophies.fun .trophy{background:linear-gradient(160deg,#18181c,#0e0e11)!important;border-color:rgba(212,175,55,.15)!important}
+  .toast{background:linear-gradient(180deg,#1e1e23,#141418);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+  .log tr:hover td{background:rgba(212,175,55,.03)}
+  ::-webkit-scrollbar{width:10px;height:10px} ::-webkit-scrollbar-thumb{background:#2a2820;border-radius:10px;border:2px solid #0a0a0b} ::-webkit-scrollbar-track{background:transparent}
 </style>
 </head>
 <body>
@@ -487,20 +590,28 @@
 </div>
 <div class="toast" id="toast"></div>
 <div class="auth" id="auth" hidden>
+  <div class="aglow"></div>
+  <div class="asuits" aria-hidden="true"><span>♠</span><span>♥</span><span>♦</span><span>♣</span></div>
   <form class="authbox" id="authForm" autocomplete="on">
-    <p class="alogo">♠ Lucky Odds</p>
-    <p class="asub">Log in to save your sessions to your account</p>
-    <div class="atabs"><button type="button" id="aLogin" class="on">Log in</button><button type="button" id="aSignup">Create account</button></div>
-    <label for="aEmail">Email</label>
-    <input id="aEmail" type="email" autocomplete="email" required>
-    <label for="aPass">Password</label>
-    <input id="aPass" type="password" autocomplete="current-password" minlength="6" required>
-    <div id="aConfirmRow" hidden><label for="aPass2">Confirm password</label>
-    <input id="aPass2" type="password" autocomplete="new-password" minlength="6"></div>
-    <button class="go" id="aGo" type="submit">Log in</button>
-    <div class="amsg" id="aMsg"></div>
-    <button type="button" class="alink" id="aForgot">Forgot password?</button>
+    <div class="acrest">♠</div>
+    <p class="alogo">Lucky <i>Odds</i></p>
+    <p class="aeyebrow">Private Table · Members Only</p>
+    <div class="arule"><span>◆</span></div>
+    <div class="achecking"><div class="aspin"></div>Taking your seat…</div>
+    <div class="aform">
+      <div class="atabs"><button type="button" id="aLogin" class="on">Log in</button><button type="button" id="aSignup">Create account</button></div>
+      <label for="aEmail">Email</label>
+      <input id="aEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <label for="aPass">Password</label>
+      <input id="aPass" type="password" autocomplete="current-password" minlength="6" placeholder="••••••••" required>
+      <div id="aConfirmRow" hidden><label for="aPass2">Confirm password</label>
+      <input id="aPass2" type="password" autocomplete="new-password" minlength="6" placeholder="••••••••"></div>
+      <button class="go" id="aGo" type="submit">Log in</button>
+      <div class="amsg" id="aMsg"></div>
+      <button type="button" class="alink" id="aForgot">Forgot password?</button>
+    </div>
   </form>
+  <p class="afoot">Your sessions are private to your account.</p>
 </div>
 
 <script>
@@ -990,6 +1101,15 @@ const SUPABASE_ANON_KEY = "sb_publishable_LFXTNvu7YBW2NxTCHjRMQA_H5uUNCLN";
 
 function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=()=>rej(new Error("load")); document.head.appendChild(s); }); }
 
+function unlockApp(){ const h=document.documentElement; h.classList.remove("locked","checking"); $("auth").hidden=true; }
+// No connection: keep the app locked and offer a retry.
+function authOffline(){
+  return new Promise(res=>{
+    const h=document.documentElement; h.classList.remove("checking"); $("auth").hidden=false;
+    const m=$("aMsg"); m.className="amsg bad"; m.textContent="Can't connect. Check your internet, then tap Log in to retry.";
+    $("authForm").onsubmit=e=>{ e.preventDefault(); m.textContent="…"; res(); };
+  });
+}
 // Shows the login / create-account screen until someone is signed in. Resolves with the signed-in user.
 function authGate(sb){
   return new Promise(resolve=>{
@@ -1016,8 +1136,13 @@ function authGate(sb){
       const { error } = await sb.auth.resetPasswordForEmail(email,{ redirectTo: location.origin+location.pathname });
       say(error ? error.message : "Check your email for a link to reset your password.", error?"bad":"good");
     };
-    const done=user=>{ box.hidden=true; resolve(user); };
-    sb.auth.onAuthStateChange((ev,session)=>{ if (ev==="PASSWORD_RECOVERY"){ box.hidden=false; setMode("reset"); } });
+    let signedIn=false;
+    const done=user=>{ signedIn=true; resolve(user); };
+    sb.auth.onAuthStateChange((ev,session)=>{
+      if (ev==="PASSWORD_RECOVERY"){ document.documentElement.classList.add("locked"); document.documentElement.classList.remove("checking"); box.hidden=false; setMode("reset"); }
+      if (ev==="SIGNED_OUT" && signedIn) location.reload();   // session ended: back to the login screen
+      if (ev==="SIGNED_IN") signedIn=true;
+    });
     $("authForm").onsubmit=async e=>{
       e.preventDefault();
       const email=$("aEmail").value.trim(), pass=$("aPass").value, pass2=$("aPass2").value;
@@ -1043,7 +1168,7 @@ function authGate(sb){
     setMode("login");
     sb.auth.getSession().then(({data})=>{
       if (data.session && !/type=recovery/.test(location.hash)) done(data.session.user);
-      else { box.hidden=false; if (!/type=recovery/.test(location.hash)) $("aEmail").focus(); }
+      else { document.documentElement.classList.remove("checking"); box.hidden=false; if (!/type=recovery/.test(location.hash)) $("aEmail").focus(); }
     });
   });
 }
@@ -1080,17 +1205,25 @@ const store = (() => {
   return {
     async init(){
       let api=null;
-      for (let i=0;i<30 && !(window.claude&&typeof window.claude.use==="function");i++) await new Promise(r=>setTimeout(r,100));
-      if (window.claude&&typeof window.claude.use==="function"){ try{ api=await window.claude.use("db"); }catch(e){ api=null; } }
-      if (api){ db=api; mode="db"; return mode; }
-      if (SUPABASE_URL && SUPABASE_ANON_KEY){
-        try{
-          if (!window.supabase) await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");
-          sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-          user=await authGate(sb); mode="cloud"; await cloudLoad(); return mode;
-        }catch(e){ toast("Couldn't reach your account. Saving in this browser for now.",true); }
+      if (window.__framed){
+        for (let i=0;i<30 && !(window.claude&&typeof window.claude.use==="function");i++) await new Promise(r=>setTimeout(r,100));
+        if (window.claude&&typeof window.claude.use==="function"){ try{ api=await window.claude.use("db"); }catch(e){ api=null; } }
+        if (api){ db=api; mode="db"; unlockApp(); return mode; }
       }
-      mode="local"; memLoad(); return mode;
+      if (SUPABASE_URL && SUPABASE_ANON_KEY){
+        document.documentElement.classList.add("locked");
+        for (;;){
+          try{
+            if (!window.supabase) await (window.__sbReady || loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"));
+            break;
+          }catch(e){ window.__sbReady=null; await authOffline(); }
+        }
+        sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+        user=await authGate(sb);
+        try{ await cloudLoad(); }catch(e){ toast("Couldn't load your sessions. Refresh to try again.",true); }
+        mode="cloud"; unlockApp(); return mode;
+      }
+      mode="local"; memLoad(); unlockApp(); return mode;
     },
     get mode(){ return mode; },
     get user(){ return user; },
