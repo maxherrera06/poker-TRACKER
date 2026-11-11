@@ -135,6 +135,8 @@
   .trophy .tl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a;font-weight:700}
   .trophy .tv{font:900 26px/1.15 Inter,system-ui;margin-top:4px;font-variant-numeric:tabular-nums}
   .trophy .td{font-size:12px;color:var(--mute);margin-top:4px}
+  .trophies.fun .trophy{background:linear-gradient(160deg,#16161a,#0e0e11);border-color:#2c2c33}
+  .trophies.fun .tl{color:var(--mute)}
   .hofsub{margin:-6px 0 10px}
   .hofrow{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory}
   .hofrow::-webkit-scrollbar{height:8px} .hofrow::-webkit-scrollbar-thumb{background:#2c2c33;border-radius:8px}
@@ -399,6 +401,7 @@
   <div id="viewHof" hidden>
     <div class="note" id="hofNote"></div>
     <div class="trophies" id="hofTrophies"></div>
+    <div class="trophies fun" id="hofFun"></div>
     <h2>🏆 Best wins, by hand</h2>
     <div class="sub hofsub">Your biggest pot with each kind of hand. Scroll sideways →</div>
     <div class="hofrow" id="hofWins"></div>
@@ -1347,7 +1350,24 @@ function renderHof(){
     (beat?T("💀 Worst beat", pct(beat.eq), `${showKeyH(beat.key)} lost ${money(r2(-beat.net),false)} at ${pct(beat.eq)} to win`, "neg"):"")+
     (lucky?T("🍀 Luckiest win", pct(lucky.eq), `${showKeyH(lucky.key)} won ${money(r2(lucky.net),false)} from only ${pct(lucky.eq)}`, "pos"):"")+
     (best?T("⭐ Money hand", showKeyH(best[0]), `${money(r2(best[1].net))} total over ${best[1].n} hand${best[1].n===1?"":"s"}`, best[1].net>=0?"pos":"neg"):"")+
-    (fav&&fav[1].n>=2?T("🔁 Dealt the most", showKeyH(fav[0]), `${fav[1].n} times · ${money(r2(fav[1].net))}`):"");
+    (fav&&fav[1].n>=2?T("🔁 Dealt the most", showKeyH(fav[0]), `${fav[1].n} times · ${money(r2(fav[1].net))}`)
+                     :T("🏅 Pots won", wins.length.toLocaleString(), `out of ${all.length} hands logged`));
+  // ---- fun numbers ----
+  {
+    const n=all.length, hours=sessions.reduce((a,x)=>a+computeStats(x,handsOf(x)).hours,0);
+    const mucked=all.filter(h=>h.r==="f").length;
+    const sp=sessions.map(x=>({x, p:computeStats(x,handsOf(x)).profit})).sort((a,b)=>b.p-a.p)[0];
+    let streak=0, cur=0; all.slice().sort((a,b)=>a.t-b.t).forEach(h=>{ if (!h.net) return; if (h.net>0){ cur++; if (cur>streak) streak=cur; } else cur=0; });
+    const aces=all.filter(h=>h.key==="AA").length, pairs=all.filter(h=>h.key.length===2).length;
+    const movies=hours/2;
+    $("hofFun").innerHTML =
+      T("🃏 Total hands played", n.toLocaleString(), `${(n*2).toLocaleString()} hole cards looked at`)+
+      T("⏱️ Total hours played", hours>=1?`${hours.toFixed(1)}h`:`${Math.round(hours*60)}m`, movies>=1?`about ${movies.toFixed(1)} movies' worth`:"not even one movie yet")+
+      T("🗑️ Sent to the muck", mucked.toLocaleString(), `${n?Math.round(mucked/n*100):0}% of your hands. Discipline 🧘`)+
+      T("🔥 Longest heater", `${streak} in a row`, streak>=3?"pots won back to back":"no real heater yet")+
+      T("🚀 Pocket aces", `${aces}×`, `${pairs} pocket pairs dealt total${aces? "":" · still waiting on the rockets"}`)+
+      (sp? "" : "");
+  }
   const has=(list)=>new Set(list.map(h=>h._cat));
   const ordered=(list)=>{ const hs=has(list); return HOF_CATS.filter(c=>hs.has(c[0])).concat(HOF_CATS.filter(c=>!hs.has(c[0]))); };   // earned first, locked after
   const row=(list, kind)=>ordered(list).map(([cat,name,em])=>{
