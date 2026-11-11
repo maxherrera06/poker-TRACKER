@@ -130,6 +130,25 @@
   .insights{display:grid;gap:8px}
   .insight{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
   .insight.bad{border-left-color:var(--bad)} .insight.good{border-left-color:var(--good)}
+  .tiltpill{font-weight:800;padding:0 12px;white-space:nowrap;border-radius:10px}
+  .tiltpill.l0{border-color:#2f6b4c;color:var(--good)} .tiltpill.l1{border-color:#6b5a2f;color:#f2c14e}
+  .tiltpill.l2{border-color:#8a4f1f;color:#ff9f43} .tiltpill.l3{border-color:#ff5c5c;color:#fff;background:#5a1512;animation:tpulse 1.2s infinite}
+  @keyframes tpulse{50%{box-shadow:0 0 0 4px rgba(255,92,92,.25)}}
+  .tilt{background:linear-gradient(180deg,#141417,#0e0e10);border:1px solid #26262c;border-radius:16px;padding:14px 16px;margin-bottom:14px}
+  .tilt .th{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .tilt .tlab{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a;font-weight:700}
+  .tilt .tlev{font:900 22px/1.1 Inter,system-ui}
+  .tilt .tsc{margin-left:auto;font:800 14px Inter,system-ui;color:var(--mute)}
+  .gauge{position:relative;height:10px;border-radius:6px;margin:10px 0 4px;background:linear-gradient(90deg,#3ecf8e 0%,#3ecf8e 22%,#f2c14e 38%,#ff9f43 62%,#ff5c5c 85%)}
+  .gauge i{position:absolute;top:-5px;width:4px;height:20px;border-radius:2px;background:#fff;box-shadow:0 0 0 2px #0a0a0b;transform:translateX(-50%);transition:left .3s}
+  .gscale{display:flex;justify-content:space-between;font-size:10px;color:var(--mute)}
+  .treasons{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:5px;font-size:13px}
+  .treasons li::before{content:"• ";color:var(--mute)}
+  .tadvice{margin-top:10px;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:600}
+  .tadvice.ok{background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.25)}
+  .tadvice.warn{background:rgba(255,159,67,.08);border:1px solid rgba(255,159,67,.35)}
+  .tadvice.bad{background:rgba(255,92,92,.10);border:1px solid rgba(255,92,92,.45)}
+  .tl0{color:var(--good)} .tl1{color:#f2c14e} .tl2{color:#ff9f43} .tl3{color:#ff5c5c}
   .trophies{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:8px}
   .trophy{background:linear-gradient(160deg,#1c180c,#0f0e0a);border:1px solid rgba(212,175,55,.4);border-radius:14px;padding:12px 14px}
   .trophy .tl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a;font-weight:700}
@@ -290,6 +309,7 @@
     <button id="sbBtn" class="blindbtn" title="I'm the small blind this hand ( [ )">SB</button>
     <button id="bbBtn" class="blindbtn" title="I'm the big blind this hand ( ] )">BB</button>
     <button id="clr" title="Clear (Esc)">Clear</button>
+    <button class="tiltpill" id="tiltPill" title="Tilt meter: tap to see why">🧠 –</button>
   </div>
   <div class="preview" id="preview"></div>
   <details class="howto"><summary>How to enter hands <span class="sub">· cards, results, $ amounts, blinds, bomb pots, shortcuts</span></summary><p class="hint">
@@ -374,6 +394,7 @@
   </div>
 
   <h2><span class="step">3</span> How it's going</h2>
+  <div class="tilt" id="tiltBox"></div>
   <div class="sgrid">
     <div class="panel">
       <div class="form"><div class="full"><label>Current stack (optional, updates profit live)</label><input id="fstack" type="number" inputmode="decimal" min="0" placeholder="what's in front of you now"></div></div>
@@ -402,6 +423,8 @@
     <div class="note" id="hofNote"></div>
     <div class="trophies" id="hofTrophies"></div>
     <div class="trophies fun" id="hofFun"></div>
+    <h2>🧠 Tilt meter: how you play after a big loss</h2>
+    <div id="hofTilt"></div>
     <h2>🏆 Best wins, by hand</h2>
     <div class="sub hofsub">Your biggest pot with each kind of hand. Scroll sideways →</div>
     <div class="hofrow" id="hofWins"></div>
@@ -1143,7 +1166,7 @@ function renderSession(){
     $("sdy").onclick=async()=>{ const id=sid; sd.innerHTML=`<span class="sub">Deleting…</span>`;
       try{ await store.deleteSession(id); toast("Session deleted"); }catch(e){ toast("Couldn't delete the session",true); renderSession(); } };
   };
-  renderStats(s); renderLog(); renderGrid(); renderChart(); renderClock(); renderMoney();
+  renderStats(s); renderLog(); renderGrid(); renderChart(); renderClock(); renderMoney(); renderTilt(s);
 }
 // A poker "day" runs 6am to 6am so a late night stays in one day.
 function dayKey(ts){ const d=new Date(ts-6*3600e3); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
@@ -1163,6 +1186,89 @@ function renderClock(){
   const today=sessions.filter(x=>dayKey(x.startedAt)===dayKey(s.startedAt));
   const tp=Math.round(today.reduce((a,x)=>a+quickProfit(x),0)*100)/100;
   $("sclock").innerHTML=`${s.endedAt?"Played":"Running"} ${dur((end-s.startedAt)/3.6e6)} · ${hands.length} hands · <b class="${tp>0?"pos":tp<0?"neg":""}">${dayLabel(s.startedAt)}: ${money(tp)}</b> over ${today.length} session${today.length===1?"":"s"}`;
+}
+// =================== tilt meter ===================
+const TILT_LEVELS=[["🟢 Ice cold","l0"],["🟡 Warming up","l1"],["🟠 Tilting","l2"],["🔴 Full tilt","l3"]];
+function bigLossCut(s){ const bb=s&&s.bb>0?s.bb:null; return Math.max(10, bb?20*bb:0); }   // $10, or 20 big blinds at higher stakes
+function playedHand(h){ return !h.bomb && !(h.r==="f" && (!h.pre||h.pre.length===0)) && !blindOnly(h); }
+function vpipRate(list){ const nb=list.filter(h=>!h.bomb); return nb.length ? nb.filter(playedHand).length/nb.length : null; }
+// Live read on the current session: recent big losses, playing more hands, bomb pots, chasing, losing streaks,
+// and giving back what you were up.
+function liveTilt(s, hs){
+  const r2=v=>Math.round(v*100)/100;
+  const sorted=hs.slice().sort((a,b)=>a.t-b.t), n=sorted.length;
+  const out={score:0, reasons:[], advice:null, n};
+  if (n<3){ out.reasons.push("Log a few hands and the meter wakes up."); return out; }
+  const last10=sorted.slice(-10), last5=sorted.slice(-5), cut=bigLossCut(s);
+  let score=0;
+  // 1) a big loss very recently
+  const bl=last10.map((h,i)=>({h,ago:last10.length-1-i})).filter(o=>(o.h.net||0)<=-cut);
+  if (bl.length){ const latest=bl[bl.length-1]; const pts=latest.ago<=4?30:18; score+=pts+Math.min(10,(bl.length-1)*10);
+    out.reasons.push(`Big loss ${latest.ago===0?"last hand":latest.ago+" hands ago"}: ${latest.h.key} for ${money(r2(latest.h.net))}${bl.length>1?` (${bl.length} big losses in your last 10)`:""}`); }
+  // 2) playing more hands than usual
+  const base=vpipRate(sorted.slice(0,-10).length>=8?sorted.slice(0,-10):sorted), rec=vpipRate(last10);
+  if (base!=null && rec!=null && rec-base>0.12){ score+=Math.min(25,Math.round((rec-base)*100)); out.reasons.push(`Playing ${pct(rec)} of hands lately vs your usual ${pct(base)}`); }
+  // 3) bomb pots
+  const bombs=last10.filter(h=>h.bomb).length;
+  if (bombs){ score+=Math.min(20,bombs*10); out.reasons.push(`${bombs} bomb pot${bombs>1?"s":""} in your last 10 hands 💣`); }
+  // 4) chasing: putting money in with weak equity and losing
+  const chase=last10.filter(h=>(h.net||0)<0 && h.r!=="f" && (h.pre||[]).length>=3 && (h.eq||1)<0.25).length;
+  if (chase){ score+=Math.min(16,chase*8); out.reasons.push(`Lost ${chase} pot${chase>1?"s":""} after calling with under 25% equity (chasing)`); }
+  // 5) losing streak
+  let streak=0; for (let i=n-1;i>=0;i--){ const v=sorted[i].net||0; if (!v) continue; if (v<0) streak++; else break; }
+  if (streak>=3){ score+=Math.min(15,(streak-2)*5); out.reasons.push(`${streak} losing pots in a row`); }
+  // 6) giving back winnings
+  let run=0, peak=0; sorted.forEach(h=>{ run+=h.net||0; if (run>peak) peak=run; });
+  const gaveBack = peak>0 ? (peak-run)/peak : 0;
+  if (peak>=10 && gaveBack>=0.3){ score+=Math.min(30,Math.round(gaveBack*30)); out.reasons.unshift(`💸 You were up ${money(r2(peak),false)}, now ${money(r2(run))}: gave back ${Math.round(gaveBack*100)}%`); }
+  out.score=Math.max(0,Math.min(100,score));
+  out.level = out.score>=75?3 : out.score>=50?2 : out.score>=25?1 : 0;
+  // what to do about it
+  const buy=((s&&s.buyins)||[]).reduce((a,b)=>a+b,0);
+  if (peak>=10 && run>0){
+    const lock = r2(peak*0.5);
+    out.advice = {cls: gaveBack>=0.3?"warn":"ok", text:`🔒 Lock up a win: you peaked at ${money(r2(peak))}. If you drop below ${money(lock)} for the session${buy?` (a stack of about ${money(r2(buy+lock),false)})`:""}, cash out.`};
+  }
+  const protect = peak>=10 ? ` You were up ${money(r2(peak),false)} tonight, so protect what's left.` : "";
+  if (out.level>=2) out.advice = {cls:"bad", text: (out.level===3 ? "🛑 Take a break. Stand up, walk for 10 minutes, or cash out." : "⚠️ Tighten up: only play strong hands for the next 10, and skip bomb pots.")+protect};
+  if (!out.reasons.length) out.reasons.push("Nothing worrying. Playing your normal game.");
+  return out;
+}
+function renderTilt(s){
+  const box=$("tiltBox"), pill=$("tiltPill"); if (!box) return;
+  const t=liveTilt(s, hands);
+  const [lab,cls]=TILT_LEVELS[t.level||0];
+  pill.className="tiltpill "+(t.n<3?"":cls); pill.textContent = t.n<3 ? "🧠 –" : `🧠 ${t.score}`;
+  box.innerHTML = `<div class="th"><span class="tlab">🧠 Tilt meter</span><span class="tlev t${cls}">${t.n<3?"Warming up the meter…":lab}</span><span class="tsc">${t.n<3?"":t.score+"/100"}</span></div>
+    <div class="gauge"><i style="left:${t.n<3?0:t.score}%"></i></div><div class="gscale"><span>calm</span><span>warming up</span><span>tilting</span><span>full tilt</span></div>
+    <ul class="treasons">${t.reasons.slice(0,4).map(r=>`<li>${esc(r).replace(/&amp;/g,"&")}</li>`).join("")}</ul>
+    ${t.advice?`<div class="tadvice ${t.advice.cls}">${t.advice.text}</div>`:""}`;
+}
+$("tiltPill").onclick=()=>$("tiltBox").scrollIntoView({behavior:"smooth",block:"center"});
+// Long-term: what happens in the 10 hands after a big loss, compared to your normal.
+function afterLossHTML(all){
+  const r2=v=>Math.round(v*100)/100;
+  const bySess={}; all.forEach(h=>(bySess[h._s.id]=bySess[h._s.id]||[]).push(h));
+  const after=[], events=[];
+  Object.values(bySess).forEach(list=>{ list.sort((a,b)=>a.t-b.t); const cut=bigLossCut(list[0]._s);
+    list.forEach((h,i)=>{ if ((h.net||0)<=-cut){ events.push(h); after.push(...list.slice(i+1,i+11)); } }); });
+  if (!events.length) return `<div class="tilt"><div class="th"><span class="tlev tl0">🟢 No big losses yet</span></div><div class="sub" style="margin-top:6px">Once you've had a loss of $10+ (or 20 big blinds), this shows how you play in the 10 hands after it.</div></div>`;
+  const uniq=[...new Set(after)];
+  const avg=l=>l.length? l.reduce((a,h)=>a+(h.net||0),0)/l.length : 0;
+  const normal=all.filter(h=>!uniq.includes(h) && !events.includes(h));
+  const aAvg=avg(uniq), nAvg=avg(normal), aV=vpipRate(uniq), nV=vpipRate(normal);
+  const aBomb=uniq.length?uniq.filter(h=>h.bomb).length/uniq.length:0, nBomb=normal.length?normal.filter(h=>h.bomb).length/normal.length:0;
+  let score=0; if (aAvg<nAvg) score+=Math.min(40,Math.round((nAvg-aAvg)*10)); if (aV!=null&&nV!=null&&aV>nV) score+=Math.min(30,Math.round((aV-nV)*120)); if (aBomb>nBomb) score+=Math.min(30,Math.round((aBomb-nBomb)*150));
+  const lvl= score>=60?3: score>=35?2: score>=15?1:0; const [lab,cls]=TILT_LEVELS[lvl];
+  const verdict = lvl===0 ? "You play about the same after a beat. Nice." : lvl===1 ? "You get a little looser after a big loss. Worth watching." : lvl===2 ? "You tilt: results and discipline drop after a big loss." : "Big tilt: losses snowball after a bad beat. Take a break after any $10+ loss.";
+  const row=(l,a,b,better)=>`<tr><td>${l}</td><td><b>${a}</b></td><td>${b}</td><td>${better?"✅":"⚠️"}</td></tr>`;
+  return `<div class="tilt"><div class="th"><span class="tlev t${cls}">${lab}</span><span class="tsc">${events.length} big loss${events.length>1?"es":""} · ${uniq.length} hands after</span></div>
+    <div style="margin:6px 0 10px;font-size:13.5px">${verdict}</div>
+    <div class="log" style="max-height:none"><table><thead><tr><th></th><th>10 hands after a big loss</th><th>Normally</th><th></th></tr></thead><tbody>
+      ${row("Profit per hand", money(r2(aAvg)), money(r2(nAvg)), aAvg>=nAvg)}
+      ${row("Hands you play", aV==null?"–":pct(aV), nV==null?"–":pct(nV), aV==null||nV==null||aV<=nV+0.03)}
+      ${row("Bomb pots joined", pct(aBomb), pct(nBomb), aBomb<=nBomb)}
+    </tbody></table></div></div>`;
 }
 function renderStats(s){
   const st=computeStats(s,hands), c=x=>x>0?"pos":x<0?"neg":"";
@@ -1368,6 +1474,7 @@ function renderHof(){
       T("🚀 Pocket aces", `${aces}×`, `${pairs} pocket pairs dealt total${aces? "":" · still waiting on the rockets"}`)+
       (sp? "" : "");
   }
+  $("hofTilt").innerHTML = afterLossHTML(all);
   const has=(list)=>new Set(list.map(h=>h._cat));
   const ordered=(list)=>{ const hs=has(list); return HOF_CATS.filter(c=>hs.has(c[0])).concat(HOF_CATS.filter(c=>!hs.has(c[0]))); };   // earned first, locked after
   const row=(list, kind)=>ordered(list).map(([cat,name,em])=>{
