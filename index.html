@@ -959,6 +959,28 @@ if(!window.__framed){
   .qmore button.on{background:var(--accent);border-color:var(--accent)}
   .qmore .icw{margin-right:4px}
   #qType{display:none}
+
+  /* eye toggle + friend profiles */
+  .netpill{display:inline-flex;align-items:center;gap:6px}
+  .netpill.hid b{opacity:.55}
+  .eyebtn{width:30px;height:30px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);margin:-4px -6px -4px 4px}
+  .eyebtn .ic{width:17px;height:17px;stroke:#fff}
+  .netpill.hid .eyebtn{background:rgba(255,69,58,.18);border-color:rgba(255,69,58,.45)}
+  .netpill.hid .eyebtn .ic{stroke:#ff8a80}
+  .brd[data-fid]{cursor:pointer;transition:background .15s,border-color .15s}
+  .brd[data-fid]:hover{border-color:rgba(255,255,255,.2)}
+  .brd[data-fid]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .bstat.pts b{font-size:20px;color:var(--accent2)}
+  .bstat .hidv .ic{width:18px;height:18px;stroke:var(--mute)}
+  .boardnote{margin:-8px 0 8px 4px;font-size:12.5px}
+  .pav.xl{width:84px;height:84px;flex-basis:84px}
+  .fmhero{display:flex;align-items:center;gap:16px;margin:6px 0 14px}
+  .fmname{font:800 24px -apple-system,Inter,system-ui;letter-spacing:-.6px}
+  .fmlvl{margin-top:6px;font-size:14px;color:var(--mute)} .fmlvl b{color:var(--accent2);font-size:16px}
+  .fmhidden{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface2);margin-bottom:10px;font-size:13.5px;color:var(--mute)}
+  .fmhidden .ic{stroke:var(--mute);width:18px;height:18px;flex:0 0 18px}
+  .fmfoot{margin-top:14px;display:flex;justify-content:flex-end}
+  @media (max-width:760px){ .bstat.pts b{font-size:17px} }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1282,6 +1304,12 @@ if(!window.__framed){
     <div class="mfoot"><button data-close>Cancel</button><button class="pri" id="edSave">Save profile</button></div>
   </div>
 </div>
+<div class="modal" id="friendModal" hidden>
+  <div class="mbox narrow" role="dialog" aria-modal="true">
+    <div class="mtop"><h2 id="fmTitle">Friend</h2><button class="mclose" data-close title="Close">✕</button></div>
+    <div id="fmBody"></div>
+  </div>
+</div>
 <div class="modal" id="handModal" hidden>
   <div class="mbox narrow" role="dialog" aria-modal="true">
     <div class="mtop"><h2 id="hmTitle">Hand</h2><button class="mclose" data-close title="Close">✕</button></div>
@@ -1349,6 +1377,8 @@ if(!window.__framed){
     user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
     chev:'<path d="M9 5l7 7-7 7"/>',
     search:'<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4.5-4.5"/>',
+    eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    eyeoff:'<path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.6 3.4M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.6-.6 5-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/>',
     users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.3c2.2.6 3.5 2.6 3.5 5.7"/>',
     spade:'<path d="M12 3c3 3.8 8 6 8 10.2a4 4 0 0 1-7.2 2.4L14 21h-4l1.2-5.4A4 4 0 0 1 4 13.2C4 9 9 6.8 12 3z"/>'
   };
@@ -2736,7 +2766,16 @@ function renderMe(){
   const first=sessions.reduce((m,x)=>Math.min(m,x.startedAt||Infinity),Infinity);
   const joined=isFinite(first)?new Date(first).toLocaleDateString(undefined,{month:"short",year:"numeric"}):"today";
   $("meMeta").textContent=`Playing since ${joined} · ${st.hands.toLocaleString()} hands logged`;
-  $("mePills").innerHTML=`<span class="lvl"><b>${pts.toLocaleString()}</b>pts · ${L.name}</span><span><b>${st.sessions}</b>sessions</span><span><b class="${st.net>0?"pos":st.net<0?"neg":""}">${money(st.net)}</b>all time</span>`;
+  const shown=p.share!==false;
+  $("mePills").innerHTML=`<span class="lvl"><b>${pts.toLocaleString()}</b>pts · ${L.name}</span><span><b>${st.sessions}</b>sessions</span>
+    <span class="netpill${shown?"":" hid"}"><b class="${st.net>0?"pos":st.net<0?"neg":""}">${money(st.net)}</b>all time
+      <button type="button" class="eyebtn" id="meEye" title="${shown?"Friends can see your results. Tap to hide them.":"Your results are hidden from friends. Tap to show them."}" aria-pressed="${!shown}">${ICON(shown?"eye":"eyeoff")}</button></span>`;
+  $("meEye").onclick=async()=>{
+    const next=!(myProfile().share!==false);
+    try{ await store.saveProfile({share:next}); if (store.mode==="cloud" && await frInit()) await syncProfile(true); }catch(e){}
+    toast(next?"Friends can see your results":"Your results are hidden from friends");
+    renderMe();
+  };
   const frac=L.next?Math.min(1,(pts-L.base)/(L.next[0]-L.base)):1;
   $("meLevel").innerHTML=L.next?`<div class="lbar"><i style="width:${(frac*100).toFixed(1)}%"></i></div><div class="sub">${(L.next[0]-pts).toLocaleString()} points to ${L.next[1]}</div>`:`<div class="sub">Top level reached.</div>`;
   const tiles=[...$("hofTrophies").children].slice(0,4).map(n=>n.outerHTML).join("");
@@ -2899,7 +2938,7 @@ async function renderFriends(){
   const friends=fs.filter(f=>f.status==="accepted").map(f=>f.requester===me?f.addressee:f.requester);
   const { data:sts } = await sb.from("profile_stats").select("id,stats").in("id",[me,...friends]);
   const sm=Object.fromEntries((sts||[]).map(x=>[x.id,x.stats||{}]));
-  frData={ fs, profs:pm };
+  frData={ fs, profs:pm, stats:sm };
   // requests to me
   const inc=fs.filter(f=>f.status==="pending"&&f.addressee===me&&pm[f.requester]);
   $("frRequests").innerHTML=inc.length?`<h2>Friend requests</h2><div class="plist">${inc.map(f=>personHTML(pm[f.requester],
@@ -2908,10 +2947,10 @@ async function renderFriends(){
   const rows=[me,...friends].filter(id=>pm[id]).map(id=>({ id, p:pm[id], s:sm[id]||{} })).sort((a,b)=>(b.p.points||0)-(a.p.points||0));
   $("frBoard").innerHTML = rows.length<=1
     ? `<div class="frempty"><div class="pav big">${avatarSVG(myProfile().avatar)}</div><div><b>It's just you so far</b><div class="sub">Send an invite link, or search for a friend's username above.</div></div><button class="pri" id="frShare2">Invite friends</button></div>`
-    : rows.map((r,i)=>{ const s=r.s, hid=s.hidden||s.net==null;
-        return `<div class="brd${r.id===me?" me":""}"><div class="rk">${i+1}</div>${personHTML(r.p,
-          `<div class="bstat"><b>${(r.p.points||0).toLocaleString()}</b><span>pts</span></div>
-           <div class="bstat"><b class="${hid?"":s.net>0?"pos":s.net<0?"neg":""}">${hid?"Hidden":money(s.net)}</b><span>${hid?"results":"all time"}</span></div>
+    : `<div class="sub boardnote">Ranked by points</div>`+rows.map((r,i)=>{ const s=r.s, hid=s.hidden||s.net==null;
+        return `<div class="brd${r.id===me?" me":""}" data-fid="${r.id}" tabindex="0" role="button" aria-label="View @${esc(r.p.username)}"><div class="rk">${i+1}</div>${personHTML(r.p,
+          `<div class="bstat pts"><b>${(r.p.points||0).toLocaleString()}</b><span>points</span></div>
+           <div class="bstat"><b class="${hid?"hidv":s.net>0?"pos":s.net<0?"neg":""}">${hid?ICON("eyeoff"):money(s.net)}</b><span>${hid?"hidden":"all time"}</span></div>
            <div class="bstat hide-sm"><b>${hid?"–":(s.hands||0).toLocaleString()}</b><span>hands</span></div>
            <div class="bstat hide-sm"><b>${hid?"–":ago(s.last)}</b><span>last played</span></div>
            ${r.id===me?"":`<button class="sm ghostbtn" data-rm="${r.id}" title="Remove friend">✕</button>`}`,
@@ -2921,6 +2960,35 @@ async function renderFriends(){
   const sent=fs.filter(f=>f.status==="pending"&&f.requester===me&&pm[f.addressee]);
   $("frSent").innerHTML=sent.length?`<h2>Waiting on</h2><div class="plist">${sent.map(f=>personHTML(pm[f.addressee],`<button class="sm" data-cancel="${f.addressee}">Cancel</button>`,"Request sent")).join("")}</div>`:"";
 }
+function openFriend(id){
+  const me=store.user&&store.user.id, pr=frData.profs[id]; if (!pr) return;
+  const s=(frData.stats||{})[id]||{}, hid=s.hidden||s.net==null, L=levelOf(pr.points||0);
+  const isFriend=frData.fs.some(f=>f.status==="accepted"&&((f.requester===id&&f.addressee===me)||(f.addressee===id&&f.requester===me)));
+  const tile=(k,v,cls="")=>`<div><span>${k}</span><b class="${cls}">${v}</b></div>`;
+  $("fmTitle").textContent=id===me?"Your profile":"Profile";
+  $("fmBody").innerHTML=`<div class="fmhero"><div class="pav xl">${avatarSVG(pr.avatar)}</div>
+      <div><div class="fmname">@${esc(pr.username)}</div><div class="sub">${esc(pr.title||"No title")}</div>
+      <div class="fmlvl"><b>${(pr.points||0).toLocaleString()}</b> points · ${L.name}</div></div></div>
+    ${hid?`<div class="fmhidden">${ICON("eyeoff")}<span>${id===me?"You're hiding your results from friends.":"@"+esc(pr.username)+" keeps their results private."}</span></div>`:""}
+    <div class="hmgrid">
+      ${tile("All-time profit", hid?"Hidden":money(s.net), hid?"":s.net>0?"pos":s.net<0?"neg":"")}
+      ${tile("Biggest pot", hid||!s.biggest?"–":money(s.biggest), "pos")}
+      ${tile("Hands logged", hid?"–":(s.hands||0).toLocaleString())}
+      ${tile("Sessions", hid?"–":(s.sessions||0).toLocaleString())}
+      ${tile("Last played", hid?"–":ago(s.last))}
+      ${tile("Level", L.next?`${L.name} · ${(L.next[0]-(pr.points||0)).toLocaleString()} to ${L.next[1]}`:L.name)}
+    </div>
+    ${id!==me&&isFriend?`<div class="fmfoot"><button class="danger" id="fmRemove">Remove friend</button></div>`:""}`;
+  const rm=$("fmRemove");
+  if (rm) rm.onclick=async()=>{
+    if (!rm.classList.contains("sure")){ rm.classList.add("sure"); rm.textContent="Tap again to remove"; return; }
+    closeModal($("friendModal"));
+    await frAct(()=>store.client.from("friendships").delete().or(`and(requester.eq.${me},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${me})`),"Friend removed");
+  };
+  openModal("friendModal");
+}
+$("frBoard").addEventListener("click",e=>{ if (e.target.closest("button")) return; const r=e.target.closest(".brd[data-fid]"); if (r) openFriend(r.dataset.fid); });
+$("frBoard").addEventListener("keydown",e=>{ if ((e.key==="Enter"||e.key===" ")){ const r=e.target.closest(".brd[data-fid]"); if (r){ e.preventDefault(); openFriend(r.dataset.fid); } } });
 async function frSearch(q){
   const out=$("frResults"); q=cleanName(q);
   if (q.length<2){ out.innerHTML=""; return; }
