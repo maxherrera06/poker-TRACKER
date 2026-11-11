@@ -81,6 +81,13 @@
   .stable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);padding:8px;font-weight:600;border-bottom:1px solid var(--line)}
   .stable td{padding:8px;border-top:1px solid #16352a;font-variant-numeric:tabular-nums;white-space:nowrap}
   .stable tr.cur td{background:rgba(242,193,78,.06)}
+  .stable tr.drow{cursor:pointer}
+  .stable tr.drow td{background:#10241c;font-weight:700;border-top:2px solid var(--line)}
+  .stable tr.drow td:first-child::before{content:"▸";display:inline-block;width:16px;color:var(--mute);transition:transform .15s}
+  .stable tr.drow.open td:first-child::before{transform:rotate(90deg);color:var(--accent)}
+  .stable tr.srow td:first-child{padding-left:26px}
+  .cashrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+  .cashrow input{width:110px;flex:0 0 auto}
   .stable tr.srow{cursor:pointer}
   .stable tr.srow:hover td{background:rgba(255,255,255,.03)}
   .stable tr.srow td:first-child::before{content:"▸";display:inline-block;width:14px;color:var(--mute);transition:transform .15s}
@@ -354,7 +361,8 @@
     </div>
     <h2>What stands out</h2>
     <div class="insights" id="ovInsights"></div>
-    <h2>Sessions</h2>
+    <h2>Days &amp; sessions</h2>
+    <div class="sub" style="margin:-4px 0 8px">Click a day to see its sessions, then click a session for its details. A day runs 6am to 6am, so late nights stay together.</div>
     <div class="log" style="max-height:none"><table class="stable" id="ovSessions"></table></div>
     <div class="two">
       <div><h3>Best starting hands</h3><div id="ovBest" class="sub"></div></div>
@@ -907,12 +915,11 @@ function selectSession(id){
 }
 function setNote(s){ $("snote").textContent = s || (store.mode==="local" ? "Saving in this browser only. Open this page on claude.ai to save your sessions to your account." : ""); }
 
-async function newSession(){
-  const prev=sessions[0];
-  const d=new Date();
+async function newSession(buyin, base){
+  const prev=base||cur()||sessions[0];
   const data={ name: prev&&prev.name ? prev.name : "Session", sb: prev?prev.sb??null:null, bb: prev?prev.bb??null:null,
-    buyins:[], stack:null, cashout:null, startedAt:Date.now(), endedAt:null, table:tableSize, maxSeats };
-  try { const id=await store.addSession(data); selectSession(id); toast("New session started"); return id; }
+    buyins: buyin>0 ? [buyin] : [], stack:null, cashout:null, startedAt:Date.now(), endedAt:null, table:tableSize, maxSeats };
+  try { const id=await store.addSession(data); selectSession(id); if (!(buyin>0)) toast("New session started"); return id; }
   catch(e){ toast(e&&e.code==="quota_exceeded"?"Storage is full. Delete old sessions to make room.":"Couldn't create the session", true); return null; }
 }
 
@@ -959,6 +966,9 @@ function saveField(field, val){
   debouncers[field]=setTimeout(()=>{ store.updateSession(sid,{[field]:val}).catch(()=>toast("Couldn't save. Try again.",true)); },500);
 }
 const numOrNull=v=>{ const x=parseFloat(v); return isNaN(x)?null:x; };
+let lastRebuy=50;
+try { const v=+localStorage.getItem("po_rebuy"); if (v>0) lastRebuy=v; } catch(e){}
+function saveRebuy(v){ lastRebuy=v; try{ localStorage.setItem("po_rebuy",v); }catch(e){} }
 let creating=null;
 async function ensureSession(){ if (sid) return sid; if (!creating) creating=newSession().finally(()=>{creating=null;}); return creating; }
 $("fname").addEventListener("input",async e=>{ await ensureSession(); saveField("name",e.target.value); });
@@ -974,7 +984,7 @@ async function addBuy(){
 }
 $("addbuy").onclick=addBuy;
 $("fbuy").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();addBuy();} });
-$("snew").onclick=newSession;
+$("snew").onclick=()=>newSession();
 $("ssel").onchange=e=>selectSession(e.target.value);
 
 function setVal(id,v){ const el=$(id); if (document.activeElement===el) return; el.value = v==null ? "" : v; }
@@ -1037,12 +1047,29 @@ function renderSession(){
   const cb=$("cashbox");
   if (!s) cb.innerHTML="";
   else if (s.endedAt) {
-    cb.innerHTML=`<div class="sub">Ended ${new Date(s.endedAt).toLocaleString()} · cashed out <b style="color:var(--ink)">${money(s.cashout,false)}</b></div><button class="sm" id="reopen" style="margin-top:6px">Reopen session</button>`;
+    cb.innerHTML=`<div class="sub">Ended ${new Date(s.endedAt).toLocaleString()} · cashed out <b style="color:var(--ink)">${money(s.cashout,false)}</b></div>
+      <div class="cashrow"><span class="sub">Playing again?</span><input id="fagain" type="number" inputmode="decimal" min="0" value="${lastRebuy}" title="Buy-in">
+      <button class="pri" id="again">Start again at this buy-in</button><button class="sm" id="reopen">Reopen this one</button></div>`;
     $("reopen").onclick=()=>store.updateSession(sid,{endedAt:null,cashout:null});
+    $("again").onclick=async()=>{ const r=numOrNull($("fagain").value); if (!(r>0)){ toast("Enter your buy-in",true); return; }
+      saveRebuy(r); if (await newSession(r, s)) toast(`New session started with ${money(r,false)}`); };
   } else {
-    cb.innerHTML=`<label>Cash out</label><div class="inl"><input id="fcash" type="number" inputmode="decimal" min="0" placeholder="final amount"><button class="pri" id="docash">Cash out &amp; end</button></div>`;
+    cb.innerHTML=`<label>Cash out (what you're walking away with)</label>
+      <div class="inl"><input id="fcash" type="number" inputmode="decimal" min="0" placeholder="cash-out amount"><button class="pri" id="docash">Cash out &amp; end</button></div>
+      <div class="cashrow"><span class="sub">or cash out and buy back in for</span><input id="frebuy" type="number" inputmode="decimal" min="0" value="${lastRebuy}">
+      <button id="dorebuy">Cash out &amp; rebuy</button></div>
+      <div class="sub" style="margin-top:6px">Rebuy closes this stretch at your cash-out and starts a fresh one with the same game and blinds. Both show up under today.</div>`;
     $("docash").onclick=()=>{ const v=numOrNull($("fcash").value); if (v==null){toast("Enter your cash-out amount",true);return;}
       store.updateSession(sid,{cashout:v,endedAt:Date.now()}).then(()=>toast("Session ended")); };
+    $("dorebuy").onclick=async()=>{
+      const v=numOrNull($("fcash").value), r=numOrNull($("frebuy").value);
+      if (v==null){ toast("Enter what you're cashing out first",true); $("fcash").focus(); return; }
+      if (!(r>0)){ toast("Enter your rebuy amount",true); return; }
+      saveRebuy(r);
+      try { await store.updateSession(s.id,{cashout:v,endedAt:Date.now()}); }
+      catch(e){ toast("Couldn't cash out. Try again.",true); return; }
+      if (await newSession(r, s)) toast(`Cashed out ${money(v,false)} · back in for ${money(r,false)}`);
+    };
   }
   // delete
   const sd=$("sdel");
@@ -1055,10 +1082,24 @@ function renderSession(){
   };
   renderStats(s); renderLog(); renderGrid(); renderChart(); renderClock(); renderMoney();
 }
+// A poker "day" runs 6am to 6am so a late night stays in one day.
+function dayKey(ts){ const d=new Date(ts-6*3600e3); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function dayLabel(ts){ return new Date(ts-6*3600e3).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}); }
+// Profit of a session without loading its hands when it has a cash-out.
+function quickProfit(s){
+  if (s.id===sid) return computeStats(s,hands).profit;
+  const buy=(s.buyins||[]).reduce((a,b)=>a+b,0);
+  if (s.cashout!=null) return s.cashout-buy;
+  if (s.stack!=null && buy>0) return s.stack-buy;
+  return (handsCache[s.id]||[]).reduce((a,h)=>a+(h.net||0),0);
+}
 function renderClock(){
   $("tabLive").textContent = cur()&&!cur().endedAt ? " ● live" : "";
   const s=cur(); if (!s){ $("sclock").textContent=""; return; }
-  const end=s.endedAt||Date.now(); $("sclock").textContent=`${s.endedAt?"Played":"Running"} ${dur((end-s.startedAt)/3.6e6)} · ${hands.length} hands`;
+  const end=s.endedAt||Date.now();
+  const today=sessions.filter(x=>dayKey(x.startedAt)===dayKey(s.startedAt));
+  const tp=Math.round(today.reduce((a,x)=>a+quickProfit(x),0)*100)/100;
+  $("sclock").innerHTML=`${s.endedAt?"Played":"Running"} ${dur((end-s.startedAt)/3.6e6)} · ${hands.length} hands · <b class="${tp>0?"pos":tp<0?"neg":""}">${dayLabel(s.startedAt)}: ${money(tp)}</b> over ${today.length} session${today.length===1?"":"s"}`;
 }
 function renderStats(s){
   const st=computeStats(s,hands), c=x=>x>0?"pos":x<0?"neg":"";
@@ -1182,7 +1223,7 @@ async function loadAll(force){
   }catch(e){ $("ovNote").textContent="Couldn't load every session. Showing what loaded."; }
   ovLoading=false; renderAll();
 }
-let openSid=null; const openDetails=new Set();   // which session is expanded, and which of its sections are open
+let openSid=null, openDays=null; const openDetails=new Set();   // which session is expanded, and which of its sections are open
 function sessionDetailHTML(s, st, hs){
   const c=x=>x>0?"pos":x<0?"neg":"";
   const k=sec=>`${s.id}:${sec}`, op=sec=>openDetails.has(k(sec))?" open":"";
@@ -1288,16 +1329,29 @@ function renderAll(){
   if (bigLosses.length){ const sum=-bigLosses.reduce((a,h)=>a+h.net,0); ins.push(["bad", `Your ${bigLosses.length===1?"biggest loss":bigLosses.length+" biggest losses"} (${bigLosses.map(h=>h.key+(h.bomb?" 💣":"")+" "+money(h.net)).join(", ")}) ${bigLosses.length===1?"is":"add up to"} ${money(sum,false)}, ${lossTot?Math.round(sum/lossTot*100):0}% of all your losses.`]); }
   $("ovInsights").innerHTML=ins.map(([k,t])=>`<div class="insight ${k}">${t}</div>`).join("") || `<div class="empty">Play a session to see insights.</div>`;
   // sessions table (newest first)
-  $("ovSessions").innerHTML=`<thead><tr><th>Date</th><th>Session</th><th>Stakes</th><th>Time</th><th>Hands</th><th>In for</th><th>Out</th><th>Profit</th><th>💣</th></tr></thead><tbody>`+
-    rows.slice().reverse().map(({s,st,hs})=>{
+  const days=[], dmap={};
+  rows.slice().reverse().forEach(r=>{ const k=dayKey(r.s.startedAt); if (!dmap[k]){ dmap[k]={k,ts:r.s.startedAt,rows:[]}; days.push(dmap[k]); } dmap[k].rows.push(r); });
+  if (openDays===null) openDays=new Set(days.length?[days[0].k]:[]);
+  const sessRow=({s,st,hs})=>{
       const d=new Date(s.startedAt), bn=hs.filter(h=>h.bomb).reduce((a,h)=>a+(h.net||0),0);
       const open = openSid===s.id;
-      return `<tr class="srow ${s.id===sid?"cur":""} ${open?"open":""}" data-sid="${esc(s.id)}" title="Click for this session's details"><td>${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})} ${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}</td>
+      return `<tr class="srow ${s.id===sid?"cur":""} ${open?"open":""}" data-sid="${esc(s.id)}" title="Click for this session's details"><td>${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}</td>
         <td>${esc(s.name||"Session")}${s.endedAt?"":` <span class="tag w">live</span>`}</td><td>${s.sb!=null&&s.bb!=null?`$${s.sb}/$${s.bb}`:"–"}</td>
         <td>${dur(st.hours)}</td><td>${hs.length}</td><td>${money(st.buy,false)}</td><td>${s.cashout!=null?money(s.cashout,false):"–"}</td>
         <td class="${c(st.profit)}"><b>${money(Math.round(st.profit*100)/100)}</b></td><td class="${c(bn)}">${bn?money(Math.round(bn*100)/100):""}</td></tr>`+
         (open ? `<tr class="sdet"><td colspan="9">${sessionDetailHTML(s,st,hs)}</td></tr>` : "");
+  };
+  $("ovSessions").innerHTML=`<thead><tr><th>Day / start</th><th>Session</th><th>Stakes</th><th>Time</th><th>Hands</th><th>In for</th><th>Out</th><th>Profit</th><th>💣</th></tr></thead><tbody>`+
+    days.map(d=>{
+      const P=d.rows.reduce((a,r)=>a+r.st.profit,0), Hh=d.rows.reduce((a,r)=>a+r.st.hours,0), N=d.rows.reduce((a,r)=>a+r.hs.length,0);
+      const B=d.rows.reduce((a,r)=>a+r.hs.filter(h=>h.bomb).reduce((x,h)=>x+(h.net||0),0),0);
+      const stakes=[...new Set(d.rows.map(r=>r.s.sb!=null&&r.s.bb!=null?`$${r.s.sb}/$${r.s.bb}`:null).filter(Boolean))].join(", ");
+      const open=openDays.has(d.k);
+      return `<tr class="drow ${open?"open":""}" data-day="${esc(d.k)}"><td>${dayLabel(d.ts)}</td><td>${d.rows.length} session${d.rows.length===1?"":"s"}</td><td>${stakes||"–"}</td><td>${dur(Hh)}</td><td>${N}</td><td></td><td></td>
+        <td class="${c(P)}"><b>${money(Math.round(P*100)/100)}</b></td><td class="${c(B)}">${B?money(Math.round(B*100)/100):""}</td></tr>`+
+        (open ? d.rows.map(sessRow).join("") : "");
     }).join("")+`</tbody>`;
+  $("ovSessions").querySelectorAll("tr.drow").forEach(tr=>tr.onclick=()=>{ const k=tr.dataset.day; if (openDays.has(k)) openDays.delete(k); else openDays.add(k); renderAll(); });
   $("ovSessions").querySelectorAll("tr.srow").forEach(tr=>tr.onclick=()=>{ openSid = openSid===tr.dataset.sid ? null : tr.dataset.sid; renderAll(); });
   $("ovSessions").querySelectorAll(".sd details").forEach(d=>d.addEventListener("toggle",()=>{ if (d.open) openDetails.add(d.dataset.k); else openDetails.delete(d.dataset.k); }));
   $("ovSessions").querySelectorAll(".sd .closebtn").forEach(b=>b.onclick=e=>{ e.stopPropagation(); openSid=null; renderAll(); });
