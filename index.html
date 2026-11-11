@@ -641,6 +641,137 @@ if(!window.__framed){
     .meav{width:96px;height:96px;flex-basis:96px}
     .toast{bottom:92px}
   }
+
+  /* amount boxes get a clear outline */
+  .actions input,.money input{border:1.5px solid rgba(255,255,255,.28)!important;background:#0e0e10!important}
+  .actions input:focus,.money input:focus{border-color:var(--accent)!important}
+  /* seated + opponents */
+  .opp1{display:grid;gap:10px}
+  .orow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .orow+.orow{padding-top:10px;border-top:1px solid var(--line)}
+  .omax{color:var(--mute);font-weight:600;font-size:12.5px;margin-left:4px}
+  /* hands that beat you */
+  .beats{margin-top:12px;border-radius:18px;background:var(--surface2);border:1px solid var(--line);padding:12px 14px}
+  .bhead{font-weight:800;font-size:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .bhead span{font-weight:600;color:var(--mute);font-size:12.5px}
+  .bhead.rare{color:#7ee2a0}.bhead.some{color:#ffd60a}.bhead.many{color:#ff8a80}
+  .bhead.nuts{color:#7ee2a0;margin:0;justify-content:flex-start;gap:6px;align-items:center}
+  .bhead.nuts .ic{stroke:#7ee2a0}
+  .brow{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid rgba(255,255,255,.05)}
+  .bcat{flex:0 0 132px;font-weight:700;font-size:13px}
+  .bcat span{display:block;font-weight:500;color:var(--mute);font-size:11.5px}
+  .bkeys{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .bkeys code{font:700 12.5px ui-monospace,Menlo,monospace;background:#0e0e10;border:1px solid var(--line);border-radius:7px;padding:2px 7px;color:#fff}
+  /* clickable tiles */
+  .trophy[data-th],.trophy[data-go],.hof[data-th]{cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+  .trophy[data-th]:hover,.trophy[data-go]:hover,.hof[data-th]:hover{border-color:rgba(255,255,255,.2)!important;background:#1a1a1d!important}
+  .trophy[data-th]:active,.hof[data-th]:active{transform:scale(.99)}
+  .trophy:not([data-th]):not([data-go])::after{display:none}
+  /* me */
+  .mehero{align-items:center}
+  .mename{font:800 32px -apple-system,Inter,system-ui;letter-spacing:-1px}
+  .metitle{font-size:17px;color:#c5cbe0;font-weight:600;margin-top:2px}
+  .metitle.dim{opacity:.55;font-style:italic}
+  .meacts{display:flex;flex-direction:column;gap:10px;align-self:flex-start}
+  .meacts button{white-space:nowrap}
+  .mepills .lvl{background:rgba(52,120,246,.25);border-color:rgba(91,156,255,.5);color:#dbe7ff}
+  .melevel{margin-top:12px;max-width:420px}
+  .lbar{height:8px;border-radius:8px;background:rgba(0,0,0,.35);overflow:hidden;margin-bottom:6px}
+  .lbar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#5b9cff,#30d158)}
+  .melevel .sub{color:#aab3cc}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+  .pgrid div{background:var(--surface2);border-radius:14px;padding:12px;font-size:13px;color:var(--mute)}
+  .pgrid b{display:block;font:800 22px Inter,system-ui;color:#fff;margin-bottom:2px}
+  /* popups */
+  .modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;background:rgba(0,0,0,.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .modal[hidden]{display:none!important}
+  .modal.in .mbox{animation:mpop .26s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes mpop{from{opacity:0;transform:translateY(14px) scale(.98)}}
+  body.modal-open{overflow:hidden}
+  .mbox{width:100%;max-width:640px;background:#141416;border:1px solid var(--line);border-radius:28px;padding:22px 24px;box-shadow:0 30px 90px rgba(0,0,0,.8)}
+  .mbox.narrow{max-width:520px}
+  .mtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .mtop h2{margin:0}
+  .mclose{width:38px;height:38px;padding:0;border-radius:50%;font-size:15px}
+  .msec{padding:16px 0;border-top:1px solid var(--line)}
+  .msec:first-of-type{border-top:none}
+  .mlabel{display:block;font-weight:800;font-size:15px;margin-bottom:10px;color:#fff}
+  .two2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .two2 input,.two2 select{width:100%;padding:11px 12px;font-size:15px}
+  .two2 .sub{margin-top:6px;font-size:12.5px}
+  .inl{display:flex;gap:8px} .inl input{flex:1;min-width:0}
+  .mbox .avgrid{grid-template-columns:repeat(6,1fr);gap:10px}
+  .mbox .avgrid button{border-radius:18px}
+  .tog{display:flex;align-items:center;gap:12px;padding:8px 0;cursor:pointer;font-weight:600;font-size:14.5px;flex-wrap:wrap}
+  .tog small{flex-basis:100%;margin-left:56px;margin-top:-4px;color:var(--mute);font-weight:500;font-size:12.5px}
+  .tog input{position:absolute;opacity:0;pointer-events:none}
+  .tog>span{position:relative;width:44px;height:26px;flex:0 0 44px;border-radius:999px;background:#39393d;transition:background .2s}
+  .tog>span::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+  .tog input:checked+span{background:var(--good)}
+  .tog input:checked+span::after{transform:translateX(18px)}
+  .tog input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+  .mfoot{display:flex;justify-content:flex-end;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+  .mfoot .pri{padding:12px 22px}
+  .sub.neg{color:#ff8a80}
+  /* hand details */
+  .hmcards{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0}
+  .hmnet{font:900 40px/1 -apple-system,Inter,system-ui;letter-spacing:-1px;margin:6px 0 14px}
+  .hmgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hmgrid div{background:var(--surface2);border-radius:14px;padding:10px 12px}
+  .hmgrid span{display:block;font-size:12px;color:var(--mute);margin-bottom:2px}
+  .hmgrid b{font-size:14.5px}
+  /* friends */
+  .frhead{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+  .frsearch{flex:1;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 18px}
+  .frsearch:focus-within{border-color:var(--accent)}
+  .frsearch input{flex:1;background:transparent!important;border:none!important;box-shadow:none!important;padding:15px 0;font-size:16px}
+  .frsearch .ic{stroke:var(--mute);width:20px;height:20px}
+  .frhead .pri{padding:14px 22px}
+  .frnote{margin:14px 0;padding:14px 16px;border-radius:18px;background:rgba(52,120,246,.1);border:1px solid rgba(52,120,246,.35);font-size:14px}
+  .frnote a{color:var(--accent2)}
+  .frnote code{background:var(--surface2);padding:2px 6px;border-radius:6px}
+  .plist{display:grid;gap:8px}
+  .plist.results{margin-top:10px}
+  .person{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+  .plist>.person{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px 14px}
+  .pav{width:48px;height:48px;flex:0 0 48px;border-radius:50%;overflow:hidden}
+  .pav.big{width:64px;height:64px;flex-basis:64px}
+  .pav svg{width:100%;height:100%;display:block}
+  .pinfo{min-width:0;flex:1}
+  .pinfo b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pinfo span{display:block;color:var(--mute);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pright{display:flex;align-items:center;gap:14px}
+  .board{display:grid;gap:8px}
+  .brd{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:12px 16px}
+  .brd.me{border-color:rgba(52,120,246,.5);background:linear-gradient(90deg,rgba(52,120,246,.12),var(--surface) 60%)}
+  .rk{width:28px;text-align:center;font:900 18px Inter,system-ui;color:var(--mute)}
+  .brd:nth-child(1) .rk{color:#ffd60a}.brd:nth-child(2) .rk{color:#d1d5db}.brd:nth-child(3) .rk{color:#e3a15c}
+  .bstat{text-align:right;min-width:64px}
+  .bstat b{display:block;font:800 16px Inter,system-ui}
+  .bstat span{font-size:11.5px;color:var(--mute)}
+  .ghostbtn{background:transparent;border-color:transparent;color:var(--mute)}
+  .ghostbtn.sure{color:#ff8a80;border-color:rgba(255,69,58,.4)}
+  .frempty{display:flex;align-items:center;gap:16px;padding:20px;border-radius:22px;background:var(--surface);border:1px dashed rgba(255,255,255,.15)}
+  .frempty>div:nth-child(2){flex:1}
+  @media (max-width:760px){
+    .tabs{grid-template-columns:repeat(6,1fr)!important}
+    .tabs a{font-size:10px!important}
+    .tabs .lf{display:none}
+    .meacts{flex-direction:row;align-self:stretch}
+    .meacts button{flex:1}
+    .two2{grid-template-columns:1fr}
+    .mbox .avgrid{grid-template-columns:repeat(4,1fr)}
+    .modal{padding:12px 8px}
+    .mbox{padding:18px 16px;border-radius:24px}
+    .hide-sm{display:none}
+    .frempty .pri{display:none}
+    .frhead{flex-direction:column;align-items:stretch}
+    .brd{padding:10px 12px;gap:8px}
+    .pright{gap:8px}
+    .bstat{min-width:52px}
+    .bcat{flex-basis:104px}
+    .hmgrid{grid-template-columns:1fr}
+  }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -654,8 +785,9 @@ if(!window.__framed){
   <nav class="tabs">
     <a href="#" id="tabSession" class="on">🃏 Play<span class="live" id="tabLive"></span></a>
     <a href="#all-sessions" id="tabAll">📈 Stats</a>
-    <a href="#hall-of-fame" id="tabHof">🏆 Hall of Fame</a>
+    <a href="#hall-of-fame" id="tabHof">🏆 <span><span class="lf">Hall of </span>Fame</span></a>
     <a href="#practice" id="tabPrac">🎯 Practice</a>
+    <a href="#friends" id="tabFriends">👥 Friends</a>
     <a href="#me" id="tabMe">👤 Me</a>
   </nav>
   <div id="viewSession">
@@ -720,6 +852,7 @@ if(!window.__framed){
         <div class="grp"><div class="lbl">Flop · Turn · River</div><div class="slots" id="bs"></div></div>
       </div>
       <div class="made" id="made"></div>
+      <div class="beats" id="beats" hidden></div>
       <div class="money">
         <div><div class="lbl">In this hand</div><div class="inhand" id="inhand">$0</div></div>
         <input id="addAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$ amt">
@@ -764,11 +897,16 @@ if(!window.__framed){
       </div>
       <div class="sub" id="samp" style="margin-top:6px">&nbsp;</div>
       <div class="opp1">
-        <div><div class="olab">Opponents in the hand</div><div class="sub" id="oppInfo2">Tap − when someone folds</div></div>
-        <div class="ostep"><button id="om" title="Someone folded (-)">−</button><span class="n" id="on2">8</span><button id="op" title="One more player (+)">+</button></div>
+        <div class="orow">
+          <div><div class="olab" id="tlabel">Seated</div><div class="sub">At the table this hand</div></div>
+          <div class="ostep"><button id="tm" title="One fewer seated">−</button><span class="n" id="tn">9</span><button id="tp" title="One more seated">+</button></div>
+        </div>
+        <div class="orow">
+          <div><div class="olab">Opponents in the hand</div><div class="sub" id="oppInfo2">Tap − when someone folds</div></div>
+          <div class="ostep"><button id="om" title="Someone folded (-)">−</button><span class="n" id="on2">8</span><button id="op" title="Someone came back in (+)">+</button></div>
+        </div>
       </div>
       <div hidden>
-        <span id="tlabel"></span><button id="tm"></button><span id="tn"></span><button id="tp"></button>
         <button id="fm"></button><span id="fn"></span><button id="fp"></button>
         <b id="on"></b><span id="oppInfo"></span><button id="fold1"></button>
       </div>
@@ -813,25 +951,31 @@ if(!window.__framed){
     <div class="mehero">
       <div class="meav" id="meAv"></div>
       <div class="meinfo">
-        <div class="mename"><input id="meName" maxlength="24" placeholder="Pick a username" spellcheck="false"><span class="verif" title="Signed in">✅</span></div>
+        <div class="mename" id="meName"></div>
+        <div class="metitle" id="meTitle"></div>
         <div class="memeta" id="meMeta"></div>
         <div class="mepills" id="mePills"></div>
+        <div class="melevel" id="meLevel"></div>
       </div>
+      <div class="meacts"><button id="meEdit">Edit profile</button><button class="pri" id="meShare">Invite friends</button></div>
     </div>
-    <h2>Avatar</h2>
-    <div class="avgrid" id="avGrid"></div>
     <h2>Overview</h2>
     <div class="metiles" id="meTiles"></div>
-    <h2>Account</h2>
-    <div class="panel acctpanel">
-      <div class="acct" id="acct">
-        <span id="acctWho"></span>
-        <button id="bkExport" title="Download all your sessions and hands as a file">Export backup</button>
-        <button id="bkImport" title="Load sessions from a backup file into this account">Import backup</button>
-        <input type="file" id="bkFile" accept=".json,application/json" hidden>
-        <button id="signOut" hidden>Sign out</button>
-      </div>
+    <h2>How points work</h2>
+    <div class="panel ptsinfo" id="ptsInfo"></div>
+  </div>
+
+  <div id="viewFriends" hidden>
+    <div class="frhead">
+      <div class="frsearch"><span class="icw" id="frSearchIc"></span><input id="frQ" type="text" placeholder="Search for people by username" autocomplete="off" spellcheck="false"></div>
+      <button class="pri" id="frShare">Invite friends</button>
     </div>
+    <div id="frNote" class="frnote" hidden></div>
+    <div id="frResults"></div>
+    <div id="frRequests"></div>
+    <h2>Leaderboard</h2>
+    <div class="board" id="frBoard"></div>
+    <div id="frSent"></div>
   </div>
 
   <div id="viewPrac" hidden>
@@ -889,6 +1033,51 @@ if(!window.__framed){
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="modal" id="editModal" hidden>
+  <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="editH">
+    <div class="mtop"><h2 id="editH">Edit profile</h2><button class="mclose" data-close title="Close">✕</button></div>
+    <div class="msec">
+      <div class="mlabel">Avatar</div>
+      <div class="avgrid" id="avGrid"></div>
+    </div>
+    <div class="msec two2">
+      <div><label class="mlabel" for="edName">Username</label><input id="edName" type="text" maxlength="24" spellcheck="false" placeholder="Pick a username"><div class="sub" id="edNameNote">Friends find you by this.</div></div>
+      <div><label class="mlabel" for="edTitle">Title</label><select id="edTitle"><option value="">No title</option><option>Professional Folder</option><option>Bomb Pot Victim</option><option>Calling Station</option><option>River Rat</option><option>Certified Nit</option><option>Nuts or Nothing</option><option>Variance Enjoyer</option><option>Degen in Training</option><option>Tilt Survivor</option><option>Hero Caller</option><option>Cooler Magnet</option><option>Pocket Aces Hater</option><option>Runner-Runner Merchant</option><option>Ace-Rag Apologist</option><option>Gutshot Believer</option><option>Chip Leader (Once)</option><option>The Table Captain</option><option>Bluff Catcher</option><option>Suited Anything</option><option>Rake Donor</option></select><div class="sub">Shows under your name.</div></div>
+    </div>
+    <div class="msec">
+      <label class="tog"><input type="checkbox" id="edShare"><span></span>Show my results to friends <small>Profit, hands and biggest pot on the leaderboard</small></label>
+    </div>
+    <div class="msec" id="edAccount">
+      <div class="mlabel">Account</div>
+      <div class="two2">
+        <div><label class="sub" for="edEmail">Email</label><div class="inl"><input id="edEmail" type="email" autocomplete="email"><button id="edEmailBtn">Change</button></div></div>
+        <div><label class="sub" for="edPass">New password</label><div class="inl"><input id="edPass" type="password" autocomplete="new-password" minlength="6" placeholder="6+ characters"><button id="edPassBtn">Change</button></div></div>
+      </div>
+    </div>
+    <div class="msec">
+      <div class="mlabel">On this device</div>
+      <label class="tog"><input type="checkbox" id="edGuide"><span></span>Show the 3-step hand guide</label>
+      <label class="tog"><input type="checkbox" id="edPicker"><span></span>Open the card picker by default</label>
+    </div>
+    <div class="msec">
+      <div class="mlabel">Your data</div>
+      <div class="acct" id="acct">
+        <span id="acctWho"></span>
+        <button id="bkExport">Export backup</button>
+        <button id="bkImport">Import backup</button>
+        <input type="file" id="bkFile" accept=".json,application/json" hidden>
+        <button id="signOut" class="danger" hidden>Sign out</button>
+      </div>
+    </div>
+    <div class="mfoot"><button data-close>Cancel</button><button class="pri" id="edSave">Save profile</button></div>
+  </div>
+</div>
+<div class="modal" id="handModal" hidden>
+  <div class="mbox narrow" role="dialog" aria-modal="true">
+    <div class="mtop"><h2 id="hmTitle">Hand</h2><button class="mclose" data-close title="Close">✕</button></div>
+    <div id="hmBody"></div>
+  </div>
+</div>
 <div class="auth" id="auth" hidden>
   <div class="aglow"></div>
   <div class="asuits" aria-hidden="true"><span>♠</span><span>♥</span><span>♦</span><span>♣</span></div>
@@ -949,11 +1138,13 @@ if(!window.__framed){
     chart:'<path d="M3 3v18h18M7 15l4-4 3 3 6-6"/>',
     user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
     chev:'<path d="M9 5l7 7-7 7"/>',
+    search:'<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4.5-4.5"/>',
+    users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.3c2.2.6 3.5 2.6 3.5 5.7"/>',
     spade:'<path d="M12 3c3 3.8 8 6 8 10.2a4 4 0 0 1-7.2 2.4L14 21h-4l1.2-5.4A4 4 0 0 1 4 13.2C4 9 9 6.8 12 3z"/>'
   };
   const E={"💣":"bomb","🧠":"gauge","🏆":"trophy","💀":"skull","🔒":"lock","⚠":"alert","🛑":"stop","💸":"down","✅":"check","🚫":"ban",
     "👑":"crown","💎":"gem","🏠":"house","🌊":"wave","🪜":"stairs","🎯":"target","✌":"pair","🃏":"card","🔺":"high","⚡":"bolt",
-    "💰":"coins","🍀":"clover","⭐":"star","🔁":"repeat","🏅":"medal","⏱":"clock","🗑":"muck","🔥":"flame","🚀":"spade","📈":"chart","👤":"user",
+    "💰":"coins","🍀":"clover","⭐":"star","🔁":"repeat","🏅":"medal","⏱":"clock","🗑":"muck","🔥":"flame","🚀":"spade","📈":"chart","👤":"user","👥":"users",
     "🟢":"dot:#3ecf8e","🟡":"dot:#f2c14e","🟠":"dot:#ff9f43","🔴":"dot:#ff5c5c","🙌":"","👍":"","🧘":""};
   const keys=Object.keys(E).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));
   const RE=new RegExp("("+keys.join("|")+")️?","gu"), TEST=new RegExp(keys.join("|"),"u");
@@ -1193,7 +1384,34 @@ function buildPicker(){
   }
 }
 function renderPicker(){ document.querySelectorAll(".pc").forEach(b=>b.classList.toggle("used",P.cards.includes(+b.dataset.c))); }
+// ---- hands that beat you right now (every possible opponent holding on this board)
+const CAT_NAME=["High card","Pair","Two pair","Sets & trips","Straight","Flush","Full house","Four of a kind","Straight flush"];
+let beatsKey="";
+function renderBeats(){
+  const el=$("beats"); const cs=P.r?P.cards.slice(0,P.at):P.cards;
+  if (cs.length<5){ el.hidden=true; beatsKey=""; return; }
+  const k=cs.join(","); if (k===beatsKey) return; beatsKey=k;
+  const board=cs.slice(2), hs=evalCards(cs,cs.length), used=new Set(cs), deck=[];
+  for (let c=0;c<52;c++) if (!used.has(c)) deck.push(c);
+  const groups={}; let n=0, total=0; const tmp=new Array(2+board.length); for (let i=0;i<board.length;i++) tmp[2+i]=board[i];
+  for (let i=0;i<deck.length;i++) for (let j=i+1;j<deck.length;j++){
+    total++; tmp[0]=deck[i]; tmp[1]=deck[j]; const sc=evalCards(tmp,tmp.length);
+    if (sc>hs){ n++; const cat=Math.floor(sc/SHIFT), g=groups[cat]||(groups[cat]={n:0,keys:{}}); g.n++; const hk=handKey([deck[i],deck[j]]); g.keys[hk]=Math.max(g.keys[hk]||0,sc); }
+  }
+  el.hidden=false;
+  if (!n){ el.innerHTML=`<div class="bhead nuts">🔒 Nothing beats you right now. You have the best possible hand.</div>`; return; }
+  const p=n/total*100;
+  if (p>30){ const low=Math.min(...Object.keys(groups).map(Number)); el.innerHTML=`<div class="bhead many">Lots of hands beat you <span>${Math.round(p)}% of possible hands · ${CAT_NAME[low].toLowerCase()} or better</span></div>`; return; }
+  const rows=Object.keys(groups).map(Number).sort((a,b)=>b-a).map(cat=>{
+    const g=groups[cat], keys=Object.entries(g.keys).sort((a,b)=>b[1]-a[1]).map(e=>showKeyH(e[0]));
+    const shown=keys.slice(0,6).map(x=>`<code>${x}</code>`).join("")+(keys.length>6?`<span class="sub"> +${keys.length-6} more</span>`:"");
+    return `<div class="brow"><div class="bcat">${CAT_NAME[cat]||"Better hand"}<span>${g.n} combo${g.n===1?"":"s"}</span></div><div class="bkeys">${shown}</div></div>`;
+  }).join("");
+  const tone=p<5?"rare":p<20?"some":"many";
+  el.innerHTML=`<div class="bhead ${tone}">Hands that beat you <span>${n} of ${total} possible hands · ${p<1?p.toFixed(1):Math.round(p)}%</span></div>${rows}`;
+}
 function renderMade(){
+  renderBeats();
   const cs=P.cards;
   if (cs.length<2){ $("made").textContent=""; return; }
   if (cs.length<5){
@@ -1352,7 +1570,7 @@ $("bbBtn").onclick=()=>{ setBlind("bb",true); $("q").focus(); };
 function seatCount(){ return (P.bomb && bombPlayers>=2) ? bombPlayers : tableSize; }
 function renderOpp(){
   $("tn").textContent = seatCount();
-  $("tlabel").innerHTML = (P.bomb&&bombPlayers>=2) ? "In bomb pot" : `Seated <span style="opacity:.75">(of ${maxSeats})</span>`; $("fn").textContent = folded; $("on").textContent = effOpps();
+  $("tlabel").innerHTML = (P.bomb&&bombPlayers>=2) ? "In bomb pot" : `Seated <span class="omax">of ${maxSeats}</span>`; $("fn").textContent = folded; $("on").textContent = effOpps();
   $("on2").textContent = effOpps();
   $("oppInfo2").textContent = (P.bomb&&bombPlayers>=2) ? "Bomb pot players" : folded ? `${folded} folded so far · resets next hand` : "Tap − when someone folds";
   $("oppInfo").innerHTML = "" + (P.bomb&&bombPlayers>=2 ? " (bomb pot players)" : "") + (seatCount()-1>9 ? " · max 9 opponents simulated" : "");
@@ -1384,7 +1602,7 @@ $("tp").onclick=()=>setTable(seatCount()+1);
 $("fm").onclick=()=>setFolded(folded-1);
 $("fp").onclick=()=>setFolded(folded+1);
 $("om").onclick=()=>{ setFolded(folded+1); };
-$("op").onclick=()=>{ if (folded>0) setFolded(folded-1); else setTable(seatCount()+1); };
+$("op").onclick=()=>{ if (folded>0) setFolded(folded-1); else toast("Everyone seated is already in. Use Seated + to add a player."); };
 $("fold1").onclick=()=>{ setFolded(folded+1); $("q").focus(); };
 $("pot").addEventListener("input",renderVerdict);
 $("call").addEventListener("input",renderVerdict);
@@ -1603,6 +1821,7 @@ const store = (() => {
     },
     get mode(){ return mode; },
     get user(){ return user; },
+    get client(){ return sb; },
     profile(){
       let p={}; try{ p=JSON.parse(localStorage.getItem("po_profile")||"{}"); }catch(e){}
       if (mode==="cloud"&&user&&user.user_metadata) p={...p,...user.user_metadata};
@@ -1792,7 +2011,7 @@ $("guideHide").onclick=()=>{ $("guide").hidden=true; $("guideShow").hidden=false
 $("guideShow").onclick=()=>{ $("guide").hidden=false; $("guideShow").hidden=true; try{localStorage.removeItem("po_guide");}catch(e){} };
 // ---- tap-to-pick card grid: open by default on touch screens
 function setPicker(open){ $("picker").hidden=!open; $("pickToggle").textContent=open?"Hide card picker":"Tap to pick cards instead"; }
-setPicker(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+{ let pref=null; try{ pref=localStorage.getItem("po_picker"); }catch(e){} setPicker(pref ? pref==="open" : !!(window.matchMedia&&matchMedia("(pointer:coarse)").matches)); }
 $("pickToggle").onclick=()=>setPicker($("picker").hidden);
 $("fsb").addEventListener("input",async e=>{ await ensureSession(); saveField("sb",numOrNull(e.target.value)); });
 $("fbb").addEventListener("input",async e=>{ await ensureSession(); saveField("bb",numOrNull(e.target.value)); });
@@ -2152,19 +2371,21 @@ function viewIsAll(){ return location.hash==="#all-sessions"; }
 function viewIsHof(){ return location.hash==="#hall-of-fame"; }
 function viewIsPrac(){ return location.hash==="#practice"; }
 function viewIsMe(){ return location.hash==="#me"; }
+function viewIsFriends(){ return location.hash==="#friends"; }
 let lastView=null;
 function applyView(){
-  const all=viewIsAll(), hof=viewIsHof(), prac=viewIsPrac(), me=viewIsMe(), ses=!all&&!hof&&!prac&&!me;
-  const views={viewSession:ses,viewAll:all,viewHof:hof,viewPrac:prac,viewMe:me};
+  const all=viewIsAll(), hof=viewIsHof(), prac=viewIsPrac(), me=viewIsMe(), fr=viewIsFriends(), ses=!all&&!hof&&!prac&&!me&&!fr;
+  const views={viewSession:ses,viewAll:all,viewHof:hof,viewPrac:prac,viewMe:me,viewFriends:fr};
   for (const [id,on] of Object.entries(views)){
     const el=$(id); el.hidden=!on;
     if (on && lastView!==id){ el.classList.remove("fadein"); void el.offsetWidth; el.classList.add("fadein"); lastView=id; }
   }
-  $("tabSession").classList.toggle("on",ses); $("tabAll").classList.toggle("on",all); $("tabHof").classList.toggle("on",hof); $("tabPrac").classList.toggle("on",prac); $("tabMe").classList.toggle("on",me);
+  $("tabSession").classList.toggle("on",ses); $("tabAll").classList.toggle("on",all); $("tabHof").classList.toggle("on",hof); $("tabPrac").classList.toggle("on",prac); $("tabMe").classList.toggle("on",me); $("tabFriends").classList.toggle("on",fr);
+  if (fr) renderFriends();
   if (all||hof||me){ loadAll(); if (me) renderMe(); } else if (prac) pracStart(); else $("q").focus();
 }
 $("tabSession").onclick=e=>{ e.preventDefault(); if (!viewIsSession()){ history.replaceState(null,"",location.pathname+location.search); applyView(); } };
-function viewIsSession(){ return !viewIsAll()&&!viewIsHof()&&!viewIsPrac()&&!viewIsMe(); }
+function viewIsSession(){ return !viewIsAll()&&!viewIsHof()&&!viewIsPrac()&&!viewIsMe()&&!viewIsFriends(); }
 window.addEventListener("hashchange", applyView);
 async function loadAll(force){
   if (ovLoading) return;
@@ -2176,43 +2397,269 @@ async function loadAll(force){
   }catch(e){ $("ovNote").textContent="Couldn't load every session. Showing what loaded."; }
   ovLoading=false; renderAll(); renderHof();
 }
-// =================== Me: profile + avatar ===================
+// =================== Me: profile, points, edit ===================
+const SITE_URL="https://maxherrera06.github.io/poker-TRACKER/";
 const AVATARS=[["spade","#ffb547","#e0661b"],["crown","#5b9cff","#1d3fa6"],["flame","#ff6a5c","#b3122a"],["bolt","#ffd84d","#d08a00"],["gem","#a78bfa","#4c1d95"],
   ["clover","#4ade80","#0f6b3a"],["star","#f472b6","#9d174d"],["target","#38bdf8","#075985"],["coins","#fbbf24","#92400e"],["trophy","#94a3b8","#1e293b"],["skull","#6ee7b7","#134e4a"],["medal","#fb923c","#7c2d12"]];
+let avN=0;
 function avatarSVG(i){
-  const [ic,c1,c2]=AVATARS[((i%AVATARS.length)+AVATARS.length)%AVATARS.length], id="ag"+i;
+  i=((+i||0)%AVATARS.length+AVATARS.length)%AVATARS.length;
+  const [ic,c1,c2]=AVATARS[i], id="ag"+i+"_"+(++avN);
   return `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="${id}" cx="35%" cy="25%" r="85%"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient></defs>
     <rect width="100" height="100" fill="url(#${id})"/><circle cx="50" cy="118" r="62" fill="rgba(0,0,0,.18)"/>
     <g transform="translate(22 20) scale(2.35)" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))">${ICON_PATH(ic)}</g></svg>`;
 }
+const cleanName=v=>String(v||"").toLowerCase().replace(/[^a-z0-9_.]/g,"").slice(0,24);
 function myProfile(){
   const p=store.profile(), u=store.user, email=u&&u.email||"";
   let h=0; for (const ch of email) h=(h*31+ch.charCodeAt(0))|0;
-  return { avatar: p.avatar!=null ? p.avatar : Math.abs(h)%AVATARS.length, username: p.username || (email?email.split("@")[0]:"Player") };
+  return { avatar: p.avatar!=null ? p.avatar : Math.abs(h)%AVATARS.length, username: cleanName(p.username) || cleanName(email.split("@")[0]) || "player",
+           title: p.title||"", share: p.share!==false };
 }
-function renderAvatarTop(){ const p=myProfile(); $("avTop").innerHTML=avatarSVG(p.avatar); }
+function renderAvatarTop(){ $("avTop").innerHTML=avatarSVG(myProfile().avatar); }
+// ---- points
+const LEVELS=[[0,"Fish"],[100,"Regular"],[300,"Grinder"],[700,"Shark"],[1500,"Whale"],[3000,"Legend"]];
+function allMyHands(){ return sessions.flatMap(x=>handsOf(x)); }
+function myPoints(){
+  const hs=allMyHands(), winS=sessions.filter(x=>x.endedAt&&quickProfit(x)>0).length;
+  return hs.length + sessions.length*10 + winS*15 + (prac.score||0)*3 + (prac.best||0)*5;
+}
+function levelOf(p){ let i=0; while (i+1<LEVELS.length && p>=LEVELS[i+1][0]) i++; return { name:LEVELS[i][1], base:LEVELS[i][0], next:LEVELS[i+1]||null }; }
+function myStats(){
+  const hs=allMyHands(); const big=hs.reduce((m,h)=>Math.max(m,h.net||0),0);
+  return { net: Math.round(sessions.reduce((a,x)=>a+quickProfit(x),0)*100)/100, hands: hs.length, sessions: sessions.length,
+           biggest: Math.round(big*100)/100, last: sessions.reduce((m,x)=>Math.max(m,x.startedAt||0),0) };
+}
 function renderMe(){
-  const p=myProfile();
+  const p=myProfile(), pts=myPoints(), L=levelOf(pts);
   $("meAv").innerHTML=avatarSVG(p.avatar);
-  if (document.activeElement!==$("meName")) $("meName").value=p.username;
-  const all=sessions.flatMap(x=>x.id===sid?hands:(handsCache[x.id]||[]));
+  $("meName").textContent="@"+p.username;
+  $("meTitle").textContent=p.title||"No title yet";
+  $("meTitle").classList.toggle("dim",!p.title);
+  const st=myStats();
   const first=sessions.reduce((m,x)=>Math.min(m,x.startedAt||Infinity),Infinity);
   const joined=isFinite(first)?new Date(first).toLocaleDateString(undefined,{month:"short",year:"numeric"}):"today";
-  $("meMeta").textContent=`Playing since ${joined} · ${all.length.toLocaleString()} hands logged`;
-  const net=Math.round(sessions.reduce((a,x)=>a+quickProfit(x),0)*100)/100;
-  $("mePills").innerHTML=`<span><b>${sessions.length}</b>sessions</span><span><b class="${net>0?"pos":net<0?"neg":""}">${money(net)}</b>all time</span>`;
-  $("avGrid").innerHTML=AVATARS.map((_,i)=>`<button data-i="${i}" class="${i===p.avatar?"on":""}" title="Use this avatar">${avatarSVG(i)}</button>`).join("");
-  $("avGrid").querySelectorAll("button").forEach(b=>b.onclick=async()=>{
-    try{ await store.saveProfile({avatar:+b.dataset.i}); }catch(e){ toast("Couldn't save your avatar",true); }
-    renderMe(); renderAvatarTop(); toast("Avatar updated"); });
+  $("meMeta").textContent=`Playing since ${joined} · ${st.hands.toLocaleString()} hands logged`;
+  $("mePills").innerHTML=`<span class="lvl"><b>${pts.toLocaleString()}</b>pts · ${L.name}</span><span><b>${st.sessions}</b>sessions</span><span><b class="${st.net>0?"pos":st.net<0?"neg":""}">${money(st.net)}</b>all time</span>`;
+  const frac=L.next?Math.min(1,(pts-L.base)/(L.next[0]-L.base)):1;
+  $("meLevel").innerHTML=L.next?`<div class="lbar"><i style="width:${(frac*100).toFixed(1)}%"></i></div><div class="sub">${(L.next[0]-pts).toLocaleString()} points to ${L.next[1]}</div>`:`<div class="sub">Top level reached.</div>`;
   const tiles=[...$("hofTrophies").children].slice(0,4).map(n=>n.outerHTML).join("");
   $("meTiles").innerHTML=tiles||`<div class="empty">Log a few hands and your best and worst moments show up here.</div>`;
+  $("ptsInfo").innerHTML=`<div class="pgrid"><div><b>+1</b>every hand you log</div><div><b>+10</b>every session</div><div><b>+15</b>every winning session</div><div><b>+3</b>every right answer in Practice</div><div><b>+5</b>per hand of your best Practice streak</div></div>
+    <div class="sub" style="margin-top:10px">Levels: ${LEVELS.map(l=>`${l[1]} ${l[0]}`).join(" · ")}</div>`;
+  scheduleSync();
 }
-$("meName").addEventListener("change", async e=>{
-  const v=e.target.value.trim().slice(0,24); if (!v) { renderMe(); return; }
-  try{ await store.saveProfile({username:v}); toast("Username saved"); }catch(err){ toast("Couldn't save your username",true); }
+// ---- popups
+function openModal(id){ const m=$(id); m.hidden=false; m.classList.remove("in"); void m.offsetWidth; m.classList.add("in"); document.body.classList.add("modal-open"); }
+function closeModal(m){ m.hidden=true; if (!document.querySelector(".modal:not([hidden])")) document.body.classList.remove("modal-open"); }
+document.querySelectorAll(".modal").forEach(m=>{
+  m.addEventListener("click",e=>{ if (e.target===m || e.target.closest("[data-close]")) closeModal(m); });
 });
-$("meName").addEventListener("keydown",e=>{ if (e.key==="Enter") e.target.blur(); });
+document.addEventListener("keydown",e=>{ if (e.key==="Escape") document.querySelectorAll(".modal:not([hidden])").forEach(closeModal); },true);
+// ---- hand details (from Overview / Hall of Fame tiles)
+function openHand(h){
+  if (!h) return;
+  const b=(h.pre||[]).concat(h.post||[]), s=h._s||sessions.find(x=>handsOf(x).includes(h));
+  const big=cs=>cs.map(c=>`<div class="slot filled">${cardHTML(c)}</div>`).join("");
+  const res={w:"Won",l:"Lost",f:"Folded",x:"Split"}[h.r]||"Logged";
+  const d=new Date(h.t);
+  $("hmTitle").textContent=`${showKeyH(h.key)} · ${res}`;
+  $("hmBody").innerHTML=`<div class="hmcards"><div><div class="plbl">Your hand</div><div class="pcards">${big(h.hero)}</div></div>
+      ${b.length?`<div><div class="plbl">Board</div><div class="pcards">${big(b)}</div></div>`:""}</div>
+    <div class="hmnet ${h.net>0?"pos":h.net<0?"neg":""}">${money(Math.round((h.net||0)*100)/100)}</div>
+    <div class="hmgrid">
+      <div><span>Made hand</span><b>${b.length>=3?describe(evalCards(h.hero.concat(b),2+b.length)):"Before the flop"}</b></div>
+      <div><span>Chance to win preflop</span><b>${h.eqPre!=null?pct(h.eqPre):"–"}</b></div>
+      <div><span>Chance when it ended</span><b>${h.eq!=null?pct(h.eq):"–"}</b></div>
+      <div><span>Opponents</span><b>${h.opps||"–"}</b></div>
+      <div><span>When</span><b>${d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}, ${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}</b></div>
+      <div><span>Session</span><b>${s?esc(s.name||"Session")+(s.sb&&s.bb?` · $${s.sb}/$${s.bb}`:""):"–"}</b></div>
+      ${h.bomb?`<div><span>Bomb pot</span><b>💣 ante $${h.ante||"?"}</b></div>`:""}
+    </div>`;
+  openModal("handModal");
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-th]"); if (t){ openHand(tHands[+t.dataset.th]); return; }
+  const g=e.target.closest(".trophy[data-go]"); if (g) location.hash=g.dataset.go;
+});
+// ---- edit profile
+let edAvatar=0;
+function openEdit(){
+  const p=myProfile(); edAvatar=p.avatar;
+  $("edName").value=p.username; $("edTitle").value=p.title; $("edShare").checked=p.share; $("edNameNote").textContent="Friends find you by this. Letters, numbers, _ and . only."; $("edNameNote").className="sub";
+  $("edAccount").hidden=store.mode!=="cloud"; $("edEmail").value=store.user&&store.user.email||""; $("edPass").value="";
+  let g=true,pk=false; try{ g=localStorage.getItem("po_guide")!=="hide"; pk=localStorage.getItem("po_picker")==="open"; }catch(e){}
+  $("edGuide").checked=g; $("edPicker").checked=pk;
+  const draw=()=>{ $("avGrid").innerHTML=AVATARS.map((_,i)=>`<button type="button" data-i="${i}" class="${i===edAvatar?"on":""}">${avatarSVG(i)}</button>`).join("");
+    $("avGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{ edAvatar=+b.dataset.i; draw(); }); };
+  draw(); openModal("editModal");
+}
+$("meEdit").onclick=openEdit;
+$("edName").addEventListener("input",e=>{ const c=cleanName(e.target.value); if (c!==e.target.value) e.target.value=c; });
+$("edGuide").onchange=e=>{ const on=e.target.checked; $("guide").hidden=!on; $("guideShow").hidden=on; try{ on?localStorage.removeItem("po_guide"):localStorage.setItem("po_guide","hide"); }catch(_){} };
+$("edPicker").onchange=e=>{ try{ localStorage.setItem("po_picker",e.target.checked?"open":"closed"); }catch(_){} setPicker(e.target.checked); };
+$("edSave").onclick=async()=>{
+  const name=cleanName($("edName").value);
+  if (name.length<2){ $("edNameNote").textContent="Pick a username with at least 2 characters."; $("edNameNote").className="sub neg"; return; }
+  const patch={ username:name, title:$("edTitle").value, avatar:edAvatar, share:$("edShare").checked };
+  $("edSave").disabled=true;
+  try{
+    if (store.mode==="cloud" && await frInit()) await syncProfile(false, patch);
+    await store.saveProfile(patch);
+    closeModal($("editModal")); renderMe(); renderAvatarTop(); toast("Profile saved");
+  }catch(e){
+    const taken=/taken/i.test(e.message||"");
+    $("edNameNote").textContent=taken?`@${name} is taken. Try another.`:"Couldn't save. Check your connection and try again."; $("edNameNote").className="sub neg";
+  }finally{ $("edSave").disabled=false; }
+};
+$("edEmailBtn").onclick=async()=>{
+  const v=$("edEmail").value.trim(); if (!/.+@.+\..+/.test(v)){ toast("Enter a valid email",true); return; }
+  const { error } = await store.client.auth.updateUser({ email:v }, { emailRedirectTo: SITE_URL });
+  toast(error?error.message:"Check both inboxes to confirm the new email", !!error);
+};
+$("edPassBtn").onclick=async()=>{
+  const v=$("edPass").value; if (v.length<6){ toast("Use at least 6 characters",true); return; }
+  const { error } = await store.client.auth.updateUser({ password:v });
+  if (!error) $("edPass").value="";
+  toast(error?error.message:"Password changed", !!error);
+};
+// ---- invites
+async function shareInvite(){
+  const u=(FR.me&&FR.me.username)||myProfile().username;
+  const url=`${SITE_URL}?invite=${encodeURIComponent(u)}`;
+  const text=`Pull up a seat on Max's Lucky Odds 🃏 Live odds while you play, every session tracked, and a leaderboard to see who's actually running hot. Add me: @${u}`;
+  try{
+    if (navigator.share){ await navigator.share({ title:"Max's Lucky Odds", text, url }); return; }
+  }catch(e){ if (e && e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(`${text}\n${url}`); toast("Invite copied. Paste it in a text."); }
+  catch(e){ prompt("Copy this invite:", `${text}\n${url}`); }
+}
+$("meShare").onclick=shareInvite;
+$("frShare").onclick=shareInvite;
+
+// =================== Friends ===================
+const FR={ ready:null, me:null, sig:"" };
+$("frSearchIc").innerHTML=ICON("search");
+async function frInit(){
+  const sb=store.client; if (!sb||!store.user) return false;
+  if (FR.ready!==null) return FR.ready;
+  const { data, error } = await sb.from("profiles").select("id,username,avatar,title,points").eq("id",store.user.id).maybeSingle();
+  if (error){ FR.ready=false; FR.err=error; return false; }
+  FR.ready=true; FR.me=data;
+  if (!data){ try{ await syncProfile(true); }catch(e){} }
+  return true;
+}
+async function syncProfile(force, patch){
+  const sb=store.client; if (!sb||!store.user) return;
+  const p={...myProfile(), ...(patch||{})};
+  let uname=cleanName(p.username); if (uname.length<2) uname="player"+Math.floor(1000+Math.random()*9000);
+  const row={ id:store.user.id, username:uname, avatar:+p.avatar||0, title:p.title||null, points:myPoints(), updated_at:new Date().toISOString() };
+  let { error } = await sb.from("profiles").upsert(row);
+  if (error && error.code==="23505"){
+    if (!force) throw new Error("taken");
+    row.username=(uname+Math.floor(100+Math.random()*900)).slice(0,24);
+    ({ error } = await sb.from("profiles").upsert(row));
+    if (!error) await store.saveProfile({ username:row.username });
+  }
+  if (error) throw error;
+  FR.me=row;
+  const stats=p.share===false?{ hidden:true }:myStats();
+  const { error:e2 } = await sb.from("profile_stats").upsert({ id:row.id, stats, updated_at:row.updated_at });
+  if (e2) throw e2;
+  FR.sig=JSON.stringify([row.username,row.avatar,row.title,row.points,stats]);
+}
+let syncT=null;
+function scheduleSync(){
+  if (store.mode!=="cloud"||syncT||FR.ready===false) return;
+  syncT=setTimeout(async()=>{
+    syncT=null;
+    try{
+      if (!await frInit()) return;
+      const p=myProfile(), st=p.share===false?{hidden:true}:myStats();
+      const sig=JSON.stringify([cleanName(p.username),+p.avatar||0,p.title||null,myPoints(),st]);
+      if (sig!==FR.sig) await syncProfile(true);
+    }catch(e){}
+  },6000);
+}
+const ago=ts=>{ if (!ts) return "–"; const m=(Date.now()-ts)/6e4; return m<60?`${Math.max(1,Math.round(m))}m ago`:m<1440?`${Math.round(m/60)}h ago`:`${Math.round(m/1440)}d ago`; };
+function personHTML(pr, right, sub){
+  return `<div class="person"><div class="pav">${avatarSVG(pr.avatar)}</div><div class="pinfo"><b>@${esc(pr.username)}</b><span>${esc(sub!=null?sub:(pr.title||levelOf(pr.points||0).name))}</span></div><div class="pright">${right||""}</div></div>`;
+}
+let frData={ fs:[], profs:{} };
+async function renderFriends(){
+  const note=$("frNote"), clear=()=>{ $("frResults").innerHTML=$("frRequests").innerHTML=$("frBoard").innerHTML=$("frSent").innerHTML=""; };
+  if (store.mode!=="cloud"){ note.hidden=false; note.innerHTML=`Friends work when you're signed in on <a href="${SITE_URL}" target="_blank" rel="noopener">the website</a>.`; clear(); return; }
+  const ok=await frInit();
+  if (!ok){ note.hidden=false; note.innerHTML=`Friends isn't switched on yet. Run <code>supabase/friends.sql</code> in the Supabase SQL Editor, then refresh this page.`; clear(); return; }
+  note.hidden=true;
+  try{ await syncProfile(true); }catch(e){}
+  const sb=store.client, me=store.user.id;
+  const { data:fs, error } = await sb.from("friendships").select("*").or(`requester.eq.${me},addressee.eq.${me}`);
+  if (error){ note.hidden=false; note.textContent="Couldn't load friends. Refresh to try again."; return; }
+  const ids=[...new Set(fs.flatMap(f=>[f.requester,f.addressee]))];
+  if (!ids.includes(me)) ids.push(me);
+  const { data:profs } = await sb.from("profiles").select("id,username,avatar,title,points,updated_at").in("id",ids);
+  const pm=Object.fromEntries((profs||[]).map(x=>[x.id,x])); if (FR.me) pm[me]={...pm[me],...FR.me};
+  const friends=fs.filter(f=>f.status==="accepted").map(f=>f.requester===me?f.addressee:f.requester);
+  const { data:sts } = await sb.from("profile_stats").select("id,stats").in("id",[me,...friends]);
+  const sm=Object.fromEntries((sts||[]).map(x=>[x.id,x.stats||{}]));
+  frData={ fs, profs:pm };
+  // requests to me
+  const inc=fs.filter(f=>f.status==="pending"&&f.addressee===me&&pm[f.requester]);
+  $("frRequests").innerHTML=inc.length?`<h2>Friend requests</h2><div class="plist">${inc.map(f=>personHTML(pm[f.requester],
+    `<button class="pri sm" data-acc="${f.requester}">Accept</button><button class="sm" data-dec="${f.requester}">Decline</button>`)).join("")}</div>`:"";
+  // leaderboard
+  const rows=[me,...friends].filter(id=>pm[id]).map(id=>({ id, p:pm[id], s:sm[id]||{} })).sort((a,b)=>(b.p.points||0)-(a.p.points||0));
+  $("frBoard").innerHTML = rows.length<=1
+    ? `<div class="frempty"><div class="pav big">${avatarSVG(myProfile().avatar)}</div><div><b>It's just you so far</b><div class="sub">Send an invite link, or search for a friend's username above.</div></div><button class="pri" id="frShare2">Invite friends</button></div>`
+    : rows.map((r,i)=>{ const s=r.s, hid=s.hidden||s.net==null;
+        return `<div class="brd${r.id===me?" me":""}"><div class="rk">${i+1}</div>${personHTML(r.p,
+          `<div class="bstat"><b>${(r.p.points||0).toLocaleString()}</b><span>pts</span></div>
+           <div class="bstat"><b class="${hid?"":s.net>0?"pos":s.net<0?"neg":""}">${hid?"Hidden":money(s.net)}</b><span>${hid?"results":"all time"}</span></div>
+           <div class="bstat hide-sm"><b>${hid?"–":(s.hands||0).toLocaleString()}</b><span>hands</span></div>
+           <div class="bstat hide-sm"><b>${hid?"–":ago(s.last)}</b><span>last played</span></div>
+           ${r.id===me?"":`<button class="sm ghostbtn" data-rm="${r.id}" title="Remove friend">✕</button>`}`,
+          `${r.p.title||levelOf(r.p.points||0).name}${r.id===me?" · you":""}`)}</div>`; }).join("");
+  const sh2=$("frShare2"); if (sh2) sh2.onclick=shareInvite;
+  // sent
+  const sent=fs.filter(f=>f.status==="pending"&&f.requester===me&&pm[f.addressee]);
+  $("frSent").innerHTML=sent.length?`<h2>Waiting on</h2><div class="plist">${sent.map(f=>personHTML(pm[f.addressee],`<button class="sm" data-cancel="${f.addressee}">Cancel</button>`,"Request sent")).join("")}</div>`:"";
+}
+async function frSearch(q){
+  const out=$("frResults"); q=cleanName(q);
+  if (q.length<2){ out.innerHTML=""; return; }
+  if (!await frInit()) return;
+  const me=store.user.id;
+  const { data, error } = await store.client.from("profiles").select("id,username,avatar,title,points").ilike("username",q+"%").neq("id",me).limit(8);
+  if (error){ out.innerHTML=`<div class="sub">Search isn't working right now.</div>`; return; }
+  const rel=id=>{ const f=frData.fs.find(f=>(f.requester===id&&f.addressee===me)||(f.addressee===id&&f.requester===me)); return !f?"none":f.status==="accepted"?"friend":f.requester===me?"sent":"incoming"; };
+  out.innerHTML=`<div class="plist results">${data.length?data.map(p=>{ const r=rel(p.id);
+    return personHTML(p, r==="friend"?`<span class="sub">Friends</span>`:r==="sent"?`<span class="sub">Requested</span>`:r==="incoming"?`<button class="pri sm" data-acc="${p.id}">Accept</button>`:`<button class="pri sm" data-add="${p.id}">Add friend</button>`); }).join("")
+    :`<div class="sub" style="padding:10px 4px">No one named @${esc(q)}… yet. Send them an invite.</div>`}</div>`;
+}
+let frT; $("frQ").addEventListener("input",e=>{ clearTimeout(frT); frT=setTimeout(()=>frSearch(e.target.value),280); });
+async function frAct(fn, msg){ try{ const { error } = await fn(); if (error) throw error; if (msg) toast(msg); }catch(e){ toast("That didn't go through. Try again.",true); } await renderFriends(); if ($("frQ").value) frSearch($("frQ").value); }
+$("viewFriends").addEventListener("click",e=>{
+  const sb=store.client, me=store.user&&store.user.id, b=e.target.closest("button"); if (!b||!sb) return;
+  if (b.dataset.add){ const id=b.dataset.add; const back=frData.fs.find(f=>f.requester===id&&f.addressee===me);
+    frAct(()=> back ? sb.from("friendships").update({status:"accepted"}).match({requester:id,addressee:me}) : sb.from("friendships").insert({requester:me,addressee:id,status:"pending"}), back?"You're friends now":"Friend request sent"); }
+  else if (b.dataset.acc) frAct(()=>sb.from("friendships").update({status:"accepted"}).match({requester:b.dataset.acc,addressee:me}),"You're friends now");
+  else if (b.dataset.dec) frAct(()=>sb.from("friendships").delete().match({requester:b.dataset.dec,addressee:me}),"Request declined");
+  else if (b.dataset.cancel) frAct(()=>sb.from("friendships").delete().match({requester:me,addressee:b.dataset.cancel}),"Request cancelled");
+  else if (b.dataset.rm){ const id=b.dataset.rm; if (!b.classList.contains("sure")){ b.classList.add("sure"); b.textContent="Remove?"; setTimeout(()=>{ b.classList.remove("sure"); b.textContent="✕"; },2500); return; }
+    frAct(()=>sb.from("friendships").delete().or(`and(requester.eq.${me},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${me})`),"Friend removed"); }
+});
+// invite links: ?invite=username sends a friend request after you sign in
+async function handleInvite(){
+  const q=new URLSearchParams(location.search).get("invite"); if (!q) return;
+  history.replaceState(null,"",location.pathname+location.hash);
+  if (store.mode!=="cloud"||!await frInit()) return;
+  const me=store.user.id, name=cleanName(q);
+  const { data:p } = await store.client.from("profiles").select("id,username").eq("username",name).maybeSingle();
+  if (!p||p.id===me) return;
+  const { error } = await store.client.from("friendships").insert({ requester:me, addressee:p.id, status:"pending" });
+  if (!error || error.code==="23505") toast(`Friend request sent to @${p.username}`);
+}
 
 // =================== Practice: guess the odds ===================
 const prac={spot:null, answered:false, score:0, streak:0, best:0};
@@ -2271,8 +2718,10 @@ document.addEventListener("keydown",e=>{
 // =================== Hall of Fame ===================
 const HOF_CATS=[[8,"Straight flush","👑"],[7,"Four of a kind","💎"],[6,"Full house","🏠"],[5,"Flush","🌊"],[4,"Straight","🪜"],[3,"Three of a kind","🎯"],[2,"Two pair","✌️"],[1,"Pair","🃏"],[0,"High card","🔺"],[-1,"Before the flop","⚡"]];
 function handCat(h){ const b=(h.pre||[]).concat(h.post||[]); if (b.length<3) return {cat:-1, text:"Pot taken before the flop"}; const sc=evalCards(h.hero.concat(b), 2+b.length); return {cat:Math.floor(sc/SHIFT), text:describe(sc)}; }
+const tHands=[];
 function renderHof(){
-  if (!viewIsHof()) return;
+  if (!viewIsHof() && !viewIsMe()) return;
+  tHands.length=0;
   const smap={}; sessions.forEach(x=>smap[x.id]=x);
   const all=[]; sessions.forEach(x=>handsOf(x).forEach(h=>all.push({...h,_s:x})));
   if (!all.length){ $("hofTrophies").innerHTML=""; $("hofWins").innerHTML=$("hofLosses").innerHTML=`<div class="empty">Log some hands and your highlights show up here.</div>`; return; }
@@ -2288,14 +2737,15 @@ function renderHof(){
   const by={}; all.forEach(h=>{ const o=by[h.key]||(by[h.key]={n:0,net:0}); o.n++; o.net+=h.net||0; });
   const fav=Object.entries(by).sort((a,b)=>b[1].n-a[1].n)[0];
   const best=Object.entries(by).sort((a,b)=>b[1].net-a[1].net)[0];
-  const T=(l,v,d,cls="")=>`<div class="trophy"><div class="tl">${l}</div><div class="tv ${cls}">${v}</div><div class="td">${d}</div></div>`;
+  const T=(l,v,d,cls="",h=null,go="")=>`<div class="trophy"${h?` data-th="${tHands.push(h)-1}"`:go?` data-go="${go}"`:""}><div class="tl">${l}</div><div class="tv ${cls}">${v}</div><div class="td">${d}</div></div>`;
+  const topOf=k=>all.filter(h=>h.key===k).sort((a,b)=>Math.abs(b.net||0)-Math.abs(a.net||0))[0];
   $("hofTrophies").innerHTML =
-    (big?T("💰 Biggest pot", money(r2(big.net)), `${showKeyH(big.key)} · ${big._txt}`, "pos"):"")+
-    (beat?T("💀 Worst beat", pct(beat.eq), `${showKeyH(beat.key)} lost ${money(r2(-beat.net),false)} at ${pct(beat.eq)} to win`, "neg"):"")+
-    (lucky?T("🍀 Luckiest win", pct(lucky.eq), `${showKeyH(lucky.key)} won ${money(r2(lucky.net),false)} from only ${pct(lucky.eq)}`, "pos"):"")+
-    (best?T("⭐ Money hand", showKeyH(best[0]), `${money(r2(best[1].net))} total over ${best[1].n} hand${best[1].n===1?"":"s"}`, best[1].net>=0?"pos":"neg"):"")+
-    (fav&&fav[1].n>=2?T("🔁 Dealt the most", showKeyH(fav[0]), `${fav[1].n} times · ${money(r2(fav[1].net))}`)
-                     :T("🏅 Pots won", wins.length.toLocaleString(), `out of ${all.length} hands logged`));
+    (big?T("💰 Biggest pot", money(r2(big.net)), `${showKeyH(big.key)} · ${big._txt}`, "pos", big):"")+
+    (beat?T("💀 Worst beat", pct(beat.eq), `${showKeyH(beat.key)} lost ${money(r2(-beat.net),false)} at ${pct(beat.eq)} to win`, "neg", beat):"")+
+    (lucky?T("🍀 Luckiest win", pct(lucky.eq), `${showKeyH(lucky.key)} won ${money(r2(lucky.net),false)} from only ${pct(lucky.eq)}`, "pos", lucky):"")+
+    (best?T("⭐ Money hand", showKeyH(best[0]), `${money(r2(best[1].net))} total over ${best[1].n} hand${best[1].n===1?"":"s"}`, best[1].net>=0?"pos":"neg", topOf(best[0])):"")+
+    (fav&&fav[1].n>=2?T("🔁 Dealt the most", showKeyH(fav[0]), `${fav[1].n} times · ${money(r2(fav[1].net))}`, "", topOf(fav[0]))
+                     :T("🏅 Pots won", wins.length.toLocaleString(), `out of ${all.length} hands logged`, "", null, "all-sessions"));
   // ---- fun numbers ----
   {
     const n=all.length, hours=sessions.reduce((a,x)=>a+computeStats(x,handsOf(x)).hours,0);
@@ -2320,7 +2770,7 @@ function renderHof(){
     if (!of.length) return `<div class="hof ghost"><div class="em" style="font-size:22px">${em}</div><div class="hd"><b>${name}</b></div><div class="hm">${kind==="win"?"Not yet 🔒":"Never 🙌"}</div></div>`;
     const top = kind==="win" ? of.slice().sort((a,b)=>b.net-a.net)[0] : of.slice().sort((a,b)=>a.net-b.net)[0];
     const tot = of.reduce((a,h)=>a+(h.net||0),0);
-    return `<div class="hof ${kind}"><div class="hc1"><span>${name}</span><span class="em">${em}</span></div>
+    return `<div class="hof ${kind}" data-th="${tHands.push(top)-1}"><div class="hc1"><span>${name}</span><span class="em">${em}</span></div>
       <div class="hv ${kind==="win"?"pos":"neg"}">${money(r2(top.net))}</div>
       <div class="hcards">${cardsHTML(top)}</div>
       <div class="hd">${top._txt}${top.bomb?" · 💣":""}</div>
@@ -2557,6 +3007,7 @@ function setupAccountBar(mode){
 }
 store.init().then(mode=>{
   setupAccountBar(mode); renderAvatarTop();
+  if (mode==="cloud") setTimeout(()=>{ handleInvite().catch(()=>{}); loadAll().then(()=>scheduleSync()).catch(()=>{}); },800);
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
   store.subSessions((list,meta)=>{

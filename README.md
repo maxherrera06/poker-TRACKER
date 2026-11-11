@@ -20,10 +20,16 @@ Accounts run on a free [Supabase](https://supabase.com) project:
 3. In **Authentication → URL Configuration**, set **Site URL** to where the app is hosted (for example `https://maxherrera06.github.io/poker-tracker/`) so confirmation and reset emails link back to it.
 4. In **Project Settings → API**, copy the **Project URL** and the **anon public** key into `SUPABASE_URL` and `SUPABASE_ANON_KEY` near the top of the script in `index.html`. The anon key is meant to be public; the security rules protect the data.
 
+5. For Friends, also run [`supabase/friends.sql`](supabase/friends.sql). Anyone signed in can see a username, avatar, title and points; only accepted friends see your results summary, and only if you allow it. Sessions and hands stay private.
+
 With those two values left empty, the app skips the login screen and saves in the browser only.
 
 ## Features
 
+- **Friends tab.** Search people by username, send and accept friend requests, and see a leaderboard of you and your friends (points, all-time result, hands, last played). **Invite friends** shares a link like `…/poker-TRACKER/?invite=yourname`; whoever opens it and signs in sends you a request automatically.
+- **Points and levels.** +1 per hand, +10 per session, +15 per winning session, +3 per right answer in Practice, +5 per hand of your best Practice streak. Levels go Fish → Regular → Grinder → Shark → Whale → Legend.
+- **Edit profile.** Avatar, username, a funny title (Calling Station, Bomb Pot Victim…), whether friends can see your results, change email or password, backup, sign out.
+- **Hands that beat you.** Once the flop is out, a box lists every kind of hand that beats you right now and how many combos, or tells you you have the nuts.
 - **Me tab.** Pick an avatar and a username (saved to your account), see your hands, sessions and all-time result, and your top Hall of Fame moments. Backup and sign out live here.
 - **Practice tab: Guess the odds.** You get a random spot (your hand, the board, how many players, the bet) and pick your chance to win from four answers. It then shows the real number and whether calling would be right. Keeps a score and your best streak.
 - **Live equity.** Monte Carlo simulation, up to 400k runouts, against however many opponents are still in. It shows win/tie/lose, your current made hand, and your chances of finishing with each hand type by the river.
