@@ -4,6 +4,11 @@ A live Texas Hold'em odds calculator and session tracker in a single HTML file, 
 
 No build step. Open `index.html` in a browser, or use the hosted version at **https://maxherrera06.github.io/poker-tracker/**.
 
+## Put it on your home screen
+
+- **iPhone (Safari):** open the site, tap **Share → Add to Home Screen**. It opens full screen with the chip icon, like an app.
+- **Android / Chrome:** open the menu and tap **Install app** or **Add to Home screen**.
+
 ## Accounts
 
 The app opens on a **Log in / Create account** screen. Sign up with your email and a password and your sessions save to your own account, so you can log in from any computer or phone. Nobody else can see your sessions.
@@ -21,6 +26,8 @@ Accounts run on a free [Supabase](https://supabase.com) project:
 4. In **Project Settings → API**, copy the **Project URL** and the **anon public** key into `SUPABASE_URL` and `SUPABASE_ANON_KEY` near the top of the script in `index.html`. The anon key is meant to be public; the security rules protect the data.
 
 5. For Friends, also run [`supabase/friends.sql`](supabase/friends.sql). Anyone signed in can see a username, avatar, title and points; only accepted friends see your results summary, and only if you allow it. Sessions and hands stay private.
+
+6. Free Supabase projects pause after a week with no activity. `.github/workflows/keep-supabase-awake.yml` reads the database every 3 days so that never happens (check it under the repo's **Actions** tab).
 
 With those two values left empty, the app skips the login screen and saves in the browser only.
 

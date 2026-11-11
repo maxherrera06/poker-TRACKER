@@ -636,6 +636,20 @@ if(!window.__framed){
   .toppill[hidden]{display:none!important}
   .wrap{padding-top:max(18px,env(safe-area-inset-top))}
   .modal{padding-top:max(40px,calc(env(safe-area-inset-top) + 12px))}
+
+  /* QA fixes: nothing wider than the screen */
+  .two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .grid{grid-template-columns:minmax(0,1fr) 340px}
+  .sgrid{grid-template-columns:280px minmax(0,1fr)}
+  .two>*,.grid>*,.sgrid>*{min-width:0}
+  .hc{min-width:0}
+  .stable{min-width:0}
+  #viewAll .panel,.sd .dbody{overflow-x:auto}
+  .legend2{flex-wrap:wrap;gap:6px 14px}
+  .legend2>*{white-space:nowrap}
+  .brd,.brd .person{min-width:0}
+  .pright{flex-shrink:0}
+  .top .brand{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   /* phones: bottom tab bar */
   @media (max-width:760px){
     .wrap{padding:max(12px,env(safe-area-inset-top)) 14px 110px}
@@ -781,6 +795,24 @@ if(!window.__framed){
     .bstat{min-width:52px}
     .bcat{flex-basis:104px}
     .hmgrid{grid-template-columns:1fr}
+  }
+
+  @media (max-width:860px){.two,.grid,.sgrid{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:760px){
+    .top{gap:12px}
+    .brand,.brand .logo{font-size:22px!important;letter-spacing:-.6px}
+    .toppill{padding:8px 12px;font-size:15px}
+    .toppill small{display:none}
+    .pgrid{grid-template-columns:1fr 1fr}
+    .brd .pav{width:40px;height:40px;flex-basis:40px}
+    .brd .rk{width:18px;font-size:15px}
+    .bstat{min-width:0}
+    .bstat b{font-size:14px}
+    .ghostbtn{padding:4px 6px}
+    .mepills span{padding:6px 11px;font-size:13px}
+    .entry{flex-wrap:wrap}
+    .entry #q{flex:1 1 100%;font-size:20px}
+    .entry button{flex:1}
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
