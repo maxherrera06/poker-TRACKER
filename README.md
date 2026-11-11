@@ -7,7 +7,9 @@ No build step, no dependencies. Open `index.html` in a browser.
 ## Features
 
 - **Live equity.** Monte Carlo simulation, up to 400k runouts, against however many opponents are still in. It shows win/tie/lose, your current made hand, and your chances of finishing with each hand type by the river.
-- **Suggested action.** A big CALL / FOLD / RAISE badge when you face a bet (your equity vs the equity the pot odds require), and CHECK / BET when nobody has bet (your equity vs an even share for the number of opponents). It assumes opponents hold random hands.
+- **Table & players.** Set your seat and the dealer once; the dealer moves every hand, positions (UTG … BTN, SB, BB) and your blinds follow automatically. Give each player a style (Tight, Solid reg, Loose-aggro, Calling station, Maniac). Tap a player to mark Folded → Raised → Called, or press `-` to fold the next player to act. Each opponent shows their own share of the pot.
+- **Range-based odds.** Opponents are simulated from the hands their style and action suggest (e.g. a tight player's raise is about the top 5% of hands), not random cards. Starting hands are ranked 1–169.
+- **Suggested action.** Preflop: based on your hand's rank, your position's opening range, limpers, and who raised (tighter vs tight raisers, wider vs maniacs) → RAISE / CALL / FOLD, or CHECK only in the big blind. After the flop: your equity against their ranges vs the pot odds → BET / CHECK or CALL / RAISE / FOLD, with a bet size and a tip about the key opponent. Pot odds are shown as a ratio and the equity you need, with quick buttons for common bet sizes and a cheat sheet.
 - **Pot odds.** Enter the pot and the amount to call to see the equity you need and whether calling is +EV.
 - **Fast keyboard entry.** One text box for the whole hand (see below). A tap-to-pick card grid is available for phones.
 - **Table tracking.** Max seats (2–10), how many are seated, and a "someone folded" counter that resets every hand.
