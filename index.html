@@ -451,6 +451,91 @@ if(!window.__framed){
   .tiltpill .ic{stroke:currentColor}
   .trophy{background:linear-gradient(160deg,rgba(40,32,12,.85),rgba(10,9,5,.85))!important}
   @media (max-width:560px){.brand .logo{font-size:36px}.brand .tag2{font-size:15px}.tabs{overflow-x:auto}.tabs a{white-space:nowrap;padding:10px 11px;font-size:13.5px}h2,h2 .step{font-size:23px}.acct{justify-content:flex-start}}
+
+  /* ================= declutter pass ================= */
+  .fadein{animation:vfade .32s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes vfade{from{opacity:0;transform:translateY(6px)}}
+  .stats{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+  .ovgrid{grid-template-columns:repeat(auto-fit,minmax(175px,1fr))}
+  .trophies{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .sd .stats{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  /* your game */
+  .gamepanel{display:grid;gap:18px;padding:18px 20px}
+  .gamerow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) minmax(0,1.4fr);gap:14px;align-items:end}
+  .gamerow:has(#customBlinds:not([hidden])){grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr) minmax(0,1.3fr)}
+  .gamerow label,.buybig>label{display:block;font-size:12.5px;color:var(--sage);margin-bottom:6px}
+  .gamerow select,.gamerow input{width:100%;font:600 15px Inter,system-ui;padding:11px 12px}
+  .gamerow .inl input{width:50%}
+  .gamerow .opt{opacity:.7}
+  .buybig{border-top:1px solid var(--hair);padding-top:16px}
+  .buybig>label{font:600 21px "Cormorant Garamond",Georgia,serif;color:var(--ivory)}
+  .buyline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .buyline .cur{font:800 30px/1 Inter,system-ui;color:#d4af37;margin-right:-4px}
+  .buyline input{flex:0 1 220px;min-width:0;width:100%;font:800 30px/1 Inter,system-ui!important;padding:12px 14px!important;letter-spacing:-.5px;color:var(--ivory)}
+  .buyline button{padding:15px 22px;font-size:16px}
+  .buybig .chips{margin-top:10px}
+  .buybig .chip{font-size:15px;font-weight:700;padding:5px 6px 5px 12px}
+  @media (max-width:760px){.gamerow,.gamerow:has(#customBlinds:not([hidden])){grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.gname{grid-column:1/-1}}
+  /* first-time guide */
+  .guide{border:1px solid rgba(212,175,55,.3);border-radius:16px;padding:14px 16px 12px;margin-bottom:12px;
+    background:linear-gradient(180deg,rgba(40,33,12,.55),rgba(8,10,8,.6))}
+  .gsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .gs{display:flex;gap:12px;align-items:flex-start}
+  .gs>b{flex:0 0 auto;font:italic 600 30px/1 "Cormorant Garamond",Georgia,serif;color:#d4af37;margin-top:-2px}
+  .gt{font-weight:700;font-size:14px;color:var(--ivory);margin-bottom:6px}
+  .guide code{font:700 15px ui-monospace,Menlo,monospace;background:rgba(0,0,0,.45);border:1px solid rgba(212,175,55,.25);color:#f1d98a;padding:3px 8px;border-radius:7px;margin-right:4px;display:inline-block;margin-bottom:4px}
+  .gx{font-size:12.5px;color:var(--sage);margin-right:10px}
+  .gfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--hair);font-size:12.5px;color:var(--sage)}
+  .gfoot b{color:var(--ivory)}
+  @media (max-width:760px){.gsteps{grid-template-columns:1fr}}
+  .helpbtn{width:40px;font:700 17px "Cormorant Garamond",Georgia,serif;color:#d4af37}
+  .howto summary{color:var(--sage);font-weight:600}
+  .shortcuts{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+  .shortcuts td{padding:7px 8px;border-top:1px solid rgba(147,166,152,.12);vertical-align:top;color:var(--ink)}
+  .shortcuts td:first-child{white-space:nowrap;width:1%}
+  .shortcuts code{font:600 13px ui-monospace,Menlo,monospace;color:#f1d98a;background:rgba(0,0,0,.35);padding:1px 6px;border-radius:5px}
+  .pickbtn{margin-top:12px;color:var(--sage)}
+  .grid{align-items:start}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield}
+  .picker[hidden],.guide[hidden],#customBlinds[hidden],.helpbtn[hidden]{display:none!important}
+  .gamerow>*{min-width:0}
+  details.more{margin-top:14px} details.more summary{cursor:pointer;color:var(--sage);font-size:13px;font-weight:600;list-style:none}
+  details.more summary::-webkit-details-marker{display:none}
+  details.more summary::before{content:"▸ ";color:#d4af37} details.more[open] summary::before{content:"▾ "}
+  details.more .dist{margin-top:8px}
+  /* practice */
+  .prachead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+  .prachead h2::after{display:none}
+  .pscore{display:flex;gap:10px}
+  .pscore>div{min-width:84px;text-align:center;padding:8px 12px;border-radius:12px;background:var(--rail);border:1px solid var(--hair)}
+  .pscore span{display:block;font:800 26px/1.1 Inter,system-ui;color:var(--ivory)}
+  .pscore small{font-size:11.5px;color:var(--sage)}
+  .prac{padding:22px 24px}
+  .pspot{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end}
+  .plbl{font-size:12.5px;color:var(--sage);margin-bottom:8px;display:block}
+  .pcards{display:flex;gap:7px}
+  .pcards .slot{width:64px;height:88px;cursor:default}
+  .pcards .slot .r{font-size:30px}.pcards .slot .su{font-size:24px}
+  .pcards .slot.ghost{border:1px dashed rgba(147,166,152,.25);background:rgba(0,0,0,.15)}
+  .pmeta{display:grid;gap:10px;margin-left:auto}
+  .pmeta b{font-size:17px;color:var(--ivory)}
+  .pq{font:600 24px "Cormorant Garamond",Georgia,serif;color:var(--ivory);margin:24px 0 12px}
+  .pchoices{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .pchoices button{position:relative;font:800 26px/1 Inter,system-ui;padding:20px 10px;border-radius:14px}
+  .pchoices button small{position:absolute;top:7px;left:10px;font-size:11px;font-weight:600;color:var(--sage)}
+  .pchoices button.right{border-color:var(--good);background:rgba(62,207,142,.14);color:var(--good)}
+  .pchoices button.wrong{border-color:var(--bad);background:rgba(255,92,92,.12);color:#ff8a80}
+  .pchoices button:disabled{cursor:default}
+  .pchoices button:disabled:not(.right):not(.wrong){opacity:.4}
+  .pres{display:none;margin-top:16px;padding:14px 16px;border-radius:12px;font-size:14.5px;line-height:1.55}
+  .pres.show{display:block;animation:vfade .28s both}
+  .pres.good{background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.3)}
+  .pres.bad{background:rgba(255,92,92,.07);border:1px solid rgba(255,92,92,.3)}
+  .pres .pv{font:600 22px "Cormorant Garamond",Georgia,serif;margin-bottom:4px}
+  .pnav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px}
+  .pnav .pri{padding:12px 22px;font-size:15px}
+  @media (max-width:640px){.pchoices{grid-template-columns:repeat(2,1fr)}.pcards .slot{width:50px;height:70px}.pmeta{margin-left:0}}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -468,10 +553,11 @@ if(!window.__framed){
     <a href="#" id="tabSession" class="on">This session<span class="live" id="tabLive"></span></a>
     <a href="#all-sessions" id="tabAll">All sessions</a>
     <a href="#hall-of-fame" id="tabHof">🏆 Hall of Fame</a>
+    <a href="#practice" id="tabPrac">🎯 Practice</a>
   </nav>
   <div id="viewSession">
 
-  <h2><span class="step">1</span> Session &amp; buy-in</h2>
+  <h2><span class="step">1</span> Your game</h2>
   <div class="sbar">
     <select id="ssel"></select>
     <button id="snew">+ New session</button>
@@ -479,39 +565,50 @@ if(!window.__framed){
     <span class="sub" id="sclock"></span>
   </div>
   <div class="note" id="snote"></div>
-  <div class="panel">
-    <div class="form form4">
-      <div class="wide"><label>Session name / game</label><input id="fname" type="text" placeholder="e.g. 1/2 NL at Bay 101"></div>
-      <div><label>Small blind</label><input id="fsb" type="number" inputmode="decimal" min="0" placeholder="1"></div>
-      <div><label>Big blind</label><input id="fbb" type="number" inputmode="decimal" min="0" placeholder="2"></div>
-      <div><label>Table seats (max)</label><select id="fmax" style="width:100%"><option value="2">2-max</option><option value="3">3-max</option><option value="4">4-max</option><option value="5">5-max</option><option value="6">6-max</option><option value="7">7-max</option><option value="8">8-max</option><option value="9">9-max</option><option value="10">10-max</option></select></div>
-      <div class="full">
-        <label>Buy-ins &amp; rebuys</label>
-        <div class="inl buyrow"><input id="fbuy" type="number" inputmode="decimal" min="0" placeholder="buy-in amount"><button class="pri" id="addbuy">Add buy-in</button><div class="chips" id="buyins"></div></div>
-      </div>
+  <div class="panel gamepanel">
+    <div class="gamerow">
+      <div><label for="fstakes">Stakes (small / big blind)</label><select id="fstakes"><option value="">Choose stakes</option><option value="0.05/0.1">$0.05 / $0.10</option><option value="0.1/0.2">$0.10 / $0.20</option><option value="0.25/0.5">$0.25 / $0.50</option><option value="0.5/1">$0.50 / $1</option><option value="1/2">$1 / $2</option><option value="1/3">$1 / $3</option><option value="2/5">$2 / $5</option><option value="5/10">$5 / $10</option><option value="custom">Other…</option></select></div>
+      <div id="customBlinds" hidden><label>Your blinds</label><div class="inl"><input id="fsb" type="number" inputmode="decimal" min="0" placeholder="small"><input id="fbb" type="number" inputmode="decimal" min="0" placeholder="big"></div></div>
+      <div><label for="fmax">Table size</label><select id="fmax"><option value="2">2 seats</option><option value="3">3 seats</option><option value="4">4 seats</option><option value="5">5 seats</option><option value="6">6 seats</option><option value="7">7 seats</option><option value="8">8 seats</option><option value="9">9 seats (full ring)</option><option value="10">10 seats</option></select></div>
+      <div class="gname"><label for="fname">Name <span class="opt">(optional)</span></label><input id="fname" type="text" placeholder="e.g. Friday home game"></div>
+    </div>
+    <div class="buybig">
+      <label for="fbuy">Buy-in</label>
+      <div class="buyline"><span class="cur">$</span><input id="fbuy" type="number" inputmode="decimal" min="0" placeholder="0"><button class="pri" id="addbuy">Add buy-in</button></div>
+      <div class="chips" id="buyins"></div>
     </div>
   </div>
 
-  <h2><span class="step">2</span> Hands: log them one by one</h2>
+  <h2><span class="step">2</span> Play a hand</h2>
+  <div class="guide" id="guide">
+    <div class="gsteps">
+      <div class="gs"><b>1</b><div><div class="gt">Type your two cards</div><code>ah kd</code><span class="gx">= A♥ K♦</span></div></div>
+      <div class="gs"><b>2</b><div><div class="gt">Add the board as it comes</div><code>7c 8c 9d</code><span class="gx">odds update as you type</span></div></div>
+      <div class="gs"><b>3</b><div><div class="gt">Say how it ended, press Enter</div><code>f</code><span class="gx">folded</span> <code>w40</code><span class="gx">won $40</span> <code>l25</code><span class="gx">lost $25</span></div></div>
+    </div>
+    <div class="gfoot"><span>Card letters: <b>2–9</b>, <b>t</b>=10, <b>j q k a</b>. Suits: <b>s</b>♠ <b>h</b>♥ <b>d</b>♦ <b>c</b>♣</span><button id="guideHide" class="sm">Got it, hide this</button></div>
+  </div>
   <div class="entry">
-    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ahkd 7c8c9d   then  f / w40 / l25  + Enter">
+    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type your cards, like  ah kd">
     <button id="sbBtn" class="blindbtn" title="I'm the small blind this hand ( [ )">SB</button>
     <button id="bbBtn" class="blindbtn" title="I'm the big blind this hand ( ] )">BB</button>
     <button id="clr" title="Clear (Esc)">Clear</button>
     <button class="tiltpill" id="tiltPill" title="Tilt meter: tap to see why">🧠 –</button>
+    <button id="guideShow" class="helpbtn" title="How to type a hand" hidden>?</button>
   </div>
   <div class="preview" id="preview"></div>
-  <details class="howto"><summary>How to enter hands <span class="sub">· cards, results, $ amounts, blinds, bomb pots, shortcuts</span></summary><p class="hint">
-    <b>Cards:</b> rank <code>2–9 t j q k a</code> + suit <code>s h d c</code>, e.g. <code>ahkd 7c8c9d</code>. Odds update as you type.<br>
-    <b>Log the hand:</b> add a result where you acted, then press <span class="kbd">Enter</span>:
-    <code>f</code> fold · <code>w40</code> won 40 · <code>l25</code> lost 25 · <code>x10</code> split (net +10).
-    Examples: <code>7h2c f</code> (folded preflop) · <code>jsts 9h8d2c f</code> (folded the flop) · <code>ahkd 7c8c9d w60</code>.
-    Cards typed <i>after</i> the result are the runout you saw after folding: <code>qsjd f 9c8c2h</code> tells you if you'd have won.<br>
-    <b>Money in the hand:</b> each time you bet or call, type <code>$</code> and the amount (<code>khjd $2 9s5c2d $4</code>) or use <b>+ Put in</b>. The blinds and bomb pot ante are counted for you. Then <code>f</code> or <code>l</code> with no amount charges the total, and <code>w@30</code> means you collected a $30 pot, so it logs your profit (30 minus what you put in).<br>
-    <b>Blinds:</b> tap <b>SB</b> or <b>BB</b> (or press <span class="kbd">[</span> / <span class="kbd">]</span>) when you're in the blinds. Folding with no amount charges the blind, and hands where you only put in the blind (including checking the BB and folding on the flop) don't count as hands you played. After an SB hand it moves to BB on its own.<br>
-    <b>Bomb pot:</b> type <code>b</code> (or tap 💣) and the hand goes straight to the flop: <code>b ahkd 7c8c9d w90</code>. Fold on the flop with no amount and it counts the ante as lost.<br>
-    <span class="kbd">Esc</span> clears · <span class="kbd">-</span> someone folded (<span class="kbd">+</span> undo) · the fold count resets every hand · you can also tap the cards and buttons below.
-  </p></details>
+  <details class="howto"><summary>More ways to log a hand</summary>
+    <table class="shortcuts">
+      <tr><td><code>jsts 9h8d2c f</code></td><td>Folded after the flop</td></tr>
+      <tr><td><code>khjd $2 9s5c2d $4 f</code></td><td>Type <code>$</code> + amount each time you bet or call. Fold or lose, and it charges the total.</td></tr>
+      <tr><td><code>ahkd 7c8c9d w@30</code></td><td>You collected a $30 pot. It works out your profit.</td></tr>
+      <tr><td><code>asks 7c8c9d2s3h x10</code></td><td>Split pot, up $10</td></tr>
+      <tr><td><code>qsjd f 9c8c2h</code></td><td>Cards after <code>f</code> = what came after you folded</td></tr>
+      <tr><td><code>b ahkd 7c8c9d w90</code></td><td>Bomb pot (starts on the flop)</td></tr>
+      <tr><td><b>SB</b> / <b>BB</b></td><td>Tap when you're in the blinds, so blind folds are counted right</td></tr>
+      <tr><td><span class="kbd">Esc</span> <span class="kbd">-</span> <span class="kbd">e</span></td><td>Clear · someone folded · everyone folded to you</td></tr>
+    </table>
+  </details>
 
   <div class="grid">
     <div class="table">
@@ -547,7 +644,8 @@ if(!window.__framed){
         <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
         <span id="bInfo"></span>
       </div>
-      <div class="picker" id="picker"></div>
+      <button class="sm pickbtn" id="pickToggle">Tap to pick cards instead</button>
+      <div class="picker" id="picker" hidden></div>
     </div>
 
     <div class="panel">
@@ -578,8 +676,8 @@ if(!window.__framed){
         <div><label>To call</label><input id="call" type="number" inputmode="decimal" min="0" placeholder="e.g. 25"></div>
       </div>
       <div class="verdict" id="verdict"></div>
-      <h3>Your final hand by the river</h3>
-      <div class="dist" id="dist"></div>
+      <details class="more"><summary>Chances of each hand by the river</summary>
+      <div class="dist" id="dist"></div></details>
     </div>
   </div>
 
@@ -608,6 +706,23 @@ if(!window.__framed){
   <h2><span class="step">4</span> Cash out</h2>
   <div class="panel"><div class="form"><div class="full" id="cashbox"></div></div></div>
   </div><!-- /viewSession -->
+
+  <div id="viewPrac" hidden>
+    <div class="prachead"><div><h2 style="margin-top:6px">Guess the odds</h2>
+      <p class="sub" style="margin:-6px 0 0">Look at the spot, pick your chance to win. Builds the feel for when to call.</p></div>
+      <div class="pscore"><div><span id="pScore">0</span><small>right</small></div><div><span id="pStreak">0</span><small>streak</small></div><div><span id="pBest">0</span><small>best streak</small></div></div></div>
+    <div class="panel prac">
+      <div class="pspot">
+        <div><div class="plbl">Your hand</div><div class="pcards" id="pHero"></div></div>
+        <div><div class="plbl" id="pBoardLbl">Board</div><div class="pcards" id="pBoard"></div></div>
+        <div class="pmeta"><div><span class="plbl">Players left</span><b id="pOpp"></b></div><div><span class="plbl">The bet</span><b id="pBet"></b></div></div>
+      </div>
+      <div class="pq">What's your chance to win this hand?</div>
+      <div class="pchoices" id="pChoices"></div>
+      <div class="pres" id="pRes"></div>
+      <div class="pnav"><span class="sub" id="pHint">Pick an answer, or press 1–4</span><button class="pri" id="pNext" hidden>Next spot</button></div>
+    </div>
+  </div>
 
   <div id="viewHof" hidden>
     <div class="note" id="hofNote"></div>
@@ -1092,7 +1207,7 @@ document.addEventListener("keydown", e=>{
   if (e.key==="]"){ setBlind("bb"); return; }
   if (e.key==="+"||e.key==="="){ setFolded(folded-1); return; }
   if (e.key==="-"){ setFolded(folded+1); return; }
-  if (viewIsAll()||viewIsHof()) return;
+  if (!viewIsSession()) return;
   if (/^[0-9tjqkashdcfwlxTJQKASHDCFWLX $@]$/.test(e.key)&&!e.metaKey&&!e.ctrlKey) $("q").focus();
 });
 function clearAll(){ folded=0; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
@@ -1508,6 +1623,31 @@ function saveRebuy(v){ lastRebuy=v; try{ localStorage.setItem("po_rebuy",v); }ca
 let creating=null;
 async function ensureSession(){ if (sid) return sid; if (!creating) creating=newSession().finally(()=>{creating=null;}); return creating; }
 $("fname").addEventListener("input",async e=>{ await ensureSession(); saveField("name",e.target.value); });
+// ---- stakes dropdown (fills the small/big blind fields; "Other…" shows them)
+let stakesCustom=false;
+function syncStakes(s){
+  const sel=$("fstakes"); if (document.activeElement===sel) return;
+  const sb=s&&s.sb, bb=s&&s.bb, key=(sb!=null&&bb!=null)?`${+sb}/${+bb}`:"";
+  const preset=[...sel.options].some(o=>o.value===key&&key);
+  if (preset && !stakesCustom){ sel.value=key; $("customBlinds").hidden=true; }
+  else if (!key && !stakesCustom){ sel.value=""; $("customBlinds").hidden=true; }
+  else { sel.value="custom"; $("customBlinds").hidden=false; }
+}
+$("fstakes").addEventListener("change", async e=>{
+  const v=e.target.value;
+  if (v==="custom"){ stakesCustom=true; $("customBlinds").hidden=false; $("fsb").focus(); return; }
+  stakesCustom=false; $("customBlinds").hidden=true; if (!v) return;
+  const [sb,bb]=v.split("/"); $("fsb").value=sb; $("fbb").value=bb;
+  await ensureSession(); saveField("sb",+sb); saveField("bb",+bb); toast(`Stakes set to ${e.target.selectedOptions[0].textContent}`);
+});
+// ---- first-time guide
+try{ if (localStorage.getItem("po_guide")==="hide"){ $("guide").hidden=true; $("guideShow").hidden=false; } }catch(e){}
+$("guideHide").onclick=()=>{ $("guide").hidden=true; $("guideShow").hidden=false; try{localStorage.setItem("po_guide","hide");}catch(e){} $("q").focus(); };
+$("guideShow").onclick=()=>{ $("guide").hidden=false; $("guideShow").hidden=true; try{localStorage.removeItem("po_guide");}catch(e){} };
+// ---- tap-to-pick card grid: open by default on touch screens
+function setPicker(open){ $("picker").hidden=!open; $("pickToggle").textContent=open?"Hide card picker":"Tap to pick cards instead"; }
+setPicker(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+$("pickToggle").onclick=()=>setPicker($("picker").hidden);
 $("fsb").addEventListener("input",async e=>{ await ensureSession(); saveField("sb",numOrNull(e.target.value)); });
 $("fbb").addEventListener("input",async e=>{ await ensureSession(); saveField("bb",numOrNull(e.target.value)); });
 $("fstack").addEventListener("input",async e=>{ await ensureSession(); saveField("stack",numOrNull(e.target.value)); });
@@ -1575,6 +1715,7 @@ function renderSession(){
   const s=cur();
   setVal("fmax", maxSeats);
   setVal("fname", s?s.name:""); setVal("fsb", s?s.sb:""); setVal("fbb", s?s.bb:""); setVal("fstack", s?s.stack:"");
+  syncStakes(s);
   $("buyins").innerHTML = s&&s.buyins&&s.buyins.length
     ? s.buyins.map((b,i)=>`<span class="chip">${money(b,false)}<button data-i="${i}" title="Remove">×</button></span>`).join("") + `<span class="sub" style="align-self:center">total ${money(s.buyins.reduce((a,b)=>a+b,0),false)}</span>`
     : `<span class="sub">None yet</span>`;
@@ -1862,13 +2003,20 @@ const handsCache = {};   // sid -> hands of other sessions (the current one uses
 let ovLoading=false, ovLoadedAt=0;
 function viewIsAll(){ return location.hash==="#all-sessions"; }
 function viewIsHof(){ return location.hash==="#hall-of-fame"; }
+function viewIsPrac(){ return location.hash==="#practice"; }
+let lastView=null;
 function applyView(){
-  const all=viewIsAll(), hof=viewIsHof();
-  $("viewSession").hidden=all||hof; $("viewAll").hidden=!all; $("viewHof").hidden=!hof;
-  $("tabSession").classList.toggle("on",!all&&!hof); $("tabAll").classList.toggle("on",all); $("tabHof").classList.toggle("on",hof);
-  if (all||hof) loadAll(); else $("q").focus();
+  const all=viewIsAll(), hof=viewIsHof(), prac=viewIsPrac(), ses=!all&&!hof&&!prac;
+  const views={viewSession:ses,viewAll:all,viewHof:hof,viewPrac:prac};
+  for (const [id,on] of Object.entries(views)){
+    const el=$(id); el.hidden=!on;
+    if (on && lastView!==id){ el.classList.remove("fadein"); void el.offsetWidth; el.classList.add("fadein"); lastView=id; }
+  }
+  $("tabSession").classList.toggle("on",ses); $("tabAll").classList.toggle("on",all); $("tabHof").classList.toggle("on",hof); $("tabPrac").classList.toggle("on",prac);
+  if (all||hof) loadAll(); else if (prac) pracStart(); else $("q").focus();
 }
-$("tabSession").onclick=e=>{ e.preventDefault(); if (viewIsAll()||viewIsHof()){ history.replaceState(null,"",location.pathname+location.search); applyView(); } };
+$("tabSession").onclick=e=>{ e.preventDefault(); if (!viewIsSession()){ history.replaceState(null,"",location.pathname+location.search); applyView(); } };
+function viewIsSession(){ return !viewIsAll()&&!viewIsHof()&&!viewIsPrac(); }
 window.addEventListener("hashchange", applyView);
 async function loadAll(force){
   if (ovLoading) return;
@@ -1880,6 +2028,60 @@ async function loadAll(force){
   }catch(e){ $("ovNote").textContent="Couldn't load every session. Showing what loaded."; }
   ovLoading=false; renderAll(); renderHof();
 }
+// =================== Practice: guess the odds ===================
+const prac={spot:null, answered:false, score:0, streak:0, best:0};
+try{ const j=JSON.parse(localStorage.getItem("po_prac")||"null"); if (j){ prac.score=j.score||0; prac.best=j.best||0; } }catch(e){}
+function pracSave(){ try{ localStorage.setItem("po_prac",JSON.stringify({score:prac.score,best:prac.best})); }catch(e){} }
+function pracCards(cs, n){ let h=cs.map(c=>`<div class="slot filled">${cardHTML(c)}</div>`).join(""); for (let i=cs.length;i<n;i++) h+=`<div class="slot ghost"></div>`; return h; }
+function pracNew(){
+  const deck=[...Array(52).keys()]; for (let i=51;i>0;i--){ const j=(Math.random()*(i+1))|0; [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  const hero=deck.slice(0,2), nb=[0,3,3,3,4,4][(Math.random()*6)|0], board=deck.slice(2,2+nb);
+  const opps=[1,1,2,2,3,4][(Math.random()*6)|0];
+  const eq=equitySync(hero,board,opps,24000);
+  const pot=[6,10,15,20,30,40,60,80][(Math.random()*8)|0], call=Math.max(1,Math.round(pot*[.25,.33,.5,.75,1][(Math.random()*5)|0]));
+  const truth=Math.round(eq*100);
+  // three wrong answers, each at least 12 points away from the truth and from each other
+  const ch=[truth]; let guard=0;
+  while (ch.length<4 && guard++<200){ const v=Math.round(3+Math.random()*94); if (ch.every(c=>Math.abs(c-v)>=12)) ch.push(v); }
+  ch.sort((a,b)=>a-b);
+  prac.spot={hero,board,opps,eq,pot,call,truth,choices:ch}; prac.answered=false; pracRender();
+}
+function pracRender(){
+  const sp=prac.spot; if (!sp) return;
+  $("pHero").innerHTML=pracCards(sp.hero,2);
+  $("pBoard").innerHTML=pracCards(sp.board,5);
+  $("pBoardLbl").textContent= sp.board.length===0?"Before the flop": sp.board.length===3?"On the flop":"On the turn";
+  $("pOpp").textContent=`You + ${sp.opps} other${sp.opps>1?"s":""}`;
+  $("pBet").textContent=`$${sp.call} to call into $${sp.pot}`;
+  $("pChoices").innerHTML=sp.choices.map((c,i)=>`<button data-v="${c}"><small>${i+1}</small>${c}%</button>`).join("");
+  $("pChoices").querySelectorAll("button").forEach(b=>b.onclick=()=>pracAnswer(+b.dataset.v));
+  $("pRes").innerHTML=""; $("pRes").className="pres"; $("pNext").hidden=true; $("pHint").textContent="Pick an answer, or press 1–4";
+  $("pScore").textContent=prac.score; $("pStreak").textContent=prac.streak; $("pBest").textContent=prac.best;
+}
+function pracAnswer(v){
+  const sp=prac.spot; if (!sp||prac.answered) return; prac.answered=true;
+  const right=v===sp.truth;
+  if (right){ prac.score++; prac.streak++; prac.best=Math.max(prac.best,prac.streak); } else prac.streak=0;
+  pracSave();
+  $("pChoices").querySelectorAll("button").forEach(b=>{ const c=+b.dataset.v; b.disabled=true;
+    if (c===sp.truth) b.classList.add("right"); else if (c===v) b.classList.add("wrong"); });
+  const need=sp.call/(sp.pot+sp.call), callOk=sp.eq>=need;
+  const made= sp.board.length ? describe(evalCards(sp.hero.concat(sp.board), 2+sp.board.length)) : (sp.hero[0]>>2)===(sp.hero[1]>>2) ? "a pocket pair" : `${handKey(sp.hero)} before the flop`;
+  $("pRes").className="pres show "+(right?"good":"bad");
+  $("pRes").innerHTML=`<div class="pv">${right?"Right":"Not quite"}: <b>${(sp.eq*100).toFixed(1)}%</b></div>
+    <div>You have ${made} against ${sp.opps} player${sp.opps>1?"s":""}.</div>
+    <div>Calling $${sp.call} into $${sp.pot} needs <b>${(need*100).toFixed(0)}%</b>, so this is a <b class="${callOk?"pos":"neg"}">${callOk?"call":"fold"}</b>.</div>`;
+  $("pScore").textContent=prac.score; $("pStreak").textContent=prac.streak; $("pBest").textContent=prac.best;
+  $("pNext").hidden=false; $("pHint").textContent="Press Enter for the next one"; $("pNext").focus();
+}
+function pracStart(){ if (!prac.spot) pracNew(); else pracRender(); }
+$("pNext").onclick=pracNew;
+document.addEventListener("keydown",e=>{
+  if (!viewIsPrac()||e.target.matches("input,select,textarea")) return;
+  if (/^[1-4]$/.test(e.key) && prac.spot && !prac.answered){ e.preventDefault(); pracAnswer(prac.spot.choices[+e.key-1]); }
+  else if (e.key==="Enter" && prac.answered && document.activeElement!==$("pNext")){ e.preventDefault(); pracNew(); }
+});
+
 // =================== Hall of Fame ===================
 const HOF_CATS=[[8,"Straight flush","👑"],[7,"Four of a kind","💎"],[6,"Full house","🏠"],[5,"Flush","🌊"],[4,"Straight","🪜"],[3,"Three of a kind","🎯"],[2,"Two pair","✌️"],[1,"Pair","🃏"],[0,"High card","🔺"],[-1,"Before the flop","⚡"]];
 function handCat(h){ const b=(h.pre||[]).concat(h.post||[]); if (b.length<3) return {cat:-1, text:"Pot taken before the flop"}; const sc=evalCards(h.hero.concat(b), 2+b.length); return {cat:Math.floor(sc/SHIFT), text:describe(sc)}; }
@@ -2135,7 +2337,7 @@ function renderAll(){
 }
 
 // =================== boot ===================
-buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()&&!viewIsHof()) $("q").focus();
+buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (viewIsSession()) $("q").focus();
 function setupAccountBar(mode){
   const u=store.user;
   $("acctWho").innerHTML = mode==="cloud" && u ? `Signed in as <b>${esc(u.email)}</b>` : "";

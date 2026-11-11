@@ -24,6 +24,7 @@ With those two values left empty, the app skips the login screen and saves in th
 
 ## Features
 
+- **Practice tab: Guess the odds.** You get a random spot (your hand, the board, how many players, the bet) and pick your chance to win from four answers. It then shows the real number and whether calling would be right. Keeps a score and your best streak.
 - **Live equity.** Monte Carlo simulation, up to 400k runouts, against however many opponents are still in. It shows win/tie/lose, your current made hand, and your chances of finishing with each hand type by the river.
 - **Suggested action.** A big CALL / FOLD / RAISE badge when you face a bet (your equity vs the equity the pot odds require), and CHECK / BET when nobody has bet (your equity vs an even share for the number of opponents). It assumes opponents hold random hands.
 - **Pot odds.** Enter the pot and the amount to call to see the equity you need and whether calling is +EV.
