@@ -1002,6 +1002,19 @@ if(!window.__framed){
   .tutnav .pri{padding:11px 20px}
   body.touring .tabs{pointer-events:none}
   .meacts #meTour{background:transparent;border-color:rgba(255,255,255,.18);color:#c5cbe0}
+
+  .fmh3{margin:16px 0 8px!important}
+  .fwins{display:grid;gap:6px}
+  .fwin{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:14px;padding:9px 12px}
+  .fwc{display:flex;align-items:center;flex-wrap:wrap;gap:1px;flex:0 0 auto}
+  .fwc .mc{font-size:11.5px;font-weight:800;padding:1px 4px;margin-right:2px;background:#f6f4ee;border-radius:4px}
+  .fwc .sep{display:inline-block;width:6px}
+  .fwm{flex:1;min-width:0}
+  .fwm>span{display:block;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fwm small{color:var(--mute);font-size:11.5px}
+  .fwin>b{font:800 16px Inter,system-ui}
+  .fmnone{padding:6px 2px}
+  @media (max-width:760px){ .fwin{flex-wrap:wrap} .fwc{flex-basis:100%} }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -2786,8 +2799,13 @@ function myPoints(){
 function levelOf(p){ let i=0; while (i+1<LEVELS.length && p>=LEVELS[i+1][0]) i++; return { name:LEVELS[i][1], base:LEVELS[i][0], next:LEVELS[i+1]||null }; }
 function myStats(){
   const hs=allMyHands(); const big=hs.reduce((m,h)=>Math.max(m,h.net||0),0);
+  // the 5 most recent big wins ($7+), shared with friends only when results aren't hidden
+  const wins=hs.filter(h=>(h.net||0)>=BIG_HAND).sort((a,b)=>b.t-a.t).slice(0,5).map(h=>{
+    const b=(h.pre||[]).concat(h.post||[]);
+    return { k:h.key, h:h.hero, b:b.slice(0,5), n:Math.round(h.net*100)/100, t:h.t, m:b.length>=3?describe(evalCards(h.hero.concat(b),2+b.length)):"", x:h.bomb?1:0 };
+  });
   return { net: Math.round(sessions.reduce((a,x)=>a+quickProfit(x),0)*100)/100, hands: hs.length, sessions: sessions.length,
-           biggest: Math.round(big*100)/100, last: sessions.reduce((m,x)=>Math.max(m,x.startedAt||0),0) };
+           biggest: Math.round(big*100)/100, last: sessions.reduce((m,x)=>Math.max(m,x.startedAt||0),0), wins };
 }
 function renderMe(){
   const p=myProfile(), pts=myPoints(), L=levelOf(pts);
@@ -3014,6 +3032,10 @@ function openFriend(id){
       ${tile("Last played", hid?"–":ago(s.last))}
       ${tile("Level", L.next?`${L.name} · ${(L.next[0]-(pr.points||0)).toLocaleString()} to ${L.next[1]}`:L.name)}
     </div>
+    ${hid?"":`<h3 class="fmh3">Last big wins</h3>${(s.wins&&s.wins.length)?`<div class="fwins">${s.wins.map(w=>`<div class="fwin">
+        <div class="fwc">${miniCards(w.h)}${w.b&&w.b.length?`<span class="sep"></span>${miniCards(w.b)}`:""}</div>
+        <div class="fwm"><span>${esc(w.m||showKeyH(w.k))}${w.x?" · 💣":""}</span><small>${ago(w.t)}</small></div>
+        <b class="pos">${money(w.n)}</b></div>`).join("")}</div>`:`<div class="sub fmnone">No big wins yet. Pots of $7 or more show up here.</div>`}`}
     ${id!==me&&isFriend?`<div class="fmfoot"><button class="danger" id="fmRemove">Remove friend</button></div>`:""}`;
   const rm=$("fmRemove");
   if (rm) rm.onclick=async()=>{
