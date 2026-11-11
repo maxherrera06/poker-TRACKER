@@ -60,6 +60,11 @@
   .actions .f{border-color:#555}.actions .w{border-color:var(--good)}.actions .l{border-color:var(--bad)}.actions .x{border-color:var(--tie)}
   .bombrow{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;background:rgba(242,193,78,.08);border:1px solid rgba(242,193,78,.45);border-radius:10px;padding:8px 10px;font-size:13px}
   .bombrow.on{display:flex}
+  .bombwarn{display:none;margin-top:10px;background:#3a1210;border:2px solid var(--bad);border-radius:12px;padding:12px 14px}
+  .bombwarn.on{display:block}
+  .bombwarn .t{font:900 20px/1.15 system-ui;color:#ff8a80;letter-spacing:.3px}
+  .bombwarn .d{font-size:13.5px;color:#ffd6d2;margin:6px 0 10px}
+  .bombwarn button{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:800}
   .bombrow input{width:84px}
   .bombrow b{color:var(--accent)}
   .money{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
@@ -211,6 +216,11 @@
         <button class="l" data-r="l">Lost</button>
         <button class="x" data-r="x">Split</button>
         <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣 Bomb pot</button>
+      </div>
+      <div class="bombwarn" id="bombwarn">
+        <div class="t">🚫 NO MORE BOMB POTS</div>
+        <div class="d" id="bombwarnTxt"></div>
+        <button id="sitOut">Sit this one out</button>
       </div>
       <div class="bombrow" id="bombrow">
         <span>💣 Bomb pot: everyone puts in</span><input id="bAnte" type="number" inputmode="decimal" min="0" placeholder="ante">
@@ -663,7 +673,15 @@ document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
 let autoPot=false;
 function renderBomb(){
   const on=!!P.bomb;
-  $("bombBtn").classList.toggle("on",on); $("bombrow").classList.toggle("on",on);
+  $("bombBtn").classList.toggle("on",on); $("bombrow").classList.toggle("on",on); $("bombwarn").classList.toggle("on",on);
+  if (bombLife && bombLife.n){
+    const wv=bombLife.worst;
+    $("bombwarnTxt").innerHTML = `You're <b>${bombLife.w} for ${bombLife.n}</b> in bomb pots for <b>${money(bombLife.net)}</b>.`+
+      (wv && wv.net<0 ? ` Worst one: ${wv.key} for ${money(wv.net)}.` : "") + ` Sitting out costs you nothing.`;
+    $("bombBtn").textContent = `💣 Bomb pot (${money(bombLife.net)})`;
+  } else {
+    $("bombwarnTxt").textContent = "Bomb pots aren't profitable for you. Sitting out costs you nothing.";
+  }
   if (document.activeElement!==$("bAnte")) $("bAnte").value = bombAnte??"";
   if (document.activeElement!==$("bPlayers")) $("bPlayers").value = bombPlayers??"";
   const ok = bombAnte>0 && bombPlayers>=2;
@@ -672,7 +690,20 @@ function renderBomb(){
   if (on && ok && ($("pot").value==="" || autoPot)){ $("pot").value = bombAnte*bombPlayers; autoPot=true; renderVerdict(); }
   if (!on && autoPot){ $("pot").value=""; autoPot=false; renderVerdict(); }
 }
+// Your bomb pot record across every session, shown as a warning whenever bomb pot is turned on.
+let bombLife=null, bombLifeT=null;
+function refreshBombLife(){
+  clearTimeout(bombLifeT);
+  bombLifeT=setTimeout(async()=>{
+    try{
+      let n=0,w=0,net=0,worst=null;
+      for (const ss of sessions){ for (const h of await store.bombHands(ss.id)){ n++; if (h.r==="w") w++; net+=h.net||0; if (!worst||h.net<worst.net) worst=h; } }
+      bombLife={n,w,net:Math.round(net*100)/100,worst}; renderBomb();
+    }catch(e){}
+  },400);
+}
 function saveBomb(){ try{ localStorage.setItem("po_bomb",JSON.stringify({ante:bombAnte,players:bombPlayers})); }catch(e){} }
+$("sitOut").onclick=()=>{ clearAll(); toast("Good call. Sat out the bomb pot 👍"); };
 $("bombBtn").onclick=()=>{
   const p={...P, cards:P.cards.slice(), bomb:!P.bomb};
   setText(serialize(p));
@@ -737,6 +768,10 @@ const store = (() => {
     async deleteHand(sid, hid){
       if (mode==="db") return queued("h/"+hid, ()=>retry(()=>db.doc(`sessions/${sid}/hands/${hid}`).delete()));
       delete (mem.hands[sid]||{})[hid]; memNotify(sid);
+    },
+    async bombHands(sid){
+      if (mode==="db"){ const q=await db.collection("sessions/"+sid+"/hands").where("bomb","==",true).limit(1000).get(); return q.docs.map(d=>d.data()); }
+      return memHands(sid).filter(h=>h.bomb);
     },
     async deleteSession(sid){
       if (mode==="db"){
@@ -806,6 +841,7 @@ async function commit(){
   if (!id) return;
   try { await store.addHand(id, doc); }
   catch(e){ toast(e&&e.code==="quota_exceeded"?"Storage is full. Delete old sessions to make room.":"Couldn't save that hand. Try again.",true); return; }
+  if (doc.bomb) refreshBombLife();
   toast(`Logged ${doc.bomb?"💣 ":""}${doc.blind?doc.blind.toUpperCase()+" ":""}${doc.key} · ${RES_NAME[doc.r]} · ${money(doc.net)}`);
   // Blinds move one seat each hand: SB is followed by BB, then you're out of the blinds. Bomb pots don't move the button.
   if (!doc.bomb){ blind = doc.blind==="sb" ? "bb" : null; renderBlind(); }
@@ -999,7 +1035,7 @@ store.init().then(mode=>{
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
   store.subSessions((list,meta)=>{
     if (!meta||!meta.fromCache){ clearTimeout(t); sessionsLoaded=true; setNote(""); }
-    sessions=list;
+    sessions=list; refreshBombLife();
     if (!sid || !sessions.find(s=>s.id===sid)){
       const live=sessions.find(s=>!s.endedAt)||sessions[0];
       selectSession(live?live.id:null);

@@ -11,7 +11,7 @@ No build step, no dependencies. Open `index.html` in a browser.
 - **Fast keyboard entry.** One text box for the whole hand (see below). A tap-to-pick card grid is available for phones.
 - **Table tracking.** Max seats (2–10), how many are seated, and a "someone folded" counter that resets every hand.
 - **Blinds.** SB/BB toggles. A blind fold charges the blind automatically, and hands where you only put in the blind don't count as voluntary plays. It moves itself from SB to BB.
-- **Bomb pots.** Set the ante and player count once, then toggle bomb pot per hand. It goes straight to the flop, and bomb pots are tracked separately from voluntary play.
+- **Bomb pots.** Set the ante and player count once, then toggle bomb pot per hand. It goes straight to the flop, and bomb pots are tracked separately from voluntary play. Turning bomb pot on shows a warning with your all-time bomb pot record and a one-tap "Sit this one out".
 - **Money in the hand.** A running total of what you've put in: the blinds and bomb pot ante are counted automatically, you add each bet or call, and folds and losses are charged that total. Also shows your estimated stack right now.
 - **Session tracking.** Buy-ins and rebuys, current stack, cash-out, profit, $/hr, hands/hr, bb/100, hands-played %, win rate when you play vs expected win rate (preflop equity), equity of folded hands, and folds that would have won.
 - **Visuals.** Running-profit chart, a 13×13 starting-hand grid colored by net result, and a full hand log with per-hand delete.
