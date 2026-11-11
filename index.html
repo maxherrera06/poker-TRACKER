@@ -814,6 +814,93 @@ if(!window.__framed){
     .entry #q{flex:1 1 100%;font-size:20px}
     .entry button{flex:1}
   }
+
+  /* stats page, decluttered */
+  .ovhero{display:block;margin:4px 0 16px}
+  .ovhero .big{font-size:58px;line-height:1.05;margin:2px 0 4px}
+  .ovgrid.key{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .allstats{margin:16px 0 4px;border-radius:18px;background:var(--surface);border:1px solid var(--line);padding:0}
+  .allstats>summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;color:var(--accent2);display:flex;justify-content:space-between;align-items:center}
+  .allstats>summary::-webkit-details-marker{display:none}
+  .allstats>summary::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s;margin-right:4px}
+  .allstats[open]>summary::after{transform:rotate(-135deg)}
+  .allstats>.ovgrid,.allstats .hands2{padding:0 14px 14px}
+  .allstats .stat{background:var(--surface2)!important}
+  .hands2 h3{margin:4px 0 8px;font-size:15px!important}
+  .hlist{display:flex;flex-wrap:wrap;gap:6px}
+  .hchip{display:inline-flex;align-items:baseline;gap:6px;padding:7px 11px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:13.5px}
+  .hchip small{color:var(--mute);font-size:11.5px}
+  .chart .legend2{margin:0 0 6px}
+  .takeaways{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+  .tk{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 16px;position:relative;overflow:hidden}
+  .tk::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+  .tk.good::before{background:var(--good)} .tk.bad::before{background:var(--bad)}
+  .tkl{font-weight:800;font-size:15px;margin-bottom:4px}
+  .tk.good .tkl{color:#7ee2a0} .tk.bad .tkl{color:#ff8a80}
+  .tkt{color:#d1d1d6;font-size:14px;line-height:1.45}
+  .tkt b{color:#fff}
+  .days{display:grid;gap:10px}
+  .day{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+  .day.open{border-color:rgba(255,255,255,.14)}
+  .dayhead,.shead{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:14px;cursor:pointer;padding:16px 18px}
+  .dayhead:hover,.shead:hover{background:rgba(255,255,255,.03)}
+  .dayhead:focus-visible,.shead:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  .dl,.sl{flex:1;min-width:0}
+  .dl b{display:block;font-size:17px;font-weight:800}
+  .dl span,.sl span,.sr span{display:block;color:var(--mute);font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dp{font:800 22px Inter,system-ui;letter-spacing:-.5px}
+  .chev{width:8px;height:8px;flex:0 0 8px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);transition:transform .2s;margin:0 4px}
+  .open>.dayhead .chev,.open>.shead .chev{transform:rotate(45deg)}
+  .daybody{padding:0 14px 14px}
+  .dsum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .dpill{flex:1 1 120px;background:var(--surface2);border-radius:14px;padding:9px 12px}
+  .dpill span{display:block;font-size:12px;color:var(--mute)}
+  .dpill b{font-size:16px}
+  .daychart{margin:0 0 10px;padding:8px}
+  .slist{display:grid;gap:8px}
+  .scard{background:var(--surface2);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .scard.cur{border-color:rgba(52,120,246,.45)}
+  .shead{padding:13px 14px}
+  .sl b{font-size:15px}
+  .sr{text-align:right}
+  .sr b{font:800 17px Inter,system-ui}
+  .livetag{font-style:normal;font-size:11px;font-weight:700;color:var(--accent2);background:rgba(52,120,246,.15);padding:1px 6px;border-radius:999px;margin-left:4px}
+  .sbody{padding:0 12px 12px}
+  .sbody .sd{border-left:none;padding:0}
+  .inout{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+  .inout div{background:#0f0f11;border-radius:14px;padding:9px 12px}
+  .inout span{display:block;font-size:12px;color:var(--mute)}
+  .inout b{font-size:16px}
+  .inout small{display:block;font-size:11px;color:var(--mute)}
+  .sbody .stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))!important;gap:8px;margin:0 0 10px}
+  .sbody .stat{background:#0f0f11!important}
+  .sbody details{background:#0f0f11!important}
+  @media (max-width:760px){
+    .ovhero .big{font-size:48px}
+    .ovgrid.key{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .dayhead{padding:14px}
+    .dp{font-size:19px}
+    .inout{grid-template-columns:1fr 1fr}
+    .inout div:last-child{grid-column:1/-1}
+    .allstats .ovgrid,.sbody .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .allstats{margin-top:16px}
+  }
+
+  /* home-screen app: keep popups clear of the iPhone status bar */
+  .modal{padding:calc(env(safe-area-inset-top) + 14px) 12px calc(env(safe-area-inset-bottom) + 20px)!important}
+  .mtop{position:sticky;top:env(safe-area-inset-top);z-index:3;background:#141416;margin:-22px -24px 6px;padding:18px 24px 10px;border-radius:28px 28px 0 0}
+  .modal::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:#000;z-index:5;pointer-events:none}
+  .mclose{width:44px;height:44px;font-size:17px}
+  .hmgrid .icw{display:inline-flex;margin:0 4px 0 0;vertical-align:-2px}
+  .hmgrid b{display:block}
+  @media (max-width:760px){
+    .mtop{margin:-18px -16px 6px;padding:16px 16px 10px;border-radius:24px 24px 0 0}
+    .hmgrid{grid-template-columns:1fr 1fr!important}
+    .hmgrid div:first-child{grid-column:1/-1}
+    .hmnet{font-size:34px}
+    .hmcards .pcards .slot{width:46px;height:64px}
+    .hmcards .pcards .slot .r{font-size:22px}.hmcards .pcards .slot .su{font-size:18px}
+  }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1053,25 +1140,26 @@ if(!window.__framed){
   <div id="viewAll" hidden>
     <div class="note" id="ovNote"></div>
     <div class="ovhero">
-      <div><div class="sub">Total profit, all sessions</div><div class="big" id="ovProfit">–</div></div>
-      <div class="sub" id="ovSub" style="padding-bottom:8px"></div>
+      <div class="sub">All-time profit</div>
+      <div class="big" id="ovProfit">–</div>
+      <div class="sub" id="ovSub"></div>
     </div>
-    <div class="ovgrid" id="ovStats"></div>
+    <div class="ovgrid key" id="ovStats"></div>
     <div class="chart">
-      <div class="sub">Running profit across every hand you've logged (dashed lines = new session)</div>
-      <div class="legend2"><span><i style="background:var(--good)"></i>All hands</span><span><i style="background:var(--tie)"></i>Without bomb pots</span>
-        <span>● $7+ hand</span><span><span style="color:#3ecf8e">•</span><span style="color:#ff5c5c">•</span> bomb pot won / lost</span><span style="color:#6ea8fe">● big bomb pot loss</span></div>
+      <div class="legend2"><span><i style="background:var(--good)"></i>Profit, hand by hand</span><span><i style="background:var(--tie)"></i>Without bomb pots</span><span class="sub">Tap a dot for the hand</span></div>
       <div id="ovChart"></div>
     </div>
-    <h2>What stands out</h2>
-    <div class="insights" id="ovInsights"></div>
-    <h2>Days &amp; sessions</h2>
-    <div class="sub" style="margin:-4px 0 8px">Click a day to see its sessions, then click a session for its details. A day runs 6am to 6am, so late nights stay together.</div>
-    <div class="log" style="max-height:none"><table class="stable" id="ovSessions"></table></div>
-    <div class="two">
-      <div><h3>Best starting hands</h3><div id="ovBest" class="sub"></div></div>
-      <div><h3>Worst starting hands</h3><div id="ovWorst" class="sub"></div></div>
-    </div>
+    <h2>Takeaways</h2>
+    <div class="takeaways" id="ovInsights"></div>
+    <details class="allstats" id="ovMore"><summary>All stats</summary>
+      <div class="ovgrid" id="ovStats2"></div>
+      <div class="two hands2">
+        <div><h3>Best starting hands</h3><div id="ovBest" class="hlist"></div></div>
+        <div><h3>Worst starting hands</h3><div id="ovWorst" class="hlist"></div></div>
+      </div>
+    </details>
+    <h2>Sessions</h2>
+    <div class="days" id="ovSessions"></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -2832,7 +2920,6 @@ function sessionDetailHTML(s, st, hs){
   const start=new Date(s.startedAt), end=s.endedAt?new Date(s.endedAt):null;
   const tf=d=>d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
   let g="";
-  g+=statBox("Profit", money(r2(st.profit)), `from ${st.profitSrc}`, c(st.profit));
   g+=statBox("Per hour", st.perHr==null?"–":money(r2(st.perHr)), dur(st.hours), c(st.perHr));
   g+=statBox("Hands", st.n, st.handsHr?`${st.handsHr.toFixed(0)}/hr`:"");
   g+=statBox("Played", st.vpip==null?"–":pct(st.vpip), `${st.played} of ${st.normal}`);
@@ -2851,12 +2938,11 @@ function sessionDetailHTML(s, st, hs){
   const thead=`<thead><tr><th>Time</th><th>Hand</th><th>Board</th><th>Result</th><th>Net</th><th>Equity</th></tr></thead>`;
   const sec=(id,title,meta,body)=>`<details data-k="${esc(k(id))}"${op(id)}><summary><span>${title}</span><span class="sub">${meta}</span></summary><div class="dbody">${body}</div></details>`;
   return `<div class="sd">
-    <div class="head"><span><b>${esc(s.name||"Session")}</b></span><span>${start.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})} · ${tf(start)}–${end?tf(end):"now"}</span>
-      ${s.sb!=null&&s.bb!=null?`<span>$${s.sb}/$${s.bb}</span>`:""}<span>In for <b>${money(st.buy,false)}</b>${(s.buyins||[]).length>1?` (${s.buyins.map(b=>money(b,false)).join(" + ")})`:""}</span>
-      <span>Out <b>${s.cashout!=null?money(s.cashout,false):(s.endedAt?"–":"still playing")}</b></span>
-      <button class="sm closebtn">Close</button></div>
+    <div class="inout"><div><span>Bought in</span><b>${money(st.buy,false)}</b>${(s.buyins||[]).length>1?`<small>${s.buyins.map(b=>money(b,false)).join(" + ")}</small>`:""}</div>
+      <div><span>Cashed out</span><b>${s.cashout!=null?money(s.cashout,false):(s.endedAt?"–":"still playing")}</b></div>
+      <div><span>Profit</span><b class="${c(st.profit)}">${money(r2(st.profit))}</b><small>from ${st.profitSrc}</small></div></div>
     <div class="stats">${g}</div>
-    <div class="chart" style="margin-top:0"><div class="sub">Running net, hand by hand${bombs.length?' · <span style="color:var(--bad)">●</span> = bomb pot':""}</div>${netChartSVG(sorted)}</div>
+    ${sorted.length>1?`<div class="chart" style="margin-top:0">${netChartSVG(sorted)}</div>`:""}
     ${sec("big","Biggest pots",`${wins.length} wins · ${losses.length} losses`, `<div class="sub" style="margin:4px 0">Wins</div><table>${thead}${bigRows(wins)}</table><div class="sub" style="margin:10px 0 4px">Losses</div><table>${thead}${bigRows(losses)}</table>`)}
     ${sec("log","Hand log",`${hs.length} hands`, hs.length?`<table>${thead}${logRows}</table>`:`<div class="sub">No hands logged.</div>`)}
     ${sec("start","Starting hands",`${Object.keys(by).length} different hands`, `<table><thead><tr><th>Hand</th><th>Dealt</th><th>Won</th><th>Net</th></tr></thead>${shRows}</table>`)}
@@ -2870,27 +2956,14 @@ function dayDetailHTML(d){
   ordered.forEach((r,i)=>{ if (i && hs.length) bounds.push(hs.length); r.hs.slice().sort((a,b)=>a.t-b.t).forEach(h=>hs.push(h)); });
   const T=computeStats(null,hs);
   const profit=d.rows.reduce((a,r)=>a+r.st.profit,0), hours=d.rows.reduce((a,r)=>a+r.st.hours,0);
-  const newMoney=d.rows.reduce((a,r)=>a+r.st.buy,0);
-  let g="";
-  g+=statBox("Day profit", money(r2(profit)), `${d.rows.length} session${d.rows.length===1?"":"s"}`, c(profit));
-  g+=statBox("Per hour", hours>0.05?money(r2(profit/hours)):"–", dur(hours), c(profit));
-  g+=statBox("Hands", hs.length, hours>0.05?`${(hs.length/hours).toFixed(0)}/hr`:"");
-  g+=statBox("Played", T.vpip==null?"–":pct(T.vpip), `${T.played} of ${T.normal}`);
-  g+=statBox("Won when played", T.winRate==null?"–":pct(T.winRate), T.expWin==null?"":`expected ${pct(T.expWin)}`, T.winRate!=null&&T.expWin!=null?(T.winRate>=T.expWin?"pos":"neg"):"");
-  if (T.bombs) g+=statBox("💣 Bomb pots", `${T.bombWon}/${T.bombs}`, `net <span class="${c(T.bombNet)}">${money(r2(T.bombNet))}</span>`);
-  g+=statBox("Without bomb pots", money(r2(T.handsNet-T.bombNet)), "from logged hands", c(T.handsNet-T.bombNet));
-  const wins=hs.filter(h=>h.net>0).sort((a,b)=>b.net-a.net).slice(0,5), losses=hs.filter(h=>h.net<0).sort((a,b)=>a.net-b.net).slice(0,5);
-  const thead=`<thead><tr><th>Time</th><th>Hand</th><th>Board</th><th>Result</th><th>Net</th><th>Equity</th></tr></thead>`;
-  const k=`day:${d.k}:big`;
-  return `<div class="sd">
-    <div class="head"><b>${dayLabel(d.ts)}</b><span>Bought in ${money(r2(newMoney),false)} across ${d.rows.length} session${d.rows.length===1?"":"s"}</span><span class="sub">(rebuys count each time)</span></div>
-    <div class="stats">${g}</div>
-    <div class="chart" style="margin-top:0"><div class="sub">The whole day, hand by hand · dashed lines = new session${T.bombs?' · <span style="color:var(--bad)">●</span> = bomb pot':""}</div>${netChartSVG(hs,190,bounds)}</div>
-    <details data-k="${esc(k)}"${openDetails.has(k)?" open":""}><summary><span>Biggest pots of the day</span><span class="sub">${wins.length} wins · ${losses.length} losses</span></summary>
-      <div class="dbody"><div class="sub" style="margin:4px 0">Wins</div><table>${thead}${wins.map(h=>handRowHTML(h,false)).join("")||'<tr><td class="sub">None</td></tr>'}</table>
-      <div class="sub" style="margin:10px 0 4px">Losses</div><table>${thead}${losses.map(h=>handRowHTML(h,false)).join("")||'<tr><td class="sub">None</td></tr>'}</table></div></details>
-    <div class="sub" style="margin-top:10px">Sessions this day are listed below. Click one for its own details.</div>
-  </div>`;
+  const pill=(k,v,cls="")=>`<div class="dpill"><span>${k}</span><b class="${cls}">${v}</b></div>`;
+  return `<div class="dsum">
+      ${pill("Per hour", hours>0.05?money(r2(profit/hours)):"–", c(profit))}
+      ${pill("Hands you play", T.vpip==null?"–":pct(T.vpip))}
+      ${pill("Win rate", T.winRate==null?"–":pct(T.winRate), T.winRate!=null&&T.expWin!=null?(T.winRate>=T.expWin?"pos":"neg"):"")}
+      ${T.bombs?pill("💣 Bomb pots", money(r2(T.bombNet)), c(T.bombNet)):""}
+    </div>
+    ${d.rows.length>1&&hs.length>1?`<div class="chart daychart">${netChartSVG(hs,170,bounds)}</div>`:""}`;
 }
 function handsOf(s){ return s.id===sid ? hands : (handsCache[s.id]||[]); }
 function renderAll(){
@@ -2909,22 +2982,27 @@ function renderAll(){
   const T=computeStats(null, all);
   const c=x=>x>0?"pos":x<0?"neg":"";
   $("ovProfit").textContent=money(Math.round(profit*100)/100); $("ovProfit").className="big "+c(profit);
-  $("ovSub").innerHTML=`${ss.length} session${ss.length===1?"":"s"} · ${all.length} hands · ${dur(hours)} played`+
-    (sessions.some(s=>!s.endedAt)?` · includes your live session`:"");
+  $("ovSub").innerHTML=`${ss.length} session${ss.length===1?"":"s"} · ${all.length.toLocaleString()} hands · ${dur(hours)}`+
+    (sessions.some(s=>!s.endedAt)?` · live session included`:"");
   // headline stats
   const losses=all.filter(h=>h.net<0), lossTot=-losses.reduce((a,h)=>a+h.net,0);
   const bombLoss=-losses.filter(h=>h.bomb).reduce((a,h)=>a+h.net,0);
   const biggestW=all.reduce((m,h)=>!m||h.net>m.net?h:m,null), biggestL=all.reduce((m,h)=>!m||h.net<m.net?h:m,null);
+  const r2=v=>Math.round(v*100)/100;
   let g="";
-  g+=statBox("Per hour", hours>0.05?money(Math.round(profit/hours*100)/100):"–", `over ${dur(hours)}`, c(profit));
-  g+=statBox("bb/100", bbHands?(bbUnits/bbHands*100).toFixed(1):"–", "from logged hands", c(bbUnits));
-  g+=statBox("Hands played", T.vpip==null?"–":pct(T.vpip), `${T.played} of ${T.normal||0} (bomb pots not counted)`);
-  g+=statBox("Won when played", T.winRate==null?"–":pct(T.winRate), T.expWin==null?"":`expected ${pct(T.expWin)} from preflop equity`, T.winRate!=null&&T.expWin!=null?(T.winRate>=T.expWin?"pos":"neg"):"");
-  g+=statBox("💣 Bomb pots", T.bombs?`${T.bombWon}/${T.bombs} won`:"–", T.bombs?`net <span class="${c(T.bombNet)}">${money(T.bombNet)}</span> · ${lossTot?Math.round(bombLoss/lossTot*100):0}% of all losses`:"none played");
-  g+=statBox("Without bomb pots", money(Math.round((T.handsNet-T.bombNet)*100)/100), "net from every other hand", c(T.handsNet-T.bombNet));
-  g+=statBox("Blinds", T.blindHands?money(T.blindCost):"–", T.blindHands?`${T.blindOnly} hands where you only paid the blind`:"tap SB/BB to track", c(T.blindCost));
-  g+=statBox("Biggest win", biggestW&&biggestW.net>0?money(biggestW.net):"–", biggestW&&biggestW.net>0?biggestW.key:"", "pos");
-  g+=statBox("Biggest loss", biggestL&&biggestL.net<0?money(biggestL.net):"–", biggestL&&biggestL.net<0?biggestL.key+(biggestL.bomb?" 💣":""):"", "neg");
+  g+=statBox("Per hour", hours>0.05?money(r2(profit/hours)):"–", `over ${dur(hours)}`, c(profit));
+  g+=statBox("Hands you play", T.vpip==null?"–":pct(T.vpip), T.vpip==null?"":`${T.played} of ${T.normal||0} dealt`);
+  g+=statBox("Win rate", T.winRate==null?"–":pct(T.winRate), T.expWin==null?"of hands you play":`your cards said ${pct(T.expWin)}`, T.winRate!=null&&T.expWin!=null?(T.winRate>=T.expWin?"pos":"neg"):"");
+  g+=statBox("Biggest pot", biggestW&&biggestW.net>0?money(r2(biggestW.net)):"–", biggestW&&biggestW.net>0?showKeyH(biggestW.key):"", "pos");
+  let g2="";
+  g2+=statBox("bb/100", bbHands?(bbUnits/bbHands*100).toFixed(1):"–", "big blinds won per 100 hands", c(bbUnits));
+  g2+=statBox("Hands logged", all.length.toLocaleString(), `${ss.length} session${ss.length===1?"":"s"}`);
+  g2+=statBox("💣 Bomb pots", T.bombs?`${T.bombWon}/${T.bombs} won`:"–", T.bombs?`net <span class="${c(T.bombNet)}">${money(r2(T.bombNet))}</span>`:"none played");
+  g2+=statBox("Without bomb pots", money(r2(T.handsNet-T.bombNet)), "everything else", c(T.handsNet-T.bombNet));
+  g2+=statBox("Biggest loss", biggestL&&biggestL.net<0?money(r2(biggestL.net)):"–", biggestL&&biggestL.net<0?showKeyH(biggestL.key)+(biggestL.bomb?" 💣":""):"", "neg");
+  g2+=statBox("Blinds", T.blindHands?money(r2(T.blindCost)):"–", T.blindHands?`${T.blindOnly} blind-only hands`:"tap SB/BB to track", c(T.blindCost));
+  if (T.avgPlayEq!=null&&T.avgFoldEq!=null) g2+=statBox("Hand selection", pct(T.avgPlayEq), `avg equity played · ${pct(T.avgFoldEq)} folded`);
+  $("ovStats2").innerHTML=g2;
   $("ovStats").innerHTML=g;
   // chart: cumulative net, all hands vs without bomb pots, session boundaries
   const el=$("ovChart");
@@ -2972,47 +3050,54 @@ function renderAll(){
       <text x="${W-70}" y="${H-3}" fill="#8b8b95" font-size="11" text-anchor="end">hand ${all.length}</text>
     </svg>`;
   }
-  // insights
-  const ins=[];
-  if (T.bombs){ ins.push([T.bombNet<0?"bad":"good", `💣 Bomb pots: ${T.bombWon} won out of ${T.bombs}, ${money(T.bombNet)} net. That's ${lossTot?Math.round(bombLoss/lossTot*100):0}% of everything you've lost. Without them you'd be ${money(Math.round((T.handsNet-T.bombNet)*100)/100)}.`]); }
-  if (T.winRate!=null && T.expWin!=null) ins.push([T.winRate>=T.expWin?"good":"bad", `When you choose to play a hand you win ${pct(T.winRate)} of the time, vs ${pct(T.expWin)} expected from your starting cards. You're running ${T.winRate>=T.expWin?"above":"below"} expectation.`]);
-  if (T.avgFoldEq!=null && T.avgPlayEq!=null) ins.push(["", `Hand selection: the hands you play average ${pct(T.avgPlayEq)} preflop equity vs ${pct(T.avgFoldEq)} for the ones you fold.`]);
-  const bigLosses=all.filter(h=>h.net<0).sort((a,b)=>a.net-b.net).slice(0,3);
-  if (bigLosses.length){ const sum=-bigLosses.reduce((a,h)=>a+h.net,0); ins.push(["bad", `Your ${bigLosses.length===1?"biggest loss":bigLosses.length+" biggest losses"} (${bigLosses.map(h=>h.key+(h.bomb?" 💣":"")+" "+money(h.net)).join(", ")}) ${bigLosses.length===1?"is":"add up to"} ${money(sum,false)}, ${lossTot?Math.round(sum/lossTot*100):0}% of all your losses.`]); }
-  $("ovInsights").innerHTML=ins.map(([k,t])=>`<div class="insight ${k}">${t}</div>`).join("") || `<div class="empty">Play a session to see insights.</div>`;
+  // takeaways: at most three, one sentence each
+  const tk=[];
+  if (T.winRate!=null && T.expWin!=null){ const hot=T.winRate>=T.expWin;
+    tk.push([hot?"good":"bad", hot?"Running hot":"Running cold", `You win <b>${pct(T.winRate)}</b> of the hands you play. Your cards gave you ${pct(T.expWin)}.`]); }
+  if (T.bombs) tk.push([T.bombNet<0?"bad":"good", "Bomb pots", T.bombNet<0
+      ? `They've cost you <b>${money(r2(-T.bombNet),false)}</b>. Without them you'd be ${money(r2(T.handsNet-T.bombNet))}.`
+      : `You're up <b>${money(r2(T.bombNet))}</b> on them. Don't get used to it.`]);
+  const byK={}; all.forEach(h=>{ const o=byK[h.key]||(byK[h.key]={n:0,net:0}); o.n++; o.net+=h.net||0; });
+  const leak=Object.entries(byK).filter(e=>e[1].net<0).sort((a,b)=>a[1].net-b[1].net)[0];
+  if (leak) tk.push(["bad","Biggest leak", `<b>${showKeyH(leak[0])}</b> has lost ${money(r2(-leak[1].net),false)} over ${leak[1].n} hand${leak[1].n===1?"":"s"}.`]);
+  if (tk.length<3 && T.avgFoldEq!=null && T.avgPlayEq!=null) tk.push(["","Hand selection", `The hands you play average <b>${pct(T.avgPlayEq)}</b> to win. The ones you fold: ${pct(T.avgFoldEq)}.`]);
+  $("ovInsights").innerHTML=tk.slice(0,3).map(([k,l,t])=>`<div class="tk ${k}"><div class="tkl">${l}</div><div class="tkt">${t}</div></div>`).join("") || `<div class="empty">Play a session to see your takeaways.</div>`;
   // sessions table (newest first)
   const days=[], dmap={};
   rows.slice().reverse().forEach(r=>{ const k=dayKey(r.s.startedAt); if (!dmap[k]){ dmap[k]={k,ts:r.s.startedAt,rows:[]}; days.push(dmap[k]); } dmap[k].rows.push(r); });
   if (openDays===null) openDays=new Set(days.length?[days[0].k]:[]);
-  const sessRow=({s,st,hs})=>{
-      const d=new Date(s.startedAt), bn=hs.filter(h=>h.bomb).reduce((a,h)=>a+(h.net||0),0);
-      const open = openSid===s.id;
-      return `<tr class="srow ${s.id===sid?"cur":""} ${open?"open":""}" data-sid="${esc(s.id)}" title="Click for this session's details"><td>${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}</td>
-        <td>${esc(s.name||"Session")}${s.endedAt?"":` <span class="tag w">live</span>`}</td><td>${s.sb!=null&&s.bb!=null?`$${s.sb}/$${s.bb}`:"–"}</td>
-        <td>${dur(st.hours)}</td><td>${hs.length}</td><td>${money(st.buy,false)}</td><td>${s.cashout!=null?money(s.cashout,false):"–"}</td>
-        <td class="${c(st.profit)}"><b>${money(Math.round(st.profit*100)/100)}</b></td><td class="${c(bn)}">${bn?money(Math.round(bn*100)/100):""}</td></tr>`+
-        (open ? `<tr class="sdet"><td colspan="9">${sessionDetailHTML(s,st,hs)}</td></tr>` : "");
+  const tf=d=>new Date(d).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  const stakeOf=s=>s.sb!=null&&s.bb!=null?`$${s.sb}/$${s.bb}`:"";
+  const sessCard=({s,st,hs})=>{
+    const open=openSid===s.id;
+    return `<div class="scard${open?" open":""}${s.id===sid?" cur":""}">
+      <button class="shead" data-sid="${esc(s.id)}">
+        <div class="sl"><b>${tf(s.startedAt)}${s.endedAt?`–${tf(s.endedAt)}`:""}</b><span>${esc(s.name||"Session")}${stakeOf(s)?` · ${stakeOf(s)}`:""}${s.endedAt?"":` <i class="livetag">live</i>`}</span></div>
+        <div class="sr"><b class="${c(st.profit)}">${money(r2(st.profit))}</b><span>${hs.length} hands · ${dur(st.hours)}</span></div>
+        <span class="chev"></span>
+      </button>
+      ${open?`<div class="sbody">${sessionDetailHTML(s,st,hs)}</div>`:""}
+    </div>`;
   };
-  $("ovSessions").innerHTML=`<thead><tr><th>Day / start</th><th>Session</th><th>Stakes</th><th>Time</th><th>Hands</th><th>In for</th><th>Out</th><th>Profit</th><th>💣</th></tr></thead><tbody>`+
-    days.map(d=>{
+  $("ovSessions").innerHTML = days.length ? days.map(d=>{
       const P=d.rows.reduce((a,r)=>a+r.st.profit,0), Hh=d.rows.reduce((a,r)=>a+r.st.hours,0), N=d.rows.reduce((a,r)=>a+r.hs.length,0);
-      const B=d.rows.reduce((a,r)=>a+r.hs.filter(h=>h.bomb).reduce((x,h)=>x+(h.net||0),0),0);
-      const stakes=[...new Set(d.rows.map(r=>r.s.sb!=null&&r.s.bb!=null?`$${r.s.sb}/$${r.s.bb}`:null).filter(Boolean))].join(", ");
       const open=openDays.has(d.k);
-      return `<tr class="drow ${open?"open":""}" data-day="${esc(d.k)}"><td>${dayLabel(d.ts)}</td><td>${d.rows.length} session${d.rows.length===1?"":"s"}</td><td>${stakes||"–"}</td><td>${dur(Hh)}</td><td>${N}</td><td></td><td></td>
-        <td class="${c(P)}"><b>${money(Math.round(P*100)/100)}</b></td><td class="${c(B)}">${B?money(Math.round(B*100)/100):""}</td></tr>`+
-        (open ? `<tr class="sdet"><td colspan="9">${dayDetailHTML(d)}</td></tr>` + d.rows.map(sessRow).join("") : "");
-    }).join("")+`</tbody>`;
-  $("ovSessions").querySelectorAll("tr.drow").forEach(tr=>tr.onclick=()=>{ const k=tr.dataset.day; if (openDays.has(k)) openDays.delete(k); else openDays.add(k); renderAll(); });
-  $("ovSessions").querySelectorAll("tr.srow").forEach(tr=>tr.onclick=()=>{ openSid = openSid===tr.dataset.sid ? null : tr.dataset.sid; renderAll(); });
+      return `<div class="day${open?" open":""}">
+        <button class="dayhead" data-day="${esc(d.k)}">
+          <div class="dl"><b>${dayLabel(d.ts)}</b><span>${d.rows.length} session${d.rows.length===1?"":"s"} · ${N} hands · ${dur(Hh)}</span></div>
+          <div class="dp ${c(P)}">${money(r2(P))}</div><span class="chev"></span>
+        </button>
+        ${open?`<div class="daybody">${dayDetailHTML(d)}<div class="slist">${d.rows.slice().sort((a,b)=>b.s.startedAt-a.s.startedAt).map(sessCard).join("")}</div></div>`:""}
+      </div>`; }).join("") : `<div class="empty">Your sessions show up here once you log a hand or add a buy-in.</div>`;
+  $("ovSessions").querySelectorAll(".dayhead").forEach(b=>b.onclick=()=>{ const k=b.dataset.day; if (openDays.has(k)) openDays.delete(k); else openDays.add(k); renderAll(); });
+  $("ovSessions").querySelectorAll(".shead").forEach(b=>b.onclick=()=>{ openSid = openSid===b.dataset.sid ? null : b.dataset.sid; renderAll(); });
   $("ovSessions").querySelectorAll(".sd details").forEach(d=>d.addEventListener("toggle",()=>{ if (d.open) openDetails.add(d.dataset.k); else openDetails.delete(d.dataset.k); }));
-  $("ovSessions").querySelectorAll(".sd .closebtn").forEach(b=>b.onclick=e=>{ e.stopPropagation(); openSid=null; renderAll(); });
   // starting hands
   const by={}; all.forEach(h=>{ const o=by[h.key]||(by[h.key]={n:0,net:0}); o.n++; o.net+=h.net||0; });
   const list=Object.entries(by).filter(([k,o])=>o.net!==0);
-  const fmtH=([k,o])=>`<b style="color:var(--ink)">${k}</b> <span class="${c(o.net)}">${money(Math.round(o.net*100)/100)}</span> (×${o.n})`;
-  $("ovBest").innerHTML=list.filter(e=>e[1].net>0).sort((a,b)=>b[1].net-a[1].net).slice(0,6).map(fmtH).join(" · ")||"–";
-  $("ovWorst").innerHTML=list.filter(e=>e[1].net<0).sort((a,b)=>a[1].net-b[1].net).slice(0,6).map(fmtH).join(" · ")||"–";
+  const fmtH=([k,o])=>`<div class="hchip"><b>${showKeyH(k)}</b><span class="${c(o.net)}">${money(Math.round(o.net*100)/100)}</span><small>×${o.n}</small></div>`;
+  $("ovBest").innerHTML=list.filter(e=>e[1].net>0).sort((a,b)=>b[1].net-a[1].net).slice(0,6).map(fmtH).join("")||`<span class="sub">–</span>`;
+  $("ovWorst").innerHTML=list.filter(e=>e[1].net<0).sort((a,b)=>a[1].net-b[1].net).slice(0,6).map(fmtH).join("")||`<span class="sub">–</span>`;
 }
 
 // =================== boot ===================
