@@ -13,9 +13,7 @@
     --s:#1b1b1b; --h:#d63b3b; --d:#2a6fd6; --c:#1f9a52;
   }
   *{box-sizing:border-box}
-  [hidden]{display:none!important}
-  body{margin:0;color:var(--ink);
-       background-image:radial-gradient(1200px 500px at 50% -120px,rgba(212,175,55,.09),transparent 70%),repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 6px)!important;font:15px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  body{margin:0;color:var(--ink);font:15px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
        background:radial-gradient(1200px 500px at 50% -120px,rgba(212,175,55,.08),transparent 70%),var(--bg);background-attachment:fixed;min-height:100vh}
   .brand{display:flex;align-items:baseline;gap:12px;margin:6px 0 14px;flex-wrap:wrap}
   .brand .logo{font:600 40px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.5px;
@@ -23,8 +21,6 @@
   .brand .logo i{font-style:italic}
   .brand .suit{font-size:26px;color:var(--accent);filter:drop-shadow(0 0 8px rgba(212,175,55,.35))}
   .brand .tag2{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mute)}
-  .panel{background:linear-gradient(180deg,#141417,#0e0e10)!important;border-color:#26262c!important}
-  .action{backdrop-filter:blur(4px)}
   .panel,.stat,.chart,.log,.table,.money,.insight,.sd details{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 30px rgba(0,0,0,.35)}
   input:focus,select:focus{outline:none;border-color:var(--accent)!important}
   ::selection{background:rgba(212,175,55,.35)}
@@ -146,136 +142,6 @@
   button.bomb.on{background:var(--accent);color:#1a1406;border-color:var(--accent);font-weight:700}
   .tag.b{background:#3a3010;color:var(--accent);margin-right:4px}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
-  /* ---- play console ---- */
-  .entry{align-items:stretch}
-  .entry .bomb{font-size:18px;padding:0 12px}
-  .stackpill{display:flex;flex-direction:column;justify-content:center;padding:4px 14px;border:1px solid rgba(212,175,55,.35);border-radius:10px;background:linear-gradient(180deg,#17150d,#0e0d09);min-width:96px}
-  .stackpill span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a}
-  .stackpill b{font:800 18px/1.1 Inter,system-ui;font-variant-numeric:tabular-nums}
-  .playcol{display:flex;flex-direction:column;gap:10px;min-width:0}
-  .felt{position:relative;aspect-ratio:16/10.5;border-radius:999px;margin:34px 46px 40px;
-    background:radial-gradient(ellipse at 50% 38%,#202026 0%,#141418 45%,#0b0b0d 100%);
-    border:12px solid #141417;box-shadow:0 0 0 1px rgba(212,175,55,.45),inset 0 0 0 1px rgba(212,175,55,.25),inset 0 0 60px rgba(0,0,0,.8),0 30px 60px rgba(0,0,0,.6)}
-  .feltmark{position:absolute;left:50%;top:69%;transform:translate(-50%,-50%);font:600 22px/1 "Cormorant Garamond",Georgia,serif;color:rgba(212,175,55,.10);white-space:nowrap;pointer-events:none;letter-spacing:1px}
-  .feltbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-  .fhead{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--mute)}
-  .fctl{display:flex;gap:6px}
-  .felt{margin-top:34px!important}
-  .center{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center}
-  .center .slots{justify-content:center}
-  .center .made{margin-top:8px;font-size:13px;min-height:18px}
-  .potline{font-size:12px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
-  .potline b{color:var(--ink)}
-  .herohand{position:absolute;left:50%;bottom:9%;transform:translateX(-50%)}
-  .felt .slot{width:44px;height:62px;border-radius:7px}
-  .felt .slot .r{font-size:20px} .felt .slot .su{font-size:17px}
-  .felt .slot.after::after{bottom:-13px}
-  .herohand .slot{width:52px;height:72px} .herohand .slot .r{font-size:24px} .herohand .slot .su{font-size:20px}
-  .gap{width:4px}
-  #seats{position:absolute;inset:0}
-  .seat{position:absolute;transform:translate(-50%,-50%);width:96px;min-height:0;padding:6px 6px 5px;text-align:center;border-radius:12px;
-    background:linear-gradient(180deg,#1b1b20,#121215);border:1px solid #2c2c33;cursor:pointer;user-select:none;touch-action:none;transition:box-shadow .15s,opacity .15s}
-  .seat:hover{border-color:#4a4a52}
-  .seat.dragging{z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 0 2px var(--accent);cursor:grabbing;transition:none}
-  .seat.dropok{box-shadow:0 0 0 2px var(--accent)}
-  .seat .sp{font:800 12.5px/1.1 Inter,system-ui;letter-spacing:.3px}
-  .seat .sv{font-size:11px;color:var(--mute);margin-top:2px}
-  .seat .se{font:800 13px/1.2 Inter,system-ui;font-variant-numeric:tabular-nums;margin-top:1px;min-height:15px}
-  .seat.me{border-color:var(--accent);background:linear-gradient(180deg,#2a2412,#15130b);box-shadow:0 0 18px rgba(212,175,55,.18)}
-  .seat.me .sv{color:var(--accent);font-weight:800;letter-spacing:1.5px}
-  .seat.fold{opacity:.35} .seat.fold .se{visibility:hidden}
-  .seat.fold::after,.seat.raise::after{position:absolute;top:-8px;right:-6px;font:800 9.5px/1 Inter;padding:3px 5px;border-radius:5px;letter-spacing:.5px}
-  .seat.fold::after{content:"OUT";background:#3a1513;color:#ff8a80}
-  .seat.raise{border-color:#e08a3c;background:linear-gradient(180deg,#2a1c10,#15110c)} .seat.raise::after{content:"RAISED";background:#e08a3c;color:#111}
-  .seat.emptyseat{background:transparent;border-style:dashed;opacity:.55}
-  .seat.emptyseat .sv{font-size:18px;line-height:1}
-  .seat .vpipIn{width:54px;margin-top:4px;padding:2px 4px;font-size:13px;font-weight:700;text-align:center;border-radius:6px}
-  .seat .ebtns{display:flex;gap:3px;justify-content:center;margin-top:4px}
-  .seat .mini{padding:1px 6px;font-size:11px;border-radius:6px}
-  .seat .leave{color:#ff9a8f}
-  .dbtn{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#f6f4ee;color:#111;font:900 11px/22px Inter;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.6);pointer-events:none}
-  .seathelp{font-size:12px;color:var(--mute);text-align:center;margin-top:-8px}
-  .keypad{display:flex;flex-direction:column;gap:6px}
-  .keypad .ranks{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}
-  .keypad .suits{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-  .kb{padding:10px 0;font:800 16px/1 Inter,system-ui;border-radius:9px;background:linear-gradient(180deg,#1d1d22,#141418);border:1px solid #2c2c33}
-  .kb.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
-  .kb:disabled{opacity:.2;cursor:default}
-  .kb.suit{font-size:24px;padding:8px 0;background:#f6f4ee;border-color:#f6f4ee}
-  .kb.suit:hover{background:#fff}
-  .kb.back{font-size:14px;color:var(--mute)}
-  .resbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-  .rb{flex:1;min-width:70px;padding:11px 0;font-weight:800;border-radius:10px}
-  .rb.f{border-color:#3a3a42} .rb.w{border-color:#2f6b4c;color:var(--good)} .rb.l{border-color:#6b2f2f;color:#ff8a80} .rb.x{border-color:#2f4a6b;color:var(--tie)}
-  .rb.on{background:#24242a}
-  .resin{display:flex;gap:6px;align-items:center;flex-basis:100%;flex-wrap:wrap}
-  .resin .sub{flex-basis:100%}
-  .resin input{min-width:0}
-  .resin input{flex:1;font-size:18px;font-weight:800;padding:9px 10px}
-  .miniact{display:none}
-  @media (max-width:860px){
-    .entry{flex-wrap:wrap} .entry #q{flex-basis:100%} .entry button{flex:1} .stackpill{flex:1.4}
-    .felt{aspect-ratio:1/1.32;margin:30px 24px 30px!important}
-    .seat{width:62px;padding:4px 2px;border-radius:10px} .seat .sp{font-size:11px} .seat .se{font-size:12px} .seat:not(.me) .sv{display:none}
-    .seat.edit-s .sv{display:block}
-    .felt .slot{width:30px;height:42px;border-radius:5px} .felt .slot .r{font-size:14px} .felt .slot .su{font-size:12px}
-    .center .made{font-size:12px} .potline{font-size:11px}
-    .herohand{bottom:12%} .herohand .slot{width:40px;height:56px} .herohand .slot .r{font-size:19px} .herohand .slot .su{font-size:16px}
-    .feltmark{font-size:16px;top:64%}
-    .miniact{display:flex;position:fixed;left:8px;right:8px;bottom:8px;z-index:20;gap:10px;align-items:center;padding:10px 14px;border-radius:14px;
-      background:rgba(14,14,16,.92);backdrop-filter:blur(8px);border:1px solid #2c2c33;box-shadow:0 10px 30px rgba(0,0,0,.6)}
-    .miniact .ma{font:900 22px/1 Inter,system-ui;letter-spacing:.5px}
-    .miniact .ms{font-weight:800;font-size:13px}
-    .miniact .me{margin-left:auto;text-align:right;font-size:11px;color:var(--mute)} .miniact .me b{display:block;font-size:17px;color:var(--ink)}
-    .miniact.fold .ma{color:#ff8a80} .miniact.call .ma{color:var(--good)} .miniact.raise .ma,.miniact.bet .ma{color:var(--accent)} .miniact.check .ma{color:var(--tie)}
-    .miniact.off{display:none}
-    body{padding-bottom:70px}
-
-    .keypad .ranks{grid-template-columns:repeat(7,1fr)}
-    .kb{padding:13px 0}
-  }
-  .playhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .modebar{display:inline-flex;border:1px solid #2c2c33;border-radius:999px;padding:3px;background:#0f0f12;margin-top:18px}
-  .modebar button{border:none;background:none;border-radius:999px;padding:7px 16px;font-weight:700;color:var(--mute)}
-  .modebar button.on{background:linear-gradient(180deg,#e9c95c,#b8932a);color:#141005}
-  .simple{background:linear-gradient(180deg,#151518,#0e0e11);border:1px solid #2a2a30;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px}
-  .simple .lbl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a;font-weight:700;margin-bottom:6px}
-  .simcards{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end}
-  .simhero .slot,.simboard .slot{width:52px;height:72px}
-  .simhero,.simboard{display:flex;gap:6px}
-  .simple .made{margin:0}
-  .simrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .simrow .lbl{margin:0;min-width:130px}
-  .simrow b{font:900 26px/1 Inter,system-ui;min-width:34px;text-align:center}
-  .sbtn{width:46px;height:42px;font-size:22px;font-weight:800;padding:0}
-  .seg{display:inline-flex;border:1px solid #2c2c33;border-radius:10px;overflow:hidden}
-  .seg button{border:none;border-right:1px solid #2c2c33;border-radius:0;padding:9px 13px;font-weight:700;background:#141418}
-  .seg button:last-child{border-right:none}
-  .seg button.on{background:#2a2412;color:var(--accent)}
-  .dropzone{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px;border:2px dashed #3a3a42;border-radius:14px;cursor:pointer;text-align:center;background:#0f0f12;transition:border-color .15s,background .15s}
-  .dropzone:hover,.dropzone.over{border-color:var(--accent);background:#17150d}
-  .dropzone .dz1{font-size:15px} .dropzone .dz2{font-size:12px;color:var(--mute)}
-  .shotout{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
-  .shotout .row2{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-  .shotout input{flex:1;font:700 16px ui-monospace,Menlo,monospace}
-  @media (max-width:860px){ .simrow .lbl{min-width:0;flex-basis:100%} .simhero .slot,.simboard .slot{width:40px;height:56px} }
-  .keynums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
-  .keynums>div{background:#0f0f12;border:1px solid var(--line);border-radius:12px;padding:8px 10px}
-  .keynums .lbl{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--mute)}
-  .keynums b{display:block;font:800 24px/1.15 Inter,system-ui;font-variant-numeric:tabular-nums;margin-top:2px}
-  .keynums small{display:block;font-size:11.5px;color:var(--mute);margin-top:1px}
-  .chips2{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0 4px}
-  .chips2 button{padding:5px 9px;font-size:12px;border-radius:999px}
-  .chips2 button.on{border-color:var(--accent);color:var(--accent)}
-  details.more{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:#0f0f12;padding:8px 12px}
-  details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:#cbb26a;list-style:none}
-  details.more summary::-webkit-details-marker{display:none}
-  details.more summary::before{content:"▸ "} details.more[open] summary::before{content:"▾ "}
-  .cheat{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
-  .cheat td{padding:4px 6px;border-top:1px solid #1f1f24;font-variant-numeric:tabular-nums}
-  .action .arow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .action .asize{font:800 16px/1 Inter,system-ui;color:var(--ink);opacity:.9}
-  .action .tip{font-size:12.5px;margin-top:7px;padding-top:7px;border-top:1px dashed rgba(255,255,255,.12);color:#d9cfae}
   .action{border-radius:14px;padding:12px 14px;margin-bottom:14px;border:2px solid var(--line);background:#141418}
   .action .a{font:900 34px/1 system-ui;letter-spacing:1px}
   .action .why{font-size:13px;color:var(--ink);margin-top:6px;opacity:.9}
@@ -384,58 +250,14 @@
     </div>
   </div>
 
-  <div class="playhead"><h2><span class="step">2</span> Play</h2>
-    <div class="modebar" role="tablist"><button id="modeSimple" class="on">Simple</button><button id="modeFull">Full table</button></div></div>
+  <h2><span class="step">2</span> Hands: log them one by one</h2>
   <div class="entry">
-    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ahkd 7c8c9d · 20/5 = pot/to call · f w40 l25 ⏎">
-    <button id="sbBtn" class="blindbtn" title="I'm the small blind ( [ )">SB</button>
-    <button id="bbBtn" class="blindbtn" title="I'm the big blind ( ] )">BB</button>
-    <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣</button>
-    <button id="clr" title="New hand (Esc)">New hand</button>
-    <div class="stackpill" title="Buy-ins plus everything you've logged"><span>Stack</span><b id="liveStack">–</b></div>
+    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ahkd 7c8c9d   then  f / w40 / l25  + Enter">
+    <button id="sbBtn" class="blindbtn" title="I'm the small blind this hand ( [ )">SB</button>
+    <button id="bbBtn" class="blindbtn" title="I'm the big blind this hand ( ] )">BB</button>
+    <button id="clr" title="Clear (Esc)">Clear</button>
   </div>
   <div class="preview" id="preview"></div>
-      <div class="bombwarn" id="bombwarn">
-        <div class="t">🚫 NO MORE BOMB POTS</div>
-        <div class="d" id="bombwarnTxt"></div>
-        <button id="sitOut">Sit this one out</button>
-      </div>
-      <div class="bombrow" id="bombrow">
-        <span>💣 Bomb pot: everyone puts in</span><input id="bAnte" type="number" inputmode="decimal" min="0" placeholder="ante">
-        <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
-        <span id="bInfo"></span>
-      </div>
-
-  <div class="grid">
-    <div class="playcol">
-      <div class="simple" id="simplePanel" hidden>
-        <div class="simcards"><div><div class="lbl">Your hand</div><div class="simhero" id="simHero"></div></div><div><div class="lbl">Board</div><div class="simboard" id="simBoard"></div></div></div>
-        <div class="made" id="simMade"></div>
-        <div class="simrow"><span class="lbl">Players still in</span><button id="soM" class="sbtn">−</button><b id="soN">8</b><button id="soP" class="sbtn">+</button><span class="sub">tap − when someone folds</span></div>
-        <div class="simrow"><span class="lbl">Your spot</span><div class="seg" id="segPos"><button data-v="early">Early</button><button data-v="middle">Middle</button><button data-v="late">Late</button><button data-v="SB">SB</button><button data-v="BB">BB</button></div></div>
-        <div class="simrow"><span class="lbl">Did anyone raise?</span><div class="seg" id="segRaise"><button data-v="0" class="on">No</button><button data-v="1">Yes</button></div></div>
-      </div>
-      <div class="feltbar">
-        <div class="fhead"><span id="tlabel">Seated</span> <button id="tm" class="sm">−</button><b id="tn">9</b><button id="tp" class="sm">+</button>
-          <span class="vs">· vs <b id="on">1</b><span id="oppInfo"></span></span></div>
-        <div class="fctl"><button id="fold1" class="sm" title="Next player to act folds (-)">Next folds</button><button id="seatEditBtn" class="sm">⚙ Seats</button></div>
-      </div>
-      <div class="felt" id="seatbox">
-        <div class="feltmark">Max's <i>Lucky</i> Odds</div>
-        <div class="center"><div class="slots board" id="bs"></div><div class="made" id="made"></div><div class="potline" id="potline"></div></div>
-        <div class="herohand"><div class="slots" id="hs"></div></div>
-        <div id="seats"></div>
-        <div class="dbtn" id="dealerChip" hidden>D</div>
-      </div>
-      <div class="seathelp" id="seatHelp"></div>
-      <div class="keypad" id="picker"><div class="ranks" id="kRanks"></div><div class="suits" id="kSuits"></div></div>
-      <div class="resbar" id="resbar">
-        <button class="rb f" data-r="f" title="Log a fold">Fold</button>
-        <button class="rb w" data-r="w">Won</button>
-        <button class="rb l" data-r="l">Lost</button>
-        <button class="rb x" data-r="x">Split</button>
-        <span class="resin" id="resin" hidden><span class="sub" id="resLbl"></span><input id="resAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$"><button id="resGo" class="pri">Log</button><button id="resX" class="sm">✕</button></span>
-      </div>
   <details class="howto"><summary>How to enter hands <span class="sub">· cards, results, $ amounts, blinds, bomb pots, shortcuts</span></summary><p class="hint">
     <b>Cards:</b> rank <code>2–9 t j q k a</code> + suit <code>s h d c</code>, e.g. <code>ahkd 7c8c9d</code>. Odds update as you type.<br>
     <b>Log the hand:</b> add a result where you acted, then press <span class="kbd">Enter</span>:
@@ -447,40 +269,73 @@
     <b>Bomb pot:</b> type <code>b</code> (or tap 💣) and the hand goes straight to the flop: <code>b ahkd 7c8c9d w90</code>. Fold on the flop with no amount and it counts the ante as lost.<br>
     <span class="kbd">Esc</span> clears · <span class="kbd">-</span> someone folded (<span class="kbd">+</span> undo) · the fold count resets every hand · you can also tap the cards and buttons below.
   </p></details>
+
+  <div class="grid">
+    <div class="table">
+      <div class="row">
+        <div class="grp"><div class="lbl">Your hand</div><div class="slots" id="hs"></div></div>
+        <div class="grp"><div class="lbl">Flop · Turn · River</div><div class="slots" id="bs"></div></div>
+      </div>
+      <div class="made" id="made"></div>
+      <div class="money">
+        <div><div class="lbl">In this hand</div><div class="inhand" id="inhand">$0</div></div>
+        <input id="addAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$ amt">
+        <button id="addBtn" title="Add what you just put in (or type $2 in the box)">+ Put in</button>
+        <button id="addBB" class="sm" title="Add one big blind">+1 BB</button>
+        <button id="addUndo" class="sm" title="Remove the last amount you added">Undo</button>
+        <div class="stack"><div class="lbl">Stack now ≈</div><b id="liveStack">–</b></div>
+      </div>
+      <div class="actions">
+        <input id="amt" type="number" inputmode="decimal" min="0" placeholder="amount">
+        <button class="f" data-r="f">Fold</button>
+        <button class="w" data-r="w">Won</button>
+        <button class="l" data-r="l">Lost</button>
+        <button class="x" data-r="x">Split</button>
+        <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣 Bomb pot</button>
+      </div>
+      <div class="bombwarn" id="bombwarn">
+        <div class="t">🚫 NO MORE BOMB POTS</div>
+        <div class="d" id="bombwarnTxt"></div>
+        <button id="sitOut">Sit this one out</button>
+      </div>
+      <div class="bombrow" id="bombrow">
+        <span>💣 Bomb pot: everyone puts in</span><input id="bAnte" type="number" inputmode="decimal" min="0" placeholder="ante">
+        <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
+        <span id="bInfo"></span>
+      </div>
+      <div class="picker" id="picker"></div>
     </div>
+
     <div class="panel">
-      <div class="action" id="action"><div class="arow"><div class="a" id="actionA">—</div><div class="asize" id="actionSize"></div></div>
-        <div class="why" id="actionWhy">Enter your cards to get a suggestion.</div><div class="tip" id="actionTip" hidden></div></div>
-      <div class="keynums">
-        <div><span class="lbl">Your equity</span><b id="eq">—</b><small id="eqVs">vs their likely hands</small></div>
-        <div><span class="lbl">Need to call</span><b id="need">—</b><small id="ratio">no bet</small></div>
-        <div><span class="lbl">Position</span><b id="posLbl">—</b><small id="posRank"></small></div>
+      <div class="action" id="action"><div class="a" id="actionA">—</div><div class="why" id="actionWhy">Enter your cards to get a suggestion.</div>
+        <div class="hint2">Put the bet you face in <b>To call</b> below (leave it empty if nobody has bet).</div></div>
+      <div class="sub">Your equity</div>
+      <div class="big" id="eq">—</div>
+      <div class="bar"><div id="bw" style="background:var(--good);width:0"></div><div id="bt" style="background:var(--tie);width:0"></div><div id="bl" style="background:var(--bad);width:0"></div></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--good)"></span>Win <b id="w">–</b></span>
+        <span><span class="dot" style="background:var(--tie)"></span>Tie <b id="t">–</b></span>
+        <span><span class="dot" style="background:var(--bad)"></span>Lose <b id="l">–</b></span>
       </div>
+      <div class="sub" id="samp" style="margin-top:6px">&nbsp;</div>
+      <div class="opp">
+        <span class="sub" style="width:96px" id="tlabel">Seated</span>
+        <button id="tm">−</button><span class="n" id="tn">2</span><button id="tp">+</button>
+      </div>
+      <div class="opp" style="margin-top:-6px">
+        <span class="sub" style="width:96px">Folded so far</span>
+        <button id="fm">−</button><span class="n" id="fn">0</span><button id="fp">+</button>
+      </div>
+      <div class="sub" style="margin:-4px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>You vs <b id="on" style="color:var(--ink);font-size:15px">1</b> still in<span id="oppInfo"></span></span>
+        <button id="fold1" class="sm" style="white-space:nowrap;margin-left:auto" title="Someone folded (-)">Someone folded</button></div>
+      <h3>Pot odds</h3>
       <div class="pot">
-        <div><label>Pot</label><input id="pot" type="number" inputmode="decimal" min="0" placeholder="blinds"></div>
-        <div><label>To call</label><input id="call" type="number" inputmode="decimal" min="0" placeholder="0 = no bet"></div>
+        <div><label>Pot (before the call)</label><input id="pot" type="number" inputmode="decimal" min="0" placeholder="e.g. 100"></div>
+        <div><label>To call</label><input id="call" type="number" inputmode="decimal" min="0" placeholder="e.g. 25"></div>
       </div>
-      <div class="chips2" id="callChips">
-        <button data-c="0">No bet</button><button data-c="bb">1 BB</button><button data-c="3bb">3 BB</button>
-        <button data-c="0.33">⅓ pot</button><button data-c="0.5">½ pot</button><button data-c="0.75">¾ pot</button><button data-c="1">Pot</button>
-      </div>
-      <details class="more" id="moreOdds"><summary>Odds details</summary>
-        <div class="bar"><div id="bw" style="background:var(--good);width:0"></div><div id="bt" style="background:var(--tie);width:0"></div><div id="bl" style="background:var(--bad);width:0"></div></div>
-        <div class="legend">
-          <span><span class="dot" style="background:var(--good)"></span>Win <b id="w">–</b></span>
-          <span><span class="dot" style="background:var(--tie)"></span>Tie <b id="t">–</b></span>
-          <span><span class="dot" style="background:var(--bad)"></span>Lose <b id="l">–</b></span>
-        </div>
-        <div class="sub" id="samp" style="margin-top:6px">&nbsp;</div>
-        <div class="verdict" id="verdict"></div>
-        <h3>Your final hand by the river</h3>
-        <div class="dist" id="dist"></div>
-        <h3>Pot odds cheat sheet</h3>
-        <table class="cheat"><tr><td>Bet size</td><td>¼ pot</td><td>⅓ pot</td><td>½ pot</td><td>⅔ pot</td><td>¾ pot</td><td>Pot</td><td>2× pot</td></tr>
-          <tr><td>Odds</td><td>5:1</td><td>4:1</td><td>3:1</td><td>2.5:1</td><td>2.3:1</td><td>2:1</td><td>1.5:1</td></tr>
-          <tr><td>Need</td><td>17%</td><td>20%</td><td>25%</td><td>29%</td><td>30%</td><td>33%</td><td>40%</td></tr></table>
-        <div class="sub" style="margin-top:6px">Opponents are simulated from the range of hands their style and action suggest, not random cards.</div>
-      </details>
+      <div class="verdict" id="verdict"></div>
+      <h3>Your final hand by the river</h3>
+      <div class="dist" id="dist"></div>
     </div>
   </div>
 
@@ -494,10 +349,6 @@
   <div class="chart"><div class="sub" style="margin-bottom:4px">Running net from logged hands</div><div id="chart"></div></div>
   <div class="two">
     <div>
-      <h3>Add a finished hand from a screenshot</h3>
-      <label class="dropzone" id="drop"><input type="file" id="shotFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-        <span class="dz1">📸 Drop a screenshot of a <b>finished</b> hand here</span><span class="dz2">or tap to choose · it fills in your cards, the board and the result for your log</span></label>
-      <div class="shotout" id="shotOut" hidden></div>
       <h3>Hand log</h3>
       <div class="log" id="log"></div>
     </div>
@@ -536,7 +387,6 @@
     </div>
   </div>
 </div>
-<div class="miniact off" id="miniAct"><span class="ma" id="maA"></span><span class="ms" id="maS"></span><span class="me">equity<b id="maE"></b></span></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -565,7 +415,7 @@ tableSize = Math.min(tableSize, maxSeats);
 let bombAnte = null, bombPlayers = null;
 try { const j = JSON.parse(localStorage.getItem("po_bomb")||"null"); if (j){ bombAnte=j.ante??null; bombPlayers=j.players??null; } } catch(e){}
 // In a bomb pot the opponents are everyone else who put in the ante.
-const effOpps = () => oppSpecs().length;
+const effOpps = () => Math.max(1, Math.min(9, ((P && P.bomb && bombPlayers>=2) ? bombPlayers : tableSize) - 1 - folded));
 
 // =================== evaluator ===================
 const rc = new Int8Array(13), sm = new Int32Array(4);
@@ -640,148 +490,15 @@ function handKey(h){
   return ra===rb ? ra+rb : ra+rb+((a&3)===(b&3)?"s":"o");
 }
 
-// =================== starting-hand ranking & ranges ===================
-// All 169 starting hands, strongest first (blend of 3-handed and 6-handed equity).
-const RANK169 = "AA KK QQ JJ TT AKs 99 AQs AKo AJs KQs KJs ATs AQo 88 QJs KQo KTs AJo QTs A9s JTs 77 ATo A8s KJo K9s A7s QJo KTo Q9s A5s A6s 66 A4s J9s QTo K8s A9o T9s A3s K7s JTo A2s A8o Q8s K9o K6s J8s 55 A7o T8s K5s 98s Q9o Q7s J9o A5o K4s A6o K3s Q6s T9o J7s T7s 44 K8o A4o K2s Q5s A3o 97s 87s Q8o K7o Q4s A2o J6s 76s J8o T6s 33 K6o T8o Q3s J5s 86s 96s J4s 98o Q2s K5o 75s K4o 65s Q7o J2s 85s 95s Q6o J3s T5s K3o 22 T7o T4s 54s J7o 87o 97o 64s Q5o T3s K2o 53s T2s 74s 84s Q4o 94s 76o 93s J6o 86o T6o 96o Q3o 63s 43s J5o 92s 73s 65o 52s 75o Q2o 83s 82s 42s J4o J3o T5o 62s 95o 85o 54o 72s T4o 32s J2o 64o T3o 74o 53o 84o T2o 94o 93o 43o 63o 73o 92o 52o 83o 82o 42o 62o 72o 32o".split(" ");
-const COMBOS = [];                 // flat [c1,c2, c1,c2, ...] strongest first
-const CLASS_TOP = {};              // hand key -> fraction of all hands at least this strong
-(function(){
-  let cum=0;
-  for (const k of RANK169){
-    const r1=RANKS.indexOf(k[0]), r2=RANKS.indexOf(k[1]);
-    if (r1===r2){ for (let a=0;a<4;a++) for (let b=a+1;b<4;b++){ COMBOS.push(r1*4+a, r2*4+b); cum++; } }
-    else if (k[2]==="s"){ for (let a=0;a<4;a++){ COMBOS.push(r1*4+a, r2*4+a); cum++; } }
-    else { for (let a=0;a<4;a++) for (let b=0;b<4;b++) if (a!==b){ COMBOS.push(r1*4+a, r2*4+b); cum++; } }
-    CLASS_TOP[k]=cum/1326;
-  }
-})();
-function handTop(hero){ return CLASS_TOP[handKey(hero)] ?? 1; }
-function showKey(k){ return k==="TT" ? "TT" : k.replace(/T/g,"10"); }
-function topLabel(f){ if (f>0.5) return `bottom ${Math.max(1,Math.round((1-f)*100+0.6))}%`; return f<=0.005 ? "top 0.5%" : `top ${f<0.1?(Math.round(f*1000)/10):Math.round(f*100)}%`; }
-
-// Players are described by their VPIP: the % of hands they voluntarily put money in with.
-const DEFAULT_VPIP = 30;              // used when you haven't entered one
-const RAISE_SHARE = 0.4;              // a typical player raises with ~40% of the hands they play
-function vpipOf(seat){ const v=seatCfg.vpip[seat]; return v>0 ? v : null; }
-function rangeFracV(vpip, status){ const play=Math.min(1,Math.max(.03,(vpip||DEFAULT_VPIP)/100)); return status==="raise" ? Math.max(.03, play*RAISE_SHARE) : play; }
-function styleOf(v){ return v==null ? null : v<=15 ? "tight" : v<=25 ? "solid" : v<=40 ? "loose" : "very loose"; }
-function vpipTip(v){
-  const st=styleOf(v); if (!st) return "";
-  return { "tight":`Tight player (${v}% VPIP): when they put money in they usually have it. Fold more against them and steal their blinds.`,
-           "solid":`Solid player (${v}% VPIP): play straightforward, don't get fancy.`,
-           "loose":`Loose player (${v}% VPIP): they play lots of weak hands. Value bet more and call down a bit lighter.`,
-           "very loose":`Very loose player (${v}% VPIP): they play almost anything. Bet your good hands big and don't bluff, because they'll call.` }[st];
-}
-
-// =================== seats ===================
-let seatCfg = { me:null, btn:null, vpip:{}, empty:null };
-try { const j=JSON.parse(localStorage.getItem("po_seats")||"null"); if (j) seatCfg={me:j.me??null, btn:j.btn??null, vpip:j.vpip||{}, empty:j.empty||null}; } catch(e){}
-// Seats are numbered 1..max seats; empty ones are skipped for positions and the dealer button.
-function allSeats(){ return Array.from({length:maxSeats},(_,i)=>i+1); }
-function occupied(){ return allSeats().filter(x=>!(seatCfg.empty&&seatCfg.empty[x])); }
-function ensureEmptyMap(){
-  if (seatCfg.empty) return;
-  seatCfg.empty={}; allSeats().forEach(x=>{ if (x>tableSize) seatCfg.empty[x]=true; });     // first run: seats above the old count are empty
-}
-// Make the number of filled seats match n, adding or removing from the highest seat numbers (never you or the dealer).
-function matchSeatCount(n){
-  ensureEmptyMap();
-  let occ=occupied();
-  while (occ.length<n){ const x=allSeats().find(y=>seatCfg.empty[y]); if (!x) break; delete seatCfg.empty[x]; occ=occupied(); }
-  while (occ.length>Math.max(2,n)){ const x=occ.slice().reverse().find(y=>y!==seatCfg.me && y!==seatCfg.btn); if (!x) break; seatCfg.empty[x]=true; delete seatCfg.vpip[x]; occ=occupied(); }
-}
-function syncTableSize(){ const n=occupied().length; if (n!==tableSize){ tableSize=n; try{localStorage.setItem("po_table",tableSize);}catch(e){} if (sid) saveField("table",tableSize); } }
-function saveSeats(){ try{ localStorage.setItem("po_seats", JSON.stringify(seatCfg)); }catch(e){} }
-let seatAct = {};        // this hand: seat -> "fold" | "raise" (default "in")
-let foldStack = [];
-let seatEdit = false;
-function mapOn(){ if (simpleMode) return false; const occ=occupied(); return occ.includes(seatCfg.me) && occ.includes(seatCfg.btn) && occ.length>=2; }
-function clockwiseFrom(start){ const occ=occupied(); let i=occ.findIndex(x=>x>=start); if (i<0) i=0; return occ.slice(i).concat(occ.slice(0,i)); }
-function posLabels(){
-  const m={}; if (!occupied().includes(seatCfg.btn)) return m;
-  const o=clockwiseFrom(seatCfg.btn), N=o.length;
-  if (N===2){ m[o[0]]="BTN"; m[o[1]]="BB"; return m; }
-  m[o[0]]="BTN"; m[o[1]]="SB"; m[o[2]]="BB";
-  const k=N-3, names={0:[],1:["UTG"],2:["UTG","CO"],3:["UTG","HJ","CO"],4:["UTG","LJ","HJ","CO"],5:["UTG","MP","LJ","HJ","CO"],6:["UTG","UTG+1","MP","LJ","HJ","CO"],7:["UTG","UTG+1","UTG+2","MP","LJ","HJ","CO"]}[k]||[];
-  for (let i=0;i<k;i++) m[o[3+i]]=names[i];
-  return m;
-}
-function preflopOrder(){ const o=clockwiseFrom(seatCfg.btn||1); return o.length===2 ? o : o.slice(3).concat(o.slice(0,3)); }
-// ---- Simple mode: no table, just players-in count, your spot and whether someone raised ----
-let simpleMode=true, simpleOpp=null, simpleRaised=false, simplePos=null;
-try { const v=localStorage.getItem("po_simple"); if (v!==null) simpleMode = v==="1"; } catch(e){}
-const SIMPLE_POS={early:"UTG", middle:"MP", late:"CO", SB:"SB", BB:"BB"};
-function simpleDefaultOpp(){ return Math.max(1,Math.min(9,tableSize-1)); }
-function myPos(){ if (simpleMode) return simplePos ? SIMPLE_POS[simplePos] : null; return mapOn() ? posLabels()[seatCfg.me] : null; }
-function actedBefore(seat){ const o=preflopOrder(); return o.indexOf(seat) < o.indexOf(seatCfg.me); }
-function foldedCount(){ return mapOn() && !P.bomb ? Object.values(seatAct).filter(v=>v==="fold").length : folded; }
-// Who you're up against, and the range of hands each one likely holds.
-function oppSpecs(){
-  if (P && P.bomb && bombPlayers>=2){ const n=Math.max(1,Math.min(9,bombPlayers-1-folded)); return Array.from({length:n},()=>({vpip:null,status:"in",frac:1})); }
-  if (simpleMode){
-    const n=Math.max(1,Math.min(9,simpleOpp??simpleDefaultOpp()));
-    const out=Array.from({length:n},()=>({vpip:null,status:"in",frac:rangeFracV(null,"in")}));
-    if (simpleRaised){ out[0].status="raise"; out[0].frac=rangeFracV(null,"raise"); }
-    if (!simpleRaised && simplePos!=="BB" && P && P.cards.length<5){ out[out.length-1].frac=1; }      // the big blind sees the flop with anything
-    return out;
-  }
-  if (!mapOn()){ const n=Math.max(1,Math.min(9,tableSize-1-folded)); return Array.from({length:n},()=>({vpip:null,status:"in",frac:rangeFracV(null,"in")})); }
-  const labels=posLabels(), anyRaise=Object.values(seatAct).includes("raise"), out=[];
-  for (const seat of preflopOrder()){
-    if (seat===seatCfg.me) continue;
-    const st=seatAct[seat]||"in"; if (st==="fold") continue;
-    const vpip=vpipOf(seat);
-    let frac=rangeFracV(vpip,st);
-    if (st==="in" && !anyRaise && labels[seat]==="BB") frac=1;                 // big blind can check with anything
-    if (st==="in" && !anyRaise && labels[seat]==="SB") frac=Math.max(frac,.5);
-    out.push({seat,vpip,status:st,frac});
-  }
-  if (!out.length) out.push({vpip:null,status:"in",frac:rangeFracV(null,"in")});
-  return out.slice(0,9);
-}
-
-// Range-based simulation: each opponent gets a hand from their likely range; tracks everyone's share of the pot.
-function makeRangeSim(hero, board, specs){
-  const nO=specs.length, nb=board.length, needB=5-nb;
-  const dead=new Uint8Array(52); hero.forEach(c=>dead[c]=1); board.forEach(c=>dead[c]=1);
-  const mark=new Int32Array(52); let stamp=0;
-  const lim=specs.map(sp=>sp.frac>=0.999?0:Math.max(6,Math.round(sp.frac*1326)));
-  const hc=new Int32Array(7), oc=new Int32Array(7), oh=new Int32Array(18), bd=new Int32Array(5), sc=new Float64Array(10);
-  hc[0]=hero[0]; hc[1]=hero[1]; for (let i=0;i<nb;i++) bd[i]=board[i];
-  const free=c=>!dead[c] && mark[c]!==stamp;
-  return function run(iters, acc){
-    for (let it=0; it<iters; it++){
-      stamp++;
-      for (let o=0;o<nO;o++){
-        let a=-1,b=-1;
-        if (lim[o]) for (let t=0;t<40;t++){ const k=(Math.random()*lim[o])|0, x=COMBOS[2*k], y=COMBOS[2*k+1]; if (free(x)&&free(y)){ a=x; b=y; break; } }
-        if (a<0){ do{ a=(Math.random()*52)|0; }while(!free(a)); mark[a]=stamp; do{ b=(Math.random()*52)|0; }while(!free(b)); }
-        mark[a]=stamp; mark[b]=stamp; oh[2*o]=a; oh[2*o+1]=b;
-      }
-      for (let i=nb;i<5;i++){ let c; do{ c=(Math.random()*52)|0; }while(!free(c)); mark[c]=stamp; bd[i]=c; }
-      for (let i=0;i<5;i++){ hc[2+i]=bd[i]; oc[2+i]=bd[i]; }
-      const hs=evalCards(hc,7); let best=hs;
-      for (let o=0;o<nO;o++){ oc[0]=oh[2*o]; oc[1]=oh[2*o+1]; const v=evalCards(oc,7); sc[o]=v; if (v>best) best=v; }
-      let winners=(hs===best)?1:0; for (let o=0;o<nO;o++) if (sc[o]===best) winners++;
-      const share=1/winners;
-      for (let o=0;o<nO;o++) if (sc[o]===best) acc.opp[o]+=share;
-      acc.dist[Math.floor(hs/SHIFT)]++;
-      if (hs===best){ acc.eq+=share; if (winners===1) acc.w++; else acc.t++; } else acc.l++;
-      acc.n++;
-    }
-  };
-}
-
 let gen=0;
-const res={n:0,eq:0,w:0,t:0,l:0,dist:new Float64Array(9),opp:new Float64Array(9)};
-const MAX_ITERS=200000;
-let simSpecs=[];
+const res={n:0,eq:0,w:0,t:0,l:0,dist:new Float64Array(9)};
+const MAX_ITERS=400000;
 function startSim(){
   gen++; const myGen=gen;
-  res.n=res.eq=res.w=res.t=res.l=0; res.dist.fill(0); res.opp.fill(0);
-  const cs=P.cards; simSpecs=oppSpecs();
+  res.n=res.eq=res.w=res.t=res.l=0; res.dist.fill(0);
+  const cs=P.cards;
   if (cs.length<2){ renderResults(true); return; }
-  const run=makeRangeSim(cs.slice(0,2), cs.slice(2), simSpecs);
+  const run=makeSim(cs.slice(0,2), cs.slice(2), effOpps());
   (function chunk(){
     if (myGen!==gen) return;
     const t0=performance.now();
@@ -794,11 +511,8 @@ function startSim(){
 // =================== parser ===================
 // Grammar: cards (rank+suit), optional result letter f/w/l/x with optional amount, optional cards after.
 function parse(str){
-  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false, adds:[], collect:null, potIn:null, callIn:null};
-  // "20/5" = pot 20, to call 5;  "/5" = to call 5;  "20/" = pot 20
-  const pm=str.match(/(\d+(?:\.\d+)?)?\s*\/\s*(\d+(?:\.\d+)?)?/);
-  if (pm){ if (pm[1]) out.potIn=parseFloat(pm[1]); if (pm[2]) out.callIn=parseFloat(pm[2]); str=str.replace(pm[0]," ".repeat(pm[0].length)); }
   const s=str.toLowerCase(), n=s.length;
+  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false, adds:[], collect:null};
   let i=0;
   while (i<n){
     const ch=s[i];
@@ -846,7 +560,6 @@ function serialize(p){
   let s = (p.bomb ? "b " : "") + before.slice(0,2).map(fmt).join("");
   if (before.length>2) s += " " + before.slice(2).map(fmt).join("");
   if (p.adds && p.adds.length) s += " " + p.adds.map(a=>"$"+a).join(" ");
-  if (p.potIn!=null || p.callIn!=null) s += " " + (p.potIn??"") + "/" + (p.callIn??"");
   if (p.r) s += " " + p.r + (p.collect!=null ? "@"+p.collect : (p.amt!=null ? p.amt : ""));
   if (after.length) s += " " + after.map(fmt).join("");
   return s;
@@ -873,30 +586,17 @@ function renderSlots(){
   let g=document.createElement("div"); g.className="gap"; bs.append(g,mk(5));
   g=document.createElement("div"); g.className="gap"; bs.append(g,mk(6));
 }
-// Card keypad: tap a rank, then a suit (or suit then rank). ⌫ removes the last card.
-let padRank=null, padSuit=null;
 function buildPicker(){
-  $("kRanks").innerHTML = "AKQJT98765432".split("").map(ch=>`<button class="kb rk" data-r="${RANKS.indexOf(ch)}">${ch==="T"?"10":ch}</button>`).join("") + `<button class="kb back" id="kBack" title="Remove last card">⌫</button>`;
-  $("kSuits").innerHTML = [0,1,2,3].map(su=>`<button class="kb suit ${SUIT_CLS[su]}" data-s="${su}">${SUIT_SYM[su]}</button>`).join("");
-  document.querySelectorAll("#kRanks .rk").forEach(b=>b.onclick=()=>{ const r=+b.dataset.r; if (padSuit!=null){ padAdd(r,padSuit); return; } padRank = padRank===r ? null : r; renderPicker(); });
-  document.querySelectorAll("#kSuits .suit").forEach(b=>b.onclick=()=>{ const su=+b.dataset.s; if (padRank!=null){ padAdd(padRank,su); return; } padSuit = padSuit===su ? null : su; renderPicker(); });
-  $("kBack").onclick=()=>{ padRank=padSuit=null; if (!P.cards.length){ renderPicker(); return; } const p={...P,cards:P.cards.slice()}; const i=p.cards.length-1; p.cards.pop(); if (p.r && i<p.at) p.at--; setText(serialize(p)); };
+  const p=$("picker"); p.innerHTML="";
+  for (let s=0;s<4;s++) for (let r=12;r>=0;r--){
+    const c=r*4+s, b=document.createElement("button");
+    b.className="pc"; b.dataset.c=c; b.innerHTML=cardHTML(c);
+    b.onclick=()=>{ if (P.cards.includes(c)||P.cards.length>=7) return; const p={...P,cards:[...P.cards,c]}; setText(serialize(p)); };
+    p.append(b);
+  }
 }
-function padAdd(r,su){
-  const c=r*4+su; padRank=padSuit=null;
-  if (P.cards.includes(c)){ toast("That card is already out",true); renderPicker(); return; }
-  if (P.cards.length>=7){ renderPicker(); return; }
-  setText(serialize({...P, cards:[...P.cards,c]}));
-}
-function renderPicker(){
-  if (!$("kRanks")) return;
-  document.querySelectorAll("#kRanks .rk").forEach(b=>{ const r=+b.dataset.r; const used=[0,1,2,3].every(su=>P.cards.includes(r*4+su));
-    b.disabled = used || P.cards.length>=7 || (padSuit!=null && P.cards.includes(r*4+padSuit)); b.classList.toggle("on", padRank===r); });
-  document.querySelectorAll("#kSuits .suit").forEach(b=>{ const su=+b.dataset.s;
-    b.disabled = P.cards.length>=7 || (padRank!=null && P.cards.includes(padRank*4+su)); b.classList.toggle("on", padSuit===su); });
-}
-function renderMade(){ renderMadeInner(); if ($("simMade")) $("simMade").textContent=$("made").textContent; }
-function renderMadeInner(){
+function renderPicker(){ document.querySelectorAll(".pc").forEach(b=>b.classList.toggle("used",P.cards.includes(+b.dataset.c))); }
+function renderMade(){
   const cs=P.cards;
   if (cs.length<2){ $("made").textContent=""; return; }
   if (cs.length<5){
@@ -911,151 +611,47 @@ function renderResults(empty){
   if (empty||res.n===0){
     $("eq").textContent="—"; $("eq").style.color=""; ["w","t","l"].forEach(k=>$(k).textContent="–");
     ["bw","bt","bl"].forEach(k=>$(k).style.width="0");
-    $("samp").textContent="Enter your two hole cards to start."; $("dist").innerHTML="";
-    document.querySelectorAll(".seat .seq").forEach(e=>e.textContent="");
-    const no0=effOpps(); $("eqVs").textContent = P.bomb ? `vs ${no0} in the bomb pot` : (mapOn() ? `vs ${no0} likely range${no0>1?"s":""}` : `vs ${no0} unknown player${no0>1?"s":""}`);
-    renderVerdict(); return;
+    $("samp").textContent="Enter your two hole cards to start."; $("dist").innerHTML=""; renderVerdict(); return;
   }
-  const n=res.n, eq=res.eq/n, no=simSpecs.length;
+  const n=res.n, eq=res.eq/n;
+  const no=effOpps();
   $("eq").textContent=pct(eq); $("eq").style.color = eq>=1/(no+1) ? "var(--good)" : "var(--bad)";
-  $("eqVs").textContent = P.bomb ? `vs ${no} in the bomb pot` : (mapOn() ? `vs ${no} likely range${no>1?"s":""}` : `vs ${no} unknown player${no>1?"s":""}`);
   $("w").textContent=pct(res.w/n); $("t").textContent=pct(res.t/n); $("l").textContent=pct(res.l/n);
   $("bw").style.width=(res.w/n*100)+"%"; $("bt").style.width=(res.t/n*100)+"%"; $("bl").style.width=(res.l/n*100)+"%";
   const ci=1.96*Math.sqrt(eq*(1-eq)/n)*100;
-  $("samp").textContent=`${n.toLocaleString()} simulated runouts · ±${ci.toFixed(2)}% · an even share vs ${no} would be ${pct(1/(no+1))}`;
+  $("samp").textContent=`${n.toLocaleString()} runouts · ±${ci.toFixed(2)}% · even share vs ${no}: ${pct(1/(no+1))}`;
   let h="";
   for (let c=8;c>=0;c--){ const p=res.dist[c]/n; if (p<0.00005&&c>=7) continue;
     h+=`<div class="r"><span>${CAT[c]}</span><span class="t"><i style="width:${(p*100).toFixed(2)}%"></i></span><span class="p">${pct(p)}</span></div>`; }
-  $("dist").innerHTML=h;
-  // each opponent's share of the pot
-  simSpecs.forEach((sp,i)=>{ if (sp.seat){ const e=document.getElementById("seq-"+sp.seat); if (e) e.textContent=pct(res.opp[i]/n); } });
-  renderVerdict();
+  $("dist").innerHTML=h; renderVerdict();
 }
-
-const OPEN_RANGE={ "UTG":.12, "UTG+1":.13, "UTG+2":.15, "MP":.17, "LJ":.20, "HJ":.24, "CO":.30, "BTN":.45, "SB":.36 };
-function r2(v){ return Math.round(v*100)/100; }
-// The suggestion: preflop from hand strength, position and the action; after the flop from equity vs pot odds.
-function decide(){
-  if (P.cards.length<2 || !res.n) return null;
-  const s=cur(), bb=(s&&s.bb>0)?s.bb:null, sbAmt=(s&&s.sb>0)?s.sb:null;
-  const eq=res.eq/res.n, specs=simSpecs, n=specs.length, boardN=P.cards.length-2;
-  const hero=P.cards.slice(0,2), key=handKey(hero), top=handTop(hero);
-  const suited=(hero[0]&3)===(hero[1]&3), pair=(hero[0]>>2)===(hero[1]>>2);
-  const pos=myPos();
-  const raisers=specs.filter(x=>x.status==="raise");
-  const call=parseFloat($("call").value)>0 ? parseFloat($("call").value) : 0;
-  let pot=parseFloat($("pot").value); const potGiven=pot>0;
-  if (!potGiven && boardN===0){
-    // nobody typed the pot: blinds + limpers + the raise you're facing
-    const posted = blind ? (blindAmtNow()||0) : 0;
-    pot = (sbAmt||0)+(bb||0) + (call>0 ? (call+posted) : 0);
-  } else if (!potGiven) pot=0;
-  const need = call>0 ? call/(pot+call) : 0;
-  const known = specs.filter(x=>x.vpip!=null);
-  const keyOpp = raisers.length ? raisers[raisers.length-1] : known.sort((a,b)=>b.vpip-a.vpip)[0];
-  const tip = keyOpp && keyOpp.vpip!=null ? vpipTip(keyOpp.vpip) : "";
-  const strength=`${showKey(key)} is a ${topLabel(top)} hand`;
-  const out=(cls,a,size,why)=>({cls,a,size,why,tip,need,pot,call,potGiven,eq,top,key,pos});
-  if (P.bomb) {
-    // bomb pot: everyone is in, go by equity
-  } else if (boardN===0){
-    const limpers = 0;
-    if (!raisers.length){
-      if (pos==="BB"){
-        return top <= .15 ? out("raise","RAISE", bb?`to ${money(r2((3+limpers)*bb),false)}`:"", `${strength}. Nobody raised and you're in the big blind, so raise for value.`)
-                          : out("check","CHECK","", `Nobody raised and you're in the big blind, so you see the flop for free. ${strength}.`);
-      }
-      const open = Math.max(.05, (OPEN_RANGE[pos] ?? .17) - .02*limpers);
-      const where = pos ? `from ${pos} you can open the ${topLabel(open)}` : `a normal opening range is about the top 17%`;
-      if (top <= open) return out("raise","RAISE", bb?`to ${money(r2((3+limpers)*bb),false)}`:"", `${strength}, and ${where}. ${limpers?`Raise over the ${limpers} limper${limpers>1?"s":""}.`:"Open the pot with a raise."}`);
-      if (limpers && top <= open+.12 && (suited||pair)) return out("call","CALL", bb?money(bb,false):"", `${strength}. Too weak to raise from ${pos||"here"}, but with ${limpers} limper${limpers>1?"s":""} in, a cheap call can win a big pot if you hit.`);
-      if (pos==="SB" && top <= .40) return out("call","CALL", sbAmt&&bb?`complete ${money(r2(bb-sbAmt),false)}`:"", `${strength}. You already have the small blind in, so completing is cheap.`);
-      return out("fold","FOLD","", `${strength}. ${pos?`From ${pos} you should only play the ${topLabel(open)}.`:"Fold it and wait for a better spot."}`);
-    }
-    const R=raisers[raisers.length-1], rv=R.vpip||DEFAULT_VPIP;
-    const looseness=Math.sqrt(rangeFracV(rv,"raise")/rangeFracV(DEFAULT_VPIP,"raise"));   // >1 vs loose raisers, <1 vs tight ones
-    const inPos=["CO","BTN"].includes(pos);
-    const threeBet = raisers.length>1 ? .02 : Math.min(.08, .035*looseness);
-    const callTop  = raisers.length>1 ? .05 : Math.max(.075, Math.min(.22, (inPos?.13:pos==="BB"?.16:.10)*looseness));
-    const who = raisers.length>1 ? `${raisers.length} players raised` : (R.vpip!=null ? `a ${styleOf(R.vpip)} player (${R.vpip}% VPIP) raised` : `someone raised`);
-    if (top <= threeBet) return out("raise","RE-RAISE", call?`to ${money(r2(3*(call+(blind?blindAmtNow()||0:0))),false)}`:"", `${strength} and ${who}. This is strong enough to re-raise.`);
-    if (top <= callTop && (!call || eq >= need-0.03)) return out("call","CALL", call?money(call,false):"", `${strength}. ${who[0].toUpperCase()+who.slice(1)}, and this is good enough to call${inPos?" in position":""}${call?` (you have ${pct(eq)}, need ${pct(need)})`:""}.`);
-    if (call && eq >= need+0.05) return out("call","CALL", money(call,false), `The price is good: you have ${pct(eq)} against their range and only need ${pct(need)}.`);
-    return out("fold","FOLD","", `${strength}, but ${who}. Against that, this hand loses money${call?` (you have ${pct(eq)}, need ${pct(need)})`:""}.`);
-  }
-  // after the flop (and bomb pots): equity against their ranges vs the price
-  const fair=1/(n+1);
-  const betLine = n===1 ? .55 : fair+(1-fair)*.20;
-  const raiseLine = n===1 ? .70 : fair+(1-fair)*.45;
-  const vs = `vs ${n} opponent${n>1?"s":""}`;
-  if (!call){
-    if (eq>=betLine) return out("bet","BET", pot>0?`~${money(r2(pot*2/3),false)} (⅔ pot)`:"⅔ pot", `You have ${pct(eq)} ${vs}. You're ahead, so bet and get paid.`);
-    return out("check","CHECK","", `You have ${pct(eq)} ${vs}. Not strong enough to bet, so check.`);
-  }
-  if (eq < need){
-    const close = eq >= need-0.05 && boardN<5;
-    return out("fold","FOLD","", `You have ${pct(eq)} but need ${pct(need)} to call ${money(call,false)}.${close?" It's close: call only if you'll win a lot more when you hit.":""}`);
-  }
-  if (eq>=raiseLine) return out("raise","RAISE", `to ~${money(r2(call*3),false)}`, `You have ${pct(eq)} and only need ${pct(need)}. You're well ahead, so raise.`);
-  return out("call","CALL", money(call,false), `You have ${pct(eq)}, more than the ${pct(need)} you need to call ${money(call,false)}.`);
-}
-// "Thin the field": with a strong but vulnerable hand in a multiway pot, compare your equity
-// against the whole table with your equity heads-up. If getting it heads-up helps a lot, raise bigger.
-const huCache={k:null,v:null};
-function headsUpEquity(){
-  const specs=simSpecs; if (specs.length<3 || P.cards.length<2) return null;
-  const opp = specs.find(x=>x.status==="raise") || specs.slice().sort((a,b)=>b.frac-a.frac)[0];   // the raiser, or whoever plays the most hands
-  const k=P.cards.join()+"|"+opp.frac+"|"+specs.length;
-  if (huCache.k===k) return huCache.v;
-  const acc={n:0,eq:0,w:0,t:0,l:0,dist:new Float64Array(9),opp:new Float64Array(9)};
-  makeRangeSim(P.cards.slice(0,2), P.cards.slice(2), [opp])(8000, acc);
-  huCache.k=k; huCache.v=acc.eq/acc.n; return huCache.v;
-}
-function thinTheField(d){
-  if (!d || P.bomb===undefined) return d;
-  const n=simSpecs.length; if (n<3) return d;
-  const fair=1/(n+1); if (d.eq < fair*1.3 || d.eq >= 0.6) return d;   // too weak to protect, or already strong enough not to need it
-  const hu=headsUpEquity(); if (hu==null || hu<0.58 || hu-d.eq<0.15) return d;
-  const s=cur(), bb=(s&&s.bb>0)?s.bb:null, boardN=P.cards.length-2;
-  const note=`✂️ Thin the field: you're ${pct(d.eq)} against ${n} players but about ${pct(hu)} heads-up. Raise big so the weaker hands fold.`;
-  const t={...d, thin:note};
-  if (boardN===0 && !P.bomb){
-    if (d.a==="RAISE") t.size = bb ? `to ${money(r2((4.5+0)*bb),false)}+` : "bigger than usual";
-    else if (d.a==="CALL" && d.call>0){ t.cls="raise"; t.a="RE-RAISE"; t.size=`to ${money(r2(d.call*3.5),false)}`; }
-    else return d;
-    return t;
-  }
-  const potNow=d.pot||0, why=`You have ${pct(d.eq)} against ${n} players, but about ${pct(hu)} once it's heads-up. Your hand is good now and gets worse with every player who stays in.`;
-  if (d.a==="CHECK" || d.a==="BET"){ t.cls="bet"; t.a="BET BIG"; t.size = potNow>0 ? `~${money(r2(potNow),false)} (full pot)` : "full pot"; t.why=why+" Bet the pot to make them fold."; t.thin=""; }
-  else if (d.a==="CALL"){ t.cls="raise"; t.a="RAISE"; t.size=`to ~${money(r2(d.call*3.5),false)}`; t.why=why+" Raise instead of calling to get it heads-up."; t.thin=""; }
-  else if (d.a==="RAISE"){ t.size=`to ~${money(r2(d.call*4),false)}`; }
-  else if (d.a==="FOLD" && d.call>0 && boardN<5 && hu>=0.62 && d.eq>=fair){ t.cls="raise"; t.a="RAISE"; t.size=`to ~${money(r2(d.call*3.5),false)}`; t.why=why+" Calling multiway doesn't pay, but raising to isolate the bettor does."; t.thin=""; }
-  else return d;
-  return t;
-}
+// Suggested action from equity vs pot odds (opponents assumed to hold random hands).
 function renderAction(){
-  const box=$("action"), d=thinTheField(decide());
-  const pos=myPos(), hero=P.cards.length>=2?P.cards.slice(0,2):null;
-  $("posLbl").textContent = pos || "—";
-  $("posRank").textContent = hero ? `${showKey(handKey(hero))} · ${topLabel(handTop(hero))}` : (mapOn()?"":"set your seat");
-  if (!d){ const ma=$("miniAct"); if (ma) ma.className="miniact off"; box.className="action"; $("actionA").textContent="—"; $("actionSize").textContent=""; $("actionWhy").textContent="Enter your cards to get a suggestion."; $("actionTip").hidden=true;
-    $("need").textContent="—"; $("need").style.color=""; $("ratio").textContent="no bet"; return; }
-  box.className="action "+d.cls; $("actionA").textContent=d.a; $("actionSize").textContent=d.size||"";
-  const ma=$("miniAct"); if (ma){ ma.className="miniact "+d.cls+(viewIsAll()?" off":""); $("maA").textContent=d.a; $("maS").textContent=d.size||""; $("maE").textContent=pct(d.eq); }
-  $("actionWhy").innerHTML=d.why; $("actionTip").hidden=!(d.tip||d.thin); $("actionTip").innerHTML=[d.thin?`<b>${d.thin}</b>`:"", d.tip?("👤 "+esc(d.tip)):""].filter(Boolean).join("<br>");
-  if (d.call>0){ $("need").textContent=pct(d.need); $("ratio").textContent=`pot odds ${(d.pot/d.call).toFixed(1)}:1${d.potGiven?"":" (pot = blinds)"}`; $("need").style.color = d.eq>=d.need?"var(--good)":"var(--bad)"; }
-  else { $("need").textContent="0%"; $("need").style.color=""; $("ratio").textContent="no bet to call"; }
+  const box=$("action"), A=$("actionA"), W=$("actionWhy");
+  const set=(cls,a,why)=>{ box.className="action "+cls; A.textContent=a; W.innerHTML=why; };
+  if (P.cards.length<2 || !res.n){ set("","—","Enter your cards to get a suggestion."); return; }
+  const eq=res.eq/res.n, n=effOpps(), fair=1/(n+1);
+  // "Strong" scales with table size: heads-up ~62%+, vs 8 players ~33%+.
+  const strong = fair + (1-fair)*0.25, veryStrong = fair + (1-fair)*0.35;
+  const pot=parseFloat($("pot").value)||0, call=parseFloat($("call").value)||0;
+  if (call>0){
+    const need=call/(pot+call);
+    if (eq<need) set("fold","FOLD",`You have <b>${pct(eq)}</b> but need <b>${pct(need)}</b> to call ${money(call,false)}.`);
+    else if (eq>=veryStrong && eq>=need+0.2) set("raise","RAISE",`You have <b>${pct(eq)}</b> and only need <b>${pct(need)}</b>. You're well ahead, so build the pot.`);
+    else set("call","CALL",`You have <b>${pct(eq)}</b>, more than the <b>${pct(need)}</b> needed to call ${money(call,false)}.`);
+  } else {
+    if (eq>=strong) set("bet","BET",`You have <b>${pct(eq)}</b> vs ${n} opponent${n>1?"s":""}, well above an even share (${pct(fair)}). Bet for value.`);
+    else set("check","CHECK",`You have <b>${pct(eq)}</b> vs ${n} opponent${n>1?"s":""} (even share is ${pct(fair)}). Check and see the next card for free.`);
+  }
 }
 function renderVerdict(){
   renderAction();
-  const pl=$("potline"); if (pl){ const pv=parseFloat($("pot").value), cv=parseFloat($("call").value);
-    pl.innerHTML = `Pot <b>${pv>0?money(pv,false):"blinds"}</b> · to call <b>${cv>0?money(cv,false):"–"}</b>`; }
   const pot=parseFloat($("pot").value), call=parseFloat($("call").value), v=$("verdict");
-  if (!(pot>0)||!(call>0)){ v.innerHTML=`<span class="sub">Enter the pot and the bet to see the exact EV of calling.</span>`; return; }
+  if (!(pot>0)||!(call>0)){ v.innerHTML=`<span class="sub">Enter the pot and the amount to call to see the equity you need.</span>`; return; }
   const need=call/(pot+call);
   if (!res.n){ v.innerHTML=`Need <b>${pct(need)}</b> equity to call`; return; }
   const eq=res.eq/res.n, ev=eq*(pot+call)-call, good=eq>=need;
-  v.innerHTML=`Need <b>${pct(need)}</b> · You have <b>${pct(eq)}</b> · <span style="color:${good?"var(--good)":"var(--bad)"}">EV of calling ${ev>=0?"+":""}${ev.toFixed(2)}</span>`;
+  v.innerHTML=`Need <b>${pct(need)}</b> · You have <b>${pct(eq)}</b><br><span style="color:${good?"var(--good)":"var(--bad)"}">${good?"Calling is profitable":"Calling loses money"} (EV ${ev>=0?"+":""}${ev.toFixed(2)})</span>`;
 }
 function renderPreview(){
   const el=$("preview");
@@ -1064,7 +660,7 @@ function renderPreview(){
   if (P.bomb && !(bombAnte>0 && bombPlayers>=2)){ el.innerHTML=`💣 Set the bomb pot ante and number of players below`; return; }
   if (P.bomb && P.r && P.at-2<3){ el.innerHTML=`<span class="neg">Bomb pots go straight to the flop. Put the result after the flop cards.</span>`; return; }
   if (!P.r && P.bomb && P.cards.length<5){ el.innerHTML=`💣 <b>Bomb pot</b> · pot ${money(bombAnte*bombPlayers,false)} · ${bombPlayers} players · enter the flop`; return; }
-  if (!P.r){ el.innerHTML=`When the hand ends: tap <b>Fold / Won / Lost / Split</b> below, or type <b>f</b>, <b>w40</b>, <b>l25</b> + Enter`; return; }
+  if (!P.r){ el.innerHTML=`Add <b>f</b>, <b>w40</b>, <b>l25</b> or <b>x10</b> and press Enter to log this hand`; return; }
   if (P.at<2){ el.innerHTML=`<span class="neg">Put your two cards before the result</span>`; return; }
   const street = streetName(P.at-2);
   const net = handNet(P);
@@ -1095,6 +691,7 @@ function handNet(p){
 }
 function renderMoney(){
   const inv = invested(P);
+  $("inhand").textContent = money(inv,false);
   const s = cur();
   const buy = ((s&&s.buyins)||[]).reduce((a,b)=>a+b,0);
   if (!s || !buy){ $("liveStack").textContent="–"; $("liveStack").title="Add a buy-in in section 1"; return; }
@@ -1123,9 +720,6 @@ function onInputChanged(){
   const prevCards=P.cards.join(), prevBomb=P.bomb;
   P=parse(text);
   $("q").classList.toggle("err",!!P.bad);
-  if (P.potIn!=null && $("pot").value!==String(P.potIn)) $("pot").value=P.potIn;
-  if (P.callIn!=null && $("call").value!==String(P.callIn)) $("call").value=P.callIn;
-  if (P.potIn!=null || P.callIn!=null) renderVerdict();
   renderSlots(); renderPicker(); renderMade(); renderPreview(); renderBomb(); renderMoney();
   if (P.cards.join()!==prevCards || P.bomb!==prevBomb) startSim();
 }
@@ -1134,8 +728,8 @@ $("q").addEventListener("input", onInputChanged);
 $("q").addEventListener("keydown", e=>{
   if (e.key==="["){ e.preventDefault(); setBlind("sb"); return; }
   if (e.key==="]"){ e.preventDefault(); setBlind("bb"); return; }
-  if (e.key==="+"||e.key==="="){ e.preventDefault(); undoFold(); }
-  else if (e.key==="-"||e.key==="_"){ e.preventDefault(); foldNext(); }
+  if (e.key==="+"||e.key==="="){ e.preventDefault(); setFolded(folded-1); }
+  else if (e.key==="-"||e.key==="_"){ e.preventDefault(); setFolded(folded+1); }
   else if (e.key==="Enter"){ e.preventDefault(); commit(); }
 });
 document.addEventListener("keydown", e=>{
@@ -1144,223 +738,60 @@ document.addEventListener("keydown", e=>{
   if (tag==="INPUT"||tag==="SELECT"||tag==="TEXTAREA") return;
   if (e.key==="["){ setBlind("sb"); return; }
   if (e.key==="]"){ setBlind("bb"); return; }
-  if (e.key==="+"||e.key==="="){ undoFold(); return; }
-  if (e.key==="-"){ foldNext(); return; }
+  if (e.key==="+"||e.key==="="){ setFolded(folded-1); return; }
+  if (e.key==="-"){ setFolded(folded+1); return; }
   if (viewIsAll()) return;
   if (/^[0-9tjqkashdcfwlxTJQKASHDCFWLX $@]$/.test(e.key)&&!e.metaKey&&!e.ctrlKey) $("q").focus();
 });
-function clearAll(){ resetHandSeats(); $("call").value=""; if (!autoPot) $("pot").value=""; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
+function clearAll(){ folded=0; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
 $("clr").onclick=clearAll;
+$("addBtn").onclick=()=>{ const v=parseFloat($("addAmt").value); if (!(v>0)){ toast("Enter how much you put in",true); return; } $("addAmt").value=""; addMoney(v); };
+$("addAmt").addEventListener("keydown",e=>{ if (e.key==="Enter"){ e.preventDefault(); $("addBtn").click(); } });
+$("addBB").onclick=()=>{ const s=cur(); const bb=s&&s.bb>0?s.bb:null; if (!bb){ toast("Set the big blind in section 1 first",true); return; } addMoney(bb); };
+$("addUndo").onclick=()=>{ if (!(P.adds||[]).length) return; const p={...P, cards:P.cards.slice(), adds:P.adds.slice(0,-1)}; setText(serialize(p)); };
 $("sbBtn").onclick=()=>{ setBlind("sb",true); $("q").focus(); };
 $("bbBtn").onclick=()=>{ setBlind("bb",true); $("q").focus(); };
 function seatCount(){ return (P.bomb && bombPlayers>=2) ? bombPlayers : tableSize; }
 function renderOpp(){
   $("tn").textContent = seatCount();
-  $("tlabel").innerHTML = (P.bomb&&bombPlayers>=2) ? "In bomb pot" : `Seated <span style="opacity:.75">(of ${maxSeats})</span>`;
-  $("on").textContent = effOpps();
-  $("oppInfo").innerHTML = (P.bomb&&bombPlayers>=2 ? " (bomb pot players)" : "");
-  renderSeats();
+  $("tlabel").innerHTML = (P.bomb&&bombPlayers>=2) ? "In bomb pot" : `Seated <span style="opacity:.75">(of ${maxSeats})</span>`; $("fn").textContent = folded; $("on").textContent = effOpps();
+  $("oppInfo").innerHTML = "" + (P.bomb&&bombPlayers>=2 ? " (bomb pot players)" : "") + (seatCount()-1>9 ? " · max 9 opponents simulated" : "");
 }
-function seatXY(seat){
-  // place seats around the oval in real table order, with you at the bottom
-  const N=maxSeats, ref=(seatCfg.me>=1&&seatCfg.me<=N)?seatCfg.me:1;
-  const idx=((seat-ref)%N+N)%N, ang=(90+idx*360/N)*Math.PI/180;
-  return { x:50+50*Math.cos(ang), y:50+50*Math.sin(ang) };
-}
-function renderSeats(){
-  const box=$("seats"); if (!box) return;
-  if (document.activeElement && document.activeElement.classList.contains("vpipIn") && box.contains(document.activeElement)) return;
-  const on=mapOn(), labels=posLabels(), edit = seatEdit || !on;
-  $("seatbox").classList.toggle("edit", edit);
-  $("seatEditBtn").textContent = edit ? "✓ Done" : "⚙ Seats";
-  $("seatHelp").innerHTML = P.bomb ? "💣 Bomb pot: everyone's in. Tap a player who folds on the flop." :
-    (!on ? "Setup (once): tap <b>★</b> on your seat and <b>D</b> on the dealer. Then hit ✓ Done." :
-    (edit ? "Type each player's <b>VPIP</b> · <b>★</b> your seat · <b>D</b> dealer · <b>✕</b> player left · tap an empty seat when someone sits down" :
-     "Tap a player: <b>out</b> → <b>raised</b> → back in · drag to move a player · <span class=\"kbd\">-</span> next player folds"));
-  const occ=occupied();
-  box.innerHTML = allSeats().map(seat=>{
-    const xy=seatXY(seat), style=`left:${xy.x}%;top:${xy.y}%`;
-    if (!occ.includes(seat)) return `<div class="seat emptyseat" data-seat="${seat}" style="${style}" title="Tap when someone sits here"><div class="sp">Seat ${seat}</div><div class="sv">+</div></div>`;
-    const me=seat===seatCfg.me, st=me?"in":(seatAct[seat]||"in"), v=vpipOf(seat), lab=labels[seat]||("Seat "+seat);
-    if (edit) return `<div class="seat ${me?"me":""}" data-seat="${seat}" style="${style}">
-        <div class="sp">${lab}${labels[seat]?` <span class="sub">#${seat}</span>`:""}</div>
-        ${me?'<div class="sv">YOU</div>':`<input class="vpipIn" data-seat="${seat}" type="number" inputmode="numeric" min="1" max="100" placeholder="VPIP" value="${v??""}">`}
-        <div class="ebtns"><button class="mini setme" data-seat="${seat}" title="My seat">★</button><button class="mini setd" data-seat="${seat}" title="Dealer">D</button>${me?"":`<button class="mini leave" data-seat="${seat}" title="Player left">✕</button>`}</div></div>`;
-    return `<div class="seat ${me?"me":""} ${st}" data-seat="${seat}" style="${style}">
-        <div class="sp">${lab}</div><div class="sv">${me?"YOU":(v!=null?`${v}% VPIP`:"VPIP ?")}</div>${me?"":`<div class="se" id="seq-${seat}"></div>`}</div>`;
-  }).join("");
-  // dealer chip sits between the dealer and the middle of the table
-  const dc=$("dealerChip");
-  if (seatCfg.btn && occ.includes(seatCfg.btn)){ const xy=seatXY(seatCfg.btn); dc.hidden=false; dc.style.left=(50+(xy.x-50)*0.68)+"%"; dc.style.top=(50+(xy.y-50)*0.62)+"%"; } else dc.hidden=true;
-  // buttons (edit mode)
-  box.querySelectorAll(".setme").forEach(b=>b.onclick=e=>{ e.stopPropagation(); seatEdit=true; seatCfg.me=+b.dataset.seat; delete seatAct[seatCfg.me]; saveSeats(); syncBlindFromSeat(); afterSeatChange(); });
-  box.querySelectorAll(".setd").forEach(b=>b.onclick=e=>{ e.stopPropagation(); seatEdit=true; seatCfg.btn=+b.dataset.seat; saveSeats(); syncBlindFromSeat(); afterSeatChange(); });
-  box.querySelectorAll(".leave").forEach(b=>b.onclick=e=>{ e.stopPropagation(); setEmpty(+b.dataset.seat,true); });
-  let vt;
-  box.querySelectorAll(".vpipIn").forEach(inp=>{
-    inp.addEventListener("input",()=>{ const seat=+inp.dataset.seat, v=parseInt(inp.value,10);
-      if (v>0 && v<=100) seatCfg.vpip[seat]=v; else delete seatCfg.vpip[seat];
-      saveSeats(); clearTimeout(vt); vt=setTimeout(()=>{ renderBomb(); startSim(); },250); });
-    inp.addEventListener("keydown",e=>{ e.stopPropagation(); if (e.key==="Enter"){ e.preventDefault(); const all=[...box.querySelectorAll(".vpipIn")], i=all.indexOf(inp); if (all[i+1]) all[i+1].focus(); else { inp.blur(); $("q").focus(); } } });
-    inp.addEventListener("blur",()=>setTimeout(()=>{ if (!box.contains(document.activeElement)) renderSeats(); },0));
-  });
-  // tap / drag on every seat
-  box.querySelectorAll(".seat").forEach(el=>{
-    el.addEventListener("pointerdown",e=>{
-      if (e.target.closest("input,button")) return;
-      const seat=+el.dataset.seat, sx=e.clientX, sy=e.clientY; let drag=false, over=null;
-      el.setPointerCapture(e.pointerId);
-      const move=ev=>{
-        const dx=ev.clientX-sx, dy=ev.clientY-sy;
-        if (!drag && Math.hypot(dx,dy)>8){ drag=true; el.classList.add("dragging"); }
-        if (!drag) return;
-        el.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        el.style.visibility="hidden"; const t=document.elementFromPoint(ev.clientX,ev.clientY); el.style.visibility="";
-        const tgt=t && t.closest && t.closest(".seat");
-        if (over && over!==tgt) over.classList.remove("dropok");
-        over = (tgt && tgt!==el) ? tgt : null; if (over) over.classList.add("dropok");
-      };
-      const up=()=>{
-        el.removeEventListener("pointermove",move); el.removeEventListener("pointerup",up); el.removeEventListener("pointercancel",up);
-        if (drag){ el.classList.remove("dragging"); el.style.transform=""; if (over){ over.classList.remove("dropok"); swapSeats(seat, +over.dataset.seat); } else renderSeats(); return; }
-        tapSeat(seat, el.classList.contains("emptyseat"));
-      };
-      el.addEventListener("pointermove",move); el.addEventListener("pointerup",up); el.addEventListener("pointercancel",up);
-    });
-  });
-}
-function tapSeat(seat, empty){
-  if (empty){ setEmpty(seat,false); toast(`Player sat down in seat ${seat}`); return; }
-  if (seatEdit || !mapOn() || seat===seatCfg.me || P.bomb && false) return;
-  const st=seatAct[seat]||"in";
-  if (st==="in"){ seatAct[seat]="fold"; foldStack.push(seat); }
-  else if (st==="fold") seatAct[seat]="raise";
-  else delete seatAct[seat];
-  afterSeatChange();
-}
-// Drag a player onto another seat: they swap (moving onto an empty seat just moves them).
-function swapSeats(a,b){
-  if (a===b) return; ensureEmptyMap();
-  const sw=(obj)=>{ const va=obj[a], vb=obj[b]; if (vb===undefined) delete obj[a]; else obj[a]=vb; if (va===undefined) delete obj[b]; else obj[b]=va; };
-  sw(seatCfg.vpip); sw(seatCfg.empty); sw(seatAct);
-  if (seatCfg.me===a) seatCfg.me=b; else if (seatCfg.me===b) seatCfg.me=a;
-  if (seatCfg.btn===a) seatCfg.btn=b; else if (seatCfg.btn===b) seatCfg.btn=a;
-  saveSeats(); syncBlindFromSeat(); afterSeatChange();
-}
-function afterSeatChange(){ renderOpp(); renderBomb(); startSim(); }
-function syncBlindFromSeat(){
-  if (!mapOn()) return;
-  const p=myPos(), nb = p==="SB" ? "sb" : p==="BB" ? "bb" : (tableSize===2 && p==="BTN" ? "sb" : null);
-  if (blind!==nb){ blind=nb; renderBlind(); renderPreview(); }
-}
-function advanceButton(){ if (!mapOn()) return; const o=clockwiseFrom(seatCfg.btn); seatCfg.btn = o[1]||o[0]; saveSeats(); syncBlindFromSeat(); }
-function setEmpty(seat, empty){
-  ensureEmptyMap();
-  if (empty){
-    if (seat===seatCfg.me){ toast("That's your seat",true); return; }
-    if (occupied().length<=2){ toast("At least 2 players need to be seated",true); return; }
-    if (seat===seatCfg.btn){ const o=clockwiseFrom(seat); seatCfg.btn=o[1]; }     // button moves on to the next player
-    seatCfg.empty[seat]=true; delete seatCfg.vpip[seat]; delete seatAct[seat];
-  } else { delete seatCfg.empty[seat]; delete seatCfg.vpip[seat]; }              // a new player sat down: fresh VPIP
-  saveSeats(); syncTableSize(); syncBlindFromSeat(); afterSeatChange();
-}
-function foldNext(){
-  if (simpleMode && !P.bomb){ setSimpleOpp((simpleOpp??simpleDefaultOpp())-1); return; }
-  if (P.bomb || !mapOn()){ setFolded(folded+1); return; }
-  const s=preflopOrder().find(x=>x!==seatCfg.me && !seatAct[x]);
-  if (!s) return; seatAct[s]="fold"; foldStack.push(s); afterSeatChange();
-}
-function undoFold(){
-  if (simpleMode && !P.bomb){ setSimpleOpp((simpleOpp??simpleDefaultOpp())+1); return; }
-  if (P.bomb || !mapOn()){ setFolded(folded-1); return; }
-  while (foldStack.length){ const s=foldStack.pop(); if (seatAct[s]==="fold"){ delete seatAct[s]; afterSeatChange(); return; } }
-}
-function resetHandSeats(){ seatAct={}; foldStack=[]; folded=0; simpleOpp=null; simpleRaised=false; if (simpleMode && simplePos!=="SB" && simplePos!=="BB") {} renderSimple(); }
-function setSimpleOpp(n){ simpleOpp=Math.max(1,Math.min(9,n)); renderSimple(); renderOpp(); startSim(); }
-function renderSimple(){
-  if (!$("simplePanel")) return;
-  $("soN").textContent = simpleOpp??simpleDefaultOpp();
-  document.querySelectorAll("#segPos button").forEach(b=>b.classList.toggle("on", b.dataset.v===simplePos));
-  document.querySelectorAll("#segRaise button").forEach(b=>b.classList.toggle("on", (b.dataset.v==="1")===simpleRaised));
-  $("simMade").textContent = $("made").textContent;
-}
-function applyMode(){
-  $("simplePanel").hidden=!simpleMode;
-  document.querySelectorAll(".feltbar,.felt,#seatHelp").forEach(e=>e.hidden=simpleMode);
-  $("modeSimple").classList.toggle("on",simpleMode); $("modeFull").classList.toggle("on",!simpleMode);
-  // the card slots live in whichever view is showing
-  if (simpleMode){ $("simHero").append($("hs")); $("simBoard").append($("bs")); }
-  else { document.querySelector(".herohand").append($("hs")); document.querySelector(".center").prepend($("bs")); }
-  try{ localStorage.setItem("po_simple", simpleMode?"1":"0"); }catch(e){}
-  if (!simpleMode) syncBlindFromSeat();
-  renderSimple(); renderOpp(); startSim();
-}
-$("modeSimple").onclick=()=>{ if (!simpleMode){ simpleMode=true; applyMode(); } };
-$("modeFull").onclick=()=>{ if (simpleMode){ simpleMode=false; applyMode(); } };
-$("soM").onclick=()=>setSimpleOpp((simpleOpp??simpleDefaultOpp())-1);
-$("soP").onclick=()=>setSimpleOpp((simpleOpp??simpleDefaultOpp())+1);
-document.querySelectorAll("#segPos button").forEach(b=>b.onclick=()=>{
-  simplePos = simplePos===b.dataset.v ? null : b.dataset.v;
-  const nb = simplePos==="SB" ? "sb" : simplePos==="BB" ? "bb" : null; if (blind!==nb){ blind=nb; renderBlind(); }
-  renderSimple(); startSim();
-});
-document.querySelectorAll("#segRaise button").forEach(b=>b.onclick=()=>{ simpleRaised = b.dataset.v==="1"; renderSimple(); startSim(); });
 function setFolded(n){
-  const max = seatCount()-2;
+  const max = seatCount()-2;               // at least one opponent stays in
   const f = Math.max(0, Math.min(max, n));
   if (f===folded) return;
   folded=f; renderOpp(); renderBomb(); startSim();
 }
 function setTable(n){
   if (P.bomb && bombPlayers>=2){ bombPlayers=Math.max(2,Math.min(maxSeats,n)); saveBomb(); }
-  else { matchSeatCount(Math.max(2,Math.min(maxSeats,n))); saveSeats(); syncTableSize(); }
+  else { tableSize=Math.max(2,Math.min(maxSeats,n)); try{localStorage.setItem("po_table",tableSize);}catch(e){} if (sid) saveField("table",tableSize); }
   folded=Math.min(folded, Math.max(0,seatCount()-2));
-  syncBlindFromSeat(); renderOpp(); renderBomb(); renderPreview(); startSim();
+  renderOpp(); renderBomb(); renderPreview(); startSim();
 }
 function setMaxSeats(m, save){
   m=Math.max(2,Math.min(10,m)); const old=maxSeats; maxSeats=m;
+  // A full table follows the new max; a short-handed one is only capped.
   if (tableSize>m || tableSize===old) tableSize=m;
-  matchSeatCount(tableSize); saveSeats(); tableSize=occupied().length;
   try{ localStorage.setItem("po_max",m); localStorage.setItem("po_table",tableSize); }catch(e){}
   if (save && sid){ saveField("maxSeats",m); saveField("table",tableSize); }
   folded=Math.min(folded, Math.max(0,seatCount()-2));
-  syncBlindFromSeat(); renderOpp(); renderBomb(); startSim();
+  renderOpp(); renderBomb(); startSim();
 }
 $("fmax").addEventListener("change", async e=>{ const v=+e.target.value; setMaxSeats(v, false); await ensureSession(); setMaxSeats(v, true); toast(`${maxSeats}-max table`); });
 $("tm").onclick=()=>setTable(seatCount()-1);
 $("tp").onclick=()=>setTable(seatCount()+1);
-$("fold1").onclick=()=>{ foldNext(); $("q").focus(); };
-$("seatEditBtn").onclick=()=>{ seatEdit=!(seatEdit||!mapOn()); if (!mapOn()) seatEdit=true; renderSeats(); };
-// quick "to call" sizes
-document.querySelectorAll("#callChips button").forEach(b=>b.onclick=()=>{
-  const s=cur(), bb=s&&s.bb>0?s.bb:null, pot=parseFloat($("pot").value)||0, c=b.dataset.c;
-  let v = c==="0" ? 0 : c==="bb" ? bb : c==="3bb" ? (bb?3*bb:null) : (pot>0 ? r2(pot*parseFloat(c)) : null);
-  if (v==null){ toast(c.includes("bb")?"Set the big blind in section 1":"Enter the pot first",true); return; }
-  $("call").value = v ? v : ""; renderVerdict(); $("q").focus();
-});
+$("fm").onclick=()=>setFolded(folded-1);
+$("fp").onclick=()=>setFolded(folded+1);
+$("fold1").onclick=()=>{ setFolded(folded+1); $("q").focus(); };
 $("pot").addEventListener("input",renderVerdict);
 $("call").addEventListener("input",renderVerdict);
-// Result bar: Fold logs right away; Won / Lost / Split ask for one number.
-let resMode=null;
-const RES_LABEL={w:"Won how much (profit)?", l:"Lost how much?", x:"Split: up or down how much?"};
-function logResult(r, amt){
+document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
+  const a=parseFloat($("amt").value);
   const p={...P, cards:P.cards.slice()};
-  if (!p.r){ p.at=p.cards.length; } p.r=r;
-  if (amt!=null){ p.amt=amt; p.collect=null; }
-  $("q").value=serialize(p); onInputChanged(); closeRes(); commit();
-}
-function closeRes(){ resMode=null; $("resin").hidden=true; document.querySelectorAll(".rb").forEach(b=>b.classList.remove("on")); }
-document.querySelectorAll(".rb").forEach(b=>b.onclick=()=>{
-  const r=b.dataset.r;
-  if (P.cards.length<2){ toast("Enter your two cards first",true); return; }
-  if (r==="f"){ logResult("f", null); return; }
-  resMode=r; document.querySelectorAll(".rb").forEach(x=>x.classList.toggle("on",x===b));
-  $("resLbl").textContent=RES_LABEL[r]; $("resin").hidden=false; $("resAmt").value=""; $("resAmt").focus();
+  p.r=b.dataset.r; p.at = P.r ? P.at : P.cards.length; p.amt = isNaN(a) ? (P.r?P.amt:null) : a; if (!isNaN(a)) p.collect=null;
+  $("q").value=serialize(p); onInputChanged(); commit();
 });
-$("miniAct").onclick=()=>$("action").scrollIntoView({behavior:"smooth",block:"center"});
-$("resGo").onclick=()=>{ const v=parseFloat($("resAmt").value); logResult(resMode, isNaN(v)?null:Math.abs(v)); };
-$("resX").onclick=()=>{ closeRes(); $("q").focus(); };
-$("resAmt").addEventListener("keydown",e=>{ e.stopPropagation(); if (e.key==="Enter"){ e.preventDefault(); $("resGo").click(); } if (e.key==="Escape"){ closeRes(); $("q").focus(); } });
 
 let autoPot=false;
 function renderBomb(){
@@ -1489,7 +920,7 @@ function selectSession(id){
   sid=id; hands=[];
   const ss=sessions.find(x=>x.id===id);
   if (ss && ss.maxSeats>=2) maxSeats=ss.maxSeats;
-  if (ss && ss.table>=2){ tableSize=Math.min(ss.table,maxSeats); if (occupied().length!==tableSize){ matchSeatCount(tableSize); saveSeats(); } tableSize=occupied().length; }
+  if (ss && ss.table>=2) tableSize=Math.min(ss.table,maxSeats);
   if (ss){ renderOpp(); startSim(); }
   if (unsubHands){ unsubHands(); unsubHands=null; }
   if (id){
@@ -1529,7 +960,6 @@ async function commit(){
   if (post.length && pre.length+post.length>=3) eqR = equitySync(hero,pre.concat(post),no);
   const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:handNet(p), key:handKey(hero),
     bomb:!!p.bomb, ante:p.bomb?bombAnte:null, players:p.bomb?bombPlayers:null,
-    pos: myPos(), raisers: Object.values(seatAct).filter(v=>v==="raise").length,
     blind: (!p.bomb && blind) ? blind : null, blindAmt: (!p.bomb && blind) ? blindAmtNow() : null,
     invested: invested(p), collect: p.collect ?? null,
     eqPre:+eqPre.toFixed(4), eq:+eq.toFixed(4), eqR: eqR==null?null:+eqR.toFixed(4) };
@@ -1540,82 +970,10 @@ async function commit(){
   if (doc.bomb) refreshBombLife();
   toast(`Logged ${doc.bomb?"💣 ":""}${doc.blind?doc.blind.toUpperCase()+" ":""}${doc.key} · ${RES_NAME[doc.r]} · ${money(doc.net)}`);
   // Blinds move one seat each hand: SB is followed by BB, then you're out of the blinds. Bomb pots don't move the button.
-  if (!doc.bomb){
-    if (simpleMode){ simplePos = simplePos==="SB" ? "BB" : simplePos==="BB" ? null : simplePos; blind = simplePos==="SB"?"sb":simplePos==="BB"?"bb":null; renderBlind(); }
-    else if (mapOn()) advanceButton(); else { blind = doc.blind==="sb" ? "bb" : null; renderBlind(); }
-  }
+  if (!doc.bomb){ blind = doc.blind==="sb" ? "bb" : null; renderBlind(); }
+  $("amt").value="";
   clearAll();
 }
-
-// ---------- screenshot of a finished hand -> hand log (doesn't touch the live calculator) ----------
-let sampleFn=null;
-(async()=>{ try{ if (window.claude && typeof window.claude.use==="function"){ sampleFn = await window.claude.use("sample");
-  const lim = sampleFn ? await sampleFn.limits().catch(()=>null) : null; if (!lim || !lim.images) sampleFn=null; } }catch(e){ sampleFn=null; }
-  if (!sampleFn){ const dz=$("drop"); if (dz){ dz.querySelector(".dz2").textContent="Screenshot reading works when this page is open in Claude."; } } })();
-function cardStr(x){ const m=String(x||"").trim().toLowerCase().replace("10","t"); return /^[2-9tjqka][shdc]$/.test(m)?m:null; }
-async function readShot(file){
-  const out=$("shotOut"); out.hidden=false;
-  if (!file || !/^image\//.test(file.type)){ out.innerHTML=`<span class="neg">That isn't an image.</span>`; return; }
-  if (!sampleFn){ out.innerHTML=`<span class="neg">Screenshot reading only works when this page is open in Claude.</span>`; return; }
-  out.innerHTML=`<span class="sub">Reading the screenshot…</span>`;
-  try{
-    const r = await sampleFn.json(
-`This image is a screenshot of a FINISHED Texas Hold'em hand from a practice app. Read it and reply with only one JSON object:
-{"hero":["Ah","Kd"] or null,"board":["7c","8c","9d"],"result":"won"|"lost"|"folded"|"split"|"unknown","amount":number or null,"players":number or null,"note":"short note if anything is unclear"}
-- hero = the two face-up cards of the player at the bottom of the screen (the user).
-- board = the community cards shown, in order (0 to 5).
-- result = what happened to the user in this hand; amount = how much the user won or lost in this hand (net, a positive number) if it's shown, else null.
-- players = how many players were dealt in, if you can tell.
-Cards are rank + suit: ranks 2-9, T, J, Q, K, A; suits s h d c. Use null when you can't read something; don't guess.`,
-      { images:[file], cache:false });
-    const hero=(r&&Array.isArray(r.hero)?r.hero:[]).map(cardStr).filter(Boolean).slice(0,2);
-    const board=(r&&Array.isArray(r.board)?r.board:[]).map(cardStr).filter(Boolean).slice(0,5);
-    const res={won:"w",lost:"l",folded:"f",split:"x"}[r&&r.result]||"";
-    const amt = r && typeof r.amount==="number" && isFinite(r.amount) ? Math.abs(Math.round(r.amount*100)/100) : null;
-    let text = hero.join("");
-    if (res==="f") text += " f" + (amt?amt:"") + (board.length?" "+board.join(""):"");                 // folded: the board is the runout you saw after
-    else text += (board.length?" "+board.join(""):"") + (res? " "+res+(amt!=null?amt:"") : "");
-    const players = r && r.players>=2 ? Math.min(10, r.players|0) : null;
-    out.innerHTML = `<div><b>Here's what I read.</b> Check it, fix anything, then log it.</div>
-      <div class="row2"><input id="shotText" value="${esc(text.trim())}" spellcheck="false"><button class="pri" id="shotLog">Log hand</button><button id="shotCancel" class="sm">Cancel</button></div>
-      <div class="sub" id="shotPrev" style="margin-top:6px"></div>${r&&r.note?`<div class="sub" style="margin-top:4px">Note: ${esc(String(r.note).slice(0,200))}</div>`:""}`;
-    const prev=()=>{ const p=parse($("shotText").value); $("shotPrev").innerHTML = p.bad ? `<span class="neg">${esc(p.bad)}</span>` :
-      (p.cards.length<2 ? "Needs your two cards." : !p.r ? "Add a result: f, w12, l8 or x3." : `Will log <b>${handKey(p.cards.slice(0,2))}</b> · ${RES_NAME[p.r]} · ${money(netOf(p.r,p.amt))}${players?` · ${players} players`:""}`); };
-    $("shotText").addEventListener("input",prev);
-    $("shotText").addEventListener("keydown",e=>{ e.stopPropagation(); if (e.key==="Enter"){ e.preventDefault(); $("shotLog").click(); } });
-    prev();
-    $("shotCancel").onclick=()=>{ out.hidden=true; out.innerHTML=""; };
-    $("shotLog").onclick=()=>logShotHand(parse($("shotText").value), players);
-  }catch(e){
-    const msg={not_granted:"You didn't allow this page to use Claude, so it can't read screenshots.", rate_limited:"Too many requests right now. Try again in a bit.",
-      image_rejected:"That image couldn't be read. Try a PNG or JPG screenshot.", invalid_json:"Couldn't read the hand from that screenshot. Try a clearer one."}[e&&e.code] || "Couldn't read that screenshot. Try again.";
-    out.innerHTML=`<span class="neg">${msg}</span>`;
-  }
-}
-async function logShotHand(p, players){
-  if (p.bad){ toast(p.bad,true); return; }
-  if (p.cards.length<2 || !p.r || p.at<2){ toast("Needs your two cards and a result",true); return; }
-  const hero=p.cards.slice(0,2), pre=p.cards.slice(2,p.at), post=p.cards.slice(p.at);
-  if (pre.length===1||pre.length===2||pre.length+post.length>5){ toast("The board doesn't look right",true); return; }
-  const no=Math.max(1,Math.min(9,(players||tableSize)-1));
-  const eqPre=preflopEq(hero,no), eq=pre.length?equitySync(hero,pre,no):eqPre;
-  const eqR = post.length && pre.length+post.length>=3 ? equitySync(hero,pre.concat(post),no) : null;
-  const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:netOf(p.r,p.amt), key:handKey(hero),
-    bomb:false, ante:null, players:null, pos:null, raisers:0, blind:null, blindAmt:null, invested:0, collect:null, src:"screenshot",
-    eqPre:+eqPre.toFixed(4), eq:+eq.toFixed(4), eqR: eqR==null?null:+eqR.toFixed(4) };
-  const id=await ensureSession(); if (!id) return;
-  try{ await store.addHand(id, doc); }catch(e){ toast("Couldn't save that hand. Try again.",true); return; }
-  toast(`Logged ${doc.key} from screenshot · ${RES_NAME[doc.r]} · ${money(doc.net)}`);
-  $("shotOut").hidden=true; $("shotOut").innerHTML="";
-}
-(function(){
-  const dz=$("drop"), fi=$("shotFile");
-  fi.addEventListener("change",()=>{ if (fi.files[0]) readShot(fi.files[0]); fi.value=""; });
-  ["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.add("over"); }));
-  ["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.remove("over"); }));
-  dz.addEventListener("drop",e=>{ const f=e.dataTransfer.files&&e.dataTransfer.files[0]; if (f) readShot(f); });
-  document.addEventListener("paste",e=>{ const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/")); if (it && !viewIsAll()){ readShot(it.getAsFile()); } });
-})();
 
 // ---------- session form ----------
 const debouncers={};
@@ -2053,7 +1411,7 @@ function renderAll(){
 }
 
 // =================== boot ===================
-buildPicker(); ensureEmptyMap(); setTimeout(applyMode,0); saveSeats(); tableSize=occupied().length; syncBlindFromSeat(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
+buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
 store.init().then(mode=>{
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);

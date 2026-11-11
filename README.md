@@ -7,10 +7,7 @@ No build step, no dependencies. Open `index.html` in a browser.
 ## Features
 
 - **Live equity.** Monte Carlo simulation, up to 400k runouts, against however many opponents are still in. It shows win/tie/lose, your current made hand, and your chances of finishing with each hand type by the river.
-- **Table & players.** Set your seat and the dealer once; the dealer moves every hand, positions (UTG … BTN, SB, BB) and your blinds follow automatically. Enter each player's **VPIP** (blank = 30%); it sets the range of hands they're simulated with, and a tip adapts to how tight or loose they are. Tap **In/Out** when someone folds (or press `-` for the next player to act) and **R** when someone raises. Each opponent shows their own share of the pot. Players come and go: mark **Left** on the exact seat (in Edit seats) or **+ Player sat down** on an empty one; empty seats are skipped for positions and the dealer button, and a new player starts with a fresh VPIP.
-- **Range-based odds.** Opponents are simulated from the hands their VPIP and action suggest (a raise is about 40% of the hands they play), not random cards. Starting hands are ranked 1–169.
-- **Thin the field.** With a strong but vulnerable hand in a multiway pot (overpair, top pair, AK, mid pairs preflop), the app compares your equity against everyone with your equity heads-up. If getting heads-up helps a lot, it says to bet the pot or raise bigger so weaker hands fold.
-- **Suggested action.** Preflop: based on your hand's rank, your position's opening range, limpers, and who raised (tighter vs tight raisers, wider vs maniacs) → RAISE / CALL / FOLD, or CHECK only in the big blind. After the flop: your equity against their ranges vs the pot odds → BET / CHECK or CALL / RAISE / FOLD, with a bet size and a tip about the key opponent. Pot odds are shown as a ratio and the equity you need, with quick buttons for common bet sizes and a cheat sheet.
+- **Suggested action.** A big CALL / FOLD / RAISE badge when you face a bet (your equity vs the equity the pot odds require), and CHECK / BET when nobody has bet (your equity vs an even share for the number of opponents). It assumes opponents hold random hands.
 - **Pot odds.** Enter the pot and the amount to call to see the equity you need and whether calling is +EV.
 - **Fast keyboard entry.** One text box for the whole hand (see below). A tap-to-pick card grid is available for phones.
 - **Table tracking.** Max seats (2–10), how many are seated, and a "someone folded" counter that resets every hand.
@@ -22,22 +19,6 @@ No build step, no dependencies. Open `index.html` in a browser.
 - **Session tracking.** Buy-ins and rebuys, current stack, cash-out, profit, $/hr, hands/hr, bb/100, hands-played %, win rate when you play vs expected win rate (preflop equity), equity of folded hands, and folds that would have won.
 - **All sessions view.** A tab at the top with totals across every session: profit, $/hr, bb/100, hands played, win rate vs expected, bomb pots, blinds, biggest win and loss, a running-profit chart (with and without bomb pots), key takeaways, a per-session table, and your best and worst starting hands. Click any session in the table to expand it: its own stats, a hand-by-hand profit chart (bomb pots marked), and collapsible sections for biggest pots, the full hand log, starting hands and bomb pots. It's read-only, so your live session keeps running.
 - **Visuals.** Running-profit chart, a 13×13 starting-hand grid colored by net result, and a full hand log with per-hand delete.
-
-## Simple mode (default)
-
-No table to set up: tap your cards, set **players still in** (− when someone folds), **your spot** (Early / Middle / Late / SB / BB) and **did anyone raise?** (No / Yes). You get the same CALL / FOLD / RAISE suggestion. Switch to **Full table** at the top of the Play section for seats, VPIPs and the dealer.
-
-## Screenshot → hand log
-
-In section 3, drop (or paste, or tap to choose) a screenshot of a **finished** hand. Claude reads your cards, the board and the result, shows them as an editable line, and you tap **Log hand**. It only goes into your log; it doesn't touch the live calculator. Works when the page is open in Claude.
-
-## Fast play screen
-
-- **Oval table:** every seat sits where it really is, with you at the bottom, the dealer chip, the board in the middle and your cards in front of you. Tap a player for **out → raised → back in**; **drag** a player to another seat to move them; tap an empty seat when someone sits down. **⚙ Seats** is where you enter VPIPs, your seat, the dealer, and mark players who left.
-- **Card keypad:** tap a rank then a suit (either order) — two taps per card. ⌫ removes the last card.
-- **Result bar:** **Fold** logs instantly (blinds charged automatically); **Won / Lost / Split** ask for one number.
-- **Pot and to call:** quick bet-size chips, or type `20/5` in the box (pot 20, 5 to call) or just `/5`.
-- **Stack** is always shown next to the box. On phones a sticky bar keeps the suggested action and your equity on screen.
 
 ## Entering hands
 
