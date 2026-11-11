@@ -23,6 +23,14 @@ No build step, no dependencies. Open `index.html` in a browser.
 - **All sessions view.** A tab at the top with totals across every session: profit, $/hr, bb/100, hands played, win rate vs expected, bomb pots, blinds, biggest win and loss, a running-profit chart (with and without bomb pots), key takeaways, a per-session table, and your best and worst starting hands. Click any session in the table to expand it: its own stats, a hand-by-hand profit chart (bomb pots marked), and collapsible sections for biggest pots, the full hand log, starting hands and bomb pots. It's read-only, so your live session keeps running.
 - **Visuals.** Running-profit chart, a 13×13 starting-hand grid colored by net result, and a full hand log with per-hand delete.
 
+## Simple mode (default)
+
+No table to set up: tap your cards, set **players still in** (− when someone folds), **your spot** (Early / Middle / Late / SB / BB) and **did anyone raise?** (No / Yes). You get the same CALL / FOLD / RAISE suggestion. Switch to **Full table** at the top of the Play section for seats, VPIPs and the dealer.
+
+## Screenshot → hand log
+
+In section 3, drop (or paste, or tap to choose) a screenshot of a **finished** hand. Claude reads your cards, the board and the result, shows them as an editable line, and you tap **Log hand**. It only goes into your log; it doesn't touch the live calculator. Works when the page is open in Claude.
+
 ## Fast play screen
 
 - **Oval table:** every seat sits where it really is, with you at the bottom, the dealer chip, the board in the middle and your cards in front of you. Tap a player for **out → raised → back in**; **drag** a player to another seat to move them; tap an empty seat when someone sits down. **⚙ Seats** is where you enter VPIPs, your seat, the dealer, and mark players who left.
