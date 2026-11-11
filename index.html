@@ -903,6 +903,47 @@ if(!window.__framed){
     .hmcards .pcards .slot{width:46px;height:64px}
     .hmcards .pcards .slot .r{font-size:22px}.hmcards .pcards .slot .su{font-size:18px}
   }
+
+  /* tap keypad */
+  .qpad{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:12px;margin:2px 0 12px}
+  .qpad[hidden]{display:none!important}
+  .qtop{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+  .qnext{flex:1;font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .qranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:5px}
+  .qranks button,.qsuits button{padding:0;height:46px;border-radius:12px;font:800 17px Inter,system-ui;background:var(--surface2)}
+  .qranks button.on{background:var(--accent);border-color:var(--accent)}
+  .qranks button:disabled,.qsuits button:disabled{opacity:.28;cursor:default}
+  .qsuits{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+  .qsuits button{height:52px;font-size:26px;background:#f2f2f6;border-color:#f2f2f6}
+  .qsuits button.S{color:#111}.qsuits button.H{color:#e0393e}.qsuits button.D{color:#2a6fd6}.qsuits button.C{color:#1f9a52}
+  .qsuits:not(.ready) button{background:var(--surface2);border-color:transparent;color:#55555c}
+  .qacts{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:10px}
+  .qacts button{height:54px;font-size:17px;font-weight:800;border-radius:16px}
+  .qfold{background:#2a2a2e}
+  .qwon{background:rgba(48,209,88,.16)!important;border-color:rgba(48,209,88,.5)!important;color:#7ee2a0}
+  .qlost{background:rgba(255,69,58,.14)!important;border-color:rgba(255,69,58,.5)!important;color:#ff8a80}
+  .qacts button:disabled{opacity:.35;cursor:default}
+  .qamt{margin-top:10px}
+  .qamt[hidden],.qacts[hidden],.qmode[hidden]{display:none!important}
+  .qamtrow{display:flex;align-items:center;gap:8px}
+  .qamtlbl{font-weight:900;font-size:18px;min-width:52px}
+  .qcur{font:800 24px Inter,system-ui;margin-right:-4px}
+  .qamtrow input{flex:1;min-width:0;font:800 24px Inter,system-ui!important;padding:10px 12px!important;border:1.5px solid rgba(255,255,255,.28)!important}
+  .qamtrow .pri{padding:14px 16px;white-space:nowrap}
+  .qmode{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .qmode button{padding:6px 12px;font-size:12.5px}
+  .qmode button.on{background:#fff;color:#000;border-color:#fff}
+  .qmode .sub{flex-basis:100%;font-size:12px;margin-left:2px}
+  .qfoot{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .qfoot .sub{font-size:12.5px}
+  @media (max-width:760px){
+    .qranks{grid-template-columns:repeat(7,minmax(0,1fr))}
+    .qranks button{height:48px}
+  }
+  @media (min-width:761px){ .qpad{max-width:760px} }
+
+  .qeq{font:800 15px Inter,system-ui;white-space:nowrap}
+  body.padmode #guide,body.padmode #guideShow{display:none!important}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -963,6 +1004,22 @@ if(!window.__framed){
     <button id="guideShow" class="helpbtn" title="How to type a hand" hidden>?</button>
   </div>
   <div class="preview" id="preview"></div>
+  <div class="qpad" id="qpad" hidden>
+    <div class="qtop"><span class="qnext" id="qNext">Your first card</span><span class="qeq" id="qEq"></span>
+      <button type="button" class="sm" id="qBack" title="Remove the last card">⌫</button><button type="button" class="sm" id="qType" title="Type with the keyboard instead">⌨</button></div>
+    <div class="qranks" id="qRanks"><button type="button" data-rk="12">A</button><button type="button" data-rk="11">K</button><button type="button" data-rk="10">Q</button><button type="button" data-rk="9">J</button><button type="button" data-rk="8">10</button><button type="button" data-rk="7">9</button><button type="button" data-rk="6">8</button><button type="button" data-rk="5">7</button><button type="button" data-rk="4">6</button><button type="button" data-rk="3">5</button><button type="button" data-rk="2">4</button><button type="button" data-rk="1">3</button><button type="button" data-rk="0">2</button></div>
+    <div class="qsuits" id="qSuits"><button type="button" data-su="0" class="S">♠</button><button type="button" data-su="1" class="H">♥</button><button type="button" data-su="2" class="D">♦</button><button type="button" data-su="3" class="C">♣</button></div>
+    <div class="qacts" id="qActs">
+      <button type="button" class="qfold" id="qFold">Fold</button>
+      <button type="button" class="qwon" id="qWon">Won</button>
+      <button type="button" class="qlost" id="qLost">Lost</button>
+    </div>
+    <div class="qamt" id="qAmt" hidden>
+      <div class="qamtrow"><span class="qamtlbl" id="qAmtLbl">Won</span><span class="qcur">$</span><input id="qAmtIn" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"><button type="button" class="pri" id="qAmtGo">Log hand</button><button type="button" class="sm" id="qAmtX" title="Cancel">✕</button></div>
+      <div class="qmode" id="qMode"><button type="button" data-m="net" class="on">Profit</button><button type="button" data-m="pot">Pot I collected</button><span class="sub" id="qModeHint">What you're up on this hand</span></div>
+    </div>
+    <div class="qfoot"><button type="button" class="sm" id="qUndo">↶ Undo last hand</button><span class="sub" id="qUndoInfo"></span></div>
+  </div>
   <details class="howto"><summary>More ways to log a hand</summary>
     <table class="shortcuts">
       <tr><td><code>jsts 9h8d2c f</code></td><td>Folded after the flop</td></tr>
@@ -1011,7 +1068,7 @@ if(!window.__framed){
         <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
         <span id="bInfo"></span>
       </div>
-      <button class="sm pickbtn" id="pickToggle">Tap to pick cards instead</button>
+      <button class="sm pickbtn" id="pickToggle" hidden>Tap to pick cards instead</button>
       <div class="picker" id="picker" hidden></div>
     </div>
 
@@ -1189,7 +1246,7 @@ if(!window.__framed){
     <div class="msec">
       <div class="mlabel">On this device</div>
       <label class="tog"><input type="checkbox" id="edGuide"><span></span>Show the 3-step hand guide</label>
-      <label class="tog"><input type="checkbox" id="edPicker"><span></span>Open the card picker by default</label>
+      <label class="tog"><input type="checkbox" id="edPicker"><span></span>Show the tap keypad <small>Tap cards and results instead of typing</small></label>
     </div>
     <div class="msec">
       <div class="mlabel">Your data</div>
@@ -1556,13 +1613,14 @@ function renderMade(){
 }
 function renderResults(empty){
   if (empty||res.n===0){
-    $("eq").textContent="—"; $("eq").style.color=""; ["w","t","l"].forEach(k=>$(k).textContent="–");
+    $("eq").textContent="—"; $("eq").style.color=""; $("qEq").textContent=""; ["w","t","l"].forEach(k=>$(k).textContent="–");
     ["bw","bt","bl"].forEach(k=>$(k).style.width="0");
     $("samp").textContent="Enter your two hole cards to start."; $("dist").innerHTML=""; renderVerdict(); return;
   }
   const n=res.n, eq=res.eq/n;
   const no=effOpps();
   $("eq").textContent=pct(eq); $("eq").style.color = eq>=1/(no+1) ? "var(--good)" : "var(--bad)";
+  $("qEq").textContent=pct(eq)+" to win"; $("qEq").className="qeq "+(eq>=1/(no+1)?"pos":"neg");
   $("w").textContent=pct(res.w/n); $("t").textContent=pct(res.t/n); $("l").textContent=pct(res.l/n);
   $("bw").style.width=(res.w/n*100)+"%"; $("bt").style.width=(res.t/n*100)+"%"; $("bl").style.width=(res.l/n*100)+"%";
   const ci=1.96*Math.sqrt(eq*(1-eq)/n)*100;
@@ -1662,6 +1720,7 @@ function money(x,plus=true){ if (x==null||isNaN(x)) return "–"; const s=Math.a
 
 let lastText=null;
 function onInputChanged(){
+  setTimeout(()=>{ try{ renderPad(); }catch(e){} },0);
   const text=$("q").value;
   if (text===lastText) return; lastText=text;
   const prevCards=P.cards.join(), prevBomb=P.bomb;
@@ -1770,6 +1829,82 @@ document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
   p.r=b.dataset.r; p.at = P.r ? P.at : P.cards.length; p.amt = isNaN(a) ? (P.r?P.amt:null) : a; if (!isNaN(a)) p.collect=null;
   $("q").value=serialize(p); onInputChanged(); commit();
 });
+
+// =================== tap keypad (fast entry on phones) ===================
+let qRank=null, qResult=null, qMode="net";
+function padOn(){ let v=null; try{ v=localStorage.getItem("po_pad"); }catch(e){} return v ? v==="on" : !!(window.matchMedia&&matchMedia("(pointer:coarse)").matches); }
+function setPad(on){
+  try{ localStorage.setItem("po_pad",on?"on":"off"); }catch(e){}
+  $("qpad").hidden=!on;
+  // with the keypad on, tapping the box doesn't pop up the phone keyboard
+  if (on) $("q").setAttribute("inputmode","none"); else $("q").removeAttribute("inputmode");
+  document.body.classList.toggle("padmode",on);
+  renderPad();
+}
+function addCard(c){
+  if (P.cards.includes(c)||P.cards.length>=7) return;
+  const p={...P,cards:[...P.cards,c]}; $("q").value=serialize(p); onInputChanged();
+}
+function renderPad(){
+  if ($("qpad").hidden) return;
+  const n=P.r?P.at:P.cards.length, used=new Set(P.cards);
+  $("qNext").textContent = P.r ? (P.cards.length<7?"Runout (optional)":"All cards in")
+    : n===0?"Your 1st card": n===1?"Your 2nd card": n===2?"Flop or result": n<5?`Flop ${n-1}/3`: n===5?"Turn or result": n===6?"River or result":"How it ended";
+  $("qRanks").querySelectorAll("button").forEach(b=>{ const r=+b.dataset.rk; b.disabled=[0,1,2,3].every(su=>used.has(r*4+su))||P.cards.length>=7; b.classList.toggle("on",qRank===r); });
+  $("qSuits").querySelectorAll("button").forEach(b=>{ const su=+b.dataset.su; b.disabled=qRank==null||used.has(qRank*4+su); });
+  $("qSuits").classList.toggle("ready",qRank!=null);
+  const ready=P.cards.length>=2;
+  ["qFold","qWon","qLost"].forEach(id=>$(id).disabled=!ready||(!!P.r&&P.r!=="f"));
+  $("qFold").textContent = blind && !P.bomb && n===2 ? `Fold (${blind.toUpperCase()})` : "Fold";
+  const last=hands.length?hands.slice().sort((a,b)=>b.t-a.t)[0]:null;
+  $("qUndo").hidden=!last; $("qUndoInfo").textContent=last?`${last.key} · ${money(Math.round((last.net||0)*100)/100)}`:"";
+}
+$("qRanks").addEventListener("click",e=>{ const b=e.target.closest("button"); if (!b||b.disabled) return; const r=+b.dataset.rk; qRank = qRank===r?null:r;
+  // only one suit left for this rank? add it straight away
+  const free=[0,1,2,3].filter(su=>!P.cards.includes(r*4+su)); if (qRank!=null && free.length===1){ addCard(r*4+free[0]); qRank=null; }
+  renderPad(); });
+$("qSuits").addEventListener("click",e=>{ const b=e.target.closest("button"); if (!b||b.disabled||qRank==null) return; addCard(qRank*4+(+b.dataset.su)); qRank=null; renderPad(); });
+$("qBack").onclick=()=>{ if (qRank!=null){ qRank=null; renderPad(); return; } if (!P.cards.length&&!P.r) return;
+  const p={...P,cards:P.cards.slice()}; if (p.r && p.cards.length<=p.at){ p.r=null; p.amt=null; p.collect=null; } else p.cards.pop(); $("q").value=serialize(p); onInputChanged(); };
+$("qType").onclick=()=>{ $("q").removeAttribute("inputmode"); $("q").focus(); };
+$("qFold").onclick=()=>{
+  if (P.cards.length<2) return;
+  const p={...P,cards:P.cards.slice()}; p.r="f"; p.at=P.r?P.at:P.cards.length; p.amt=null; p.collect=null;
+  $("q").value=serialize(p); onInputChanged(); commit();
+};
+function openAmt(r){
+  qResult=r; $("qAmt").hidden=false; $("qActs").hidden=true;
+  $("qAmtLbl").textContent = r==="w"?"Won":"Lost"; $("qAmtLbl").className="qamtlbl "+(r==="w"?"pos":"neg");
+  $("qMode").hidden = r!=="w";
+  const inv=invested(P);
+  $("qAmtIn").placeholder = r==="l" && inv>0 ? `${inv} (what you put in)` : "0";
+  setMode(qMode); $("qAmtIn").value=""; $("qAmtIn").focus();
+}
+function closeAmt(){ qResult=null; $("qAmt").hidden=true; $("qActs").hidden=false; }
+function setMode(m){ qMode=m; $("qMode").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));
+  $("qModeHint").textContent = m==="net" ? "What you're up on this hand" : "The whole pot you raked in. I'll subtract what you put in."; }
+$("qMode").addEventListener("click",e=>{ const b=e.target.closest("button[data-m]"); if (b){ setMode(b.dataset.m); $("qAmtIn").focus(); } });
+$("qWon").onclick=()=>openAmt("w");
+$("qLost").onclick=()=>openAmt("l");
+$("qAmtX").onclick=closeAmt;
+function logAmt(){
+  const v=parseFloat($("qAmtIn").value);
+  if (qResult==="w" && !(v>=0)){ toast("Type how much you won",true); $("qAmtIn").focus(); return; }
+  const p={...P,cards:P.cards.slice()}; p.r=qResult; p.at=P.r?P.at:P.cards.length;
+  p.amt=null; p.collect=null;
+  if (!isNaN(v)){ if (qResult==="w"&&qMode==="pot") p.collect=v; else p.amt=Math.abs(v); }
+  closeAmt(); $("q").value=serialize(p); onInputChanged(); commit();
+}
+$("qAmtGo").onclick=logAmt;
+$("qAmtIn").addEventListener("keydown",e=>{ if (e.key==="Enter"){ e.preventDefault(); logAmt(); } });
+let undoArm=0;
+$("qUndo").onclick=async()=>{
+  const last=hands.length?hands.slice().sort((a,b)=>b.t-a.t)[0]:null; if (!last||!sid) return;
+  if (Date.now()-undoArm>3000){ undoArm=Date.now(); $("qUndo").textContent="Tap again to undo"; setTimeout(()=>{ $("qUndo").textContent="↶ Undo last hand"; },3000); return; }
+  undoArm=0; $("qUndo").textContent="↶ Undo last hand";
+  try{ await store.deleteHand(sid,last.id); toast(`Removed ${last.key} · ${money(Math.round((last.net||0)*100)/100)}`); }catch(e){ toast("Couldn't undo. Try again.",true); }
+};
+setTimeout(()=>setPad(padOn()),0);
 
 let autoPot=false;
 function renderBomb(){
@@ -2089,7 +2224,7 @@ async function commit(){
   const eq = pre.length ? equitySync(hero,pre,no) : eqPre;
   let eqR=null;
   if (post.length && pre.length+post.length>=3) eqR = equitySync(hero,pre.concat(post),no);
-  const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:handNet(p), key:handKey(hero),
+  const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:(handNet(p)||0), key:handKey(hero),
     bomb:!!p.bomb, ante:p.bomb?bombAnte:null, players:p.bomb?bombPlayers:null,
     blind: (!p.bomb && blind) ? blind : null, blindAmt: (!p.bomb && blind) ? blindAmtNow() : null,
     invested: invested(p), collect: p.collect ?? null, uncontested: !!uncontestedNext,
@@ -2203,6 +2338,7 @@ function statBox(k,v,d,cls=""){ return `<div class="stat"><div class="k">${k}</d
 function dur(h){ const m=Math.round(h*60); return m<60?`${m}m`:`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`; }
 
 function renderSession(){
+  setTimeout(()=>{ try{ renderPad(); }catch(e){} },0);
   // selector
   const sel=$("ssel");
   sel.innerHTML = sessions.length ? sessions.map(s=>{
@@ -2620,7 +2756,7 @@ function openEdit(){
   const p=myProfile(); edAvatar=p.avatar;
   $("edName").value=p.username; $("edTitle").value=p.title; $("edShare").checked=p.share; $("edNameNote").textContent="Friends find you by this. Letters, numbers, _ and . only."; $("edNameNote").className="sub";
   $("edAccount").hidden=store.mode!=="cloud"; $("edEmail").value=store.user&&store.user.email||""; $("edPass").value="";
-  let g=true,pk=false; try{ g=localStorage.getItem("po_guide")!=="hide"; pk=localStorage.getItem("po_picker")==="open"; }catch(e){}
+  let g=true; try{ g=localStorage.getItem("po_guide")!=="hide"; }catch(e){} const pk=padOn();
   $("edGuide").checked=g; $("edPicker").checked=pk;
   const draw=()=>{ $("avGrid").innerHTML=AVATARS.map((_,i)=>`<button type="button" data-i="${i}" class="${i===edAvatar?"on":""}">${avatarSVG(i)}</button>`).join("");
     $("avGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{ edAvatar=+b.dataset.i; draw(); }); };
@@ -2629,7 +2765,7 @@ function openEdit(){
 $("meEdit").onclick=openEdit;
 $("edName").addEventListener("input",e=>{ const c=cleanName(e.target.value); if (c!==e.target.value) e.target.value=c; });
 $("edGuide").onchange=e=>{ const on=e.target.checked; $("guide").hidden=!on; $("guideShow").hidden=on; try{ on?localStorage.removeItem("po_guide"):localStorage.setItem("po_guide","hide"); }catch(_){} };
-$("edPicker").onchange=e=>{ try{ localStorage.setItem("po_picker",e.target.checked?"open":"closed"); }catch(_){} setPicker(e.target.checked); };
+$("edPicker").onchange=e=>setPad(e.target.checked);
 $("edSave").onclick=async()=>{
   const name=cleanName($("edName").value);
   if (name.length<2){ $("edNameNote").textContent="Pick a username with at least 2 characters."; $("edNameNote").className="sub neg"; return; }

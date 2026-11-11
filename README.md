@@ -33,6 +33,7 @@ With those two values left empty, the app skips the login screen and saves in th
 
 ## Features
 
+- **Tap keypad (phones).** Tap a rank then a suit for each card, then **Fold** in one tap, or **Won** / **Lost** with the exact amount (as profit, or the whole pot you collected). Your live chance to win shows in the keypad. **Undo last hand** fixes a mis-tap. A preflop fold is 5 taps. Turn it on or off under Me → Edit profile.
 - **Friends tab.** Search people by username, send and accept friend requests, and see a leaderboard of you and your friends (points, all-time result, hands, last played). **Invite friends** shares a link like `…/poker-TRACKER/?invite=yourname`; whoever opens it and signs in sends you a request automatically.
 - **Points and levels.** +1 per hand, +10 per session, +15 per winning session, +3 per right answer in Practice, +5 per hand of your best Practice streak. Levels go Fish → Regular → Grinder → Shark → Whale → Legend.
 - **Edit profile.** Avatar, username, a funny title (Calling Station, Bomb Pot Victim…), whether friends can see your results, change email or password, backup, sign out.
