@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Poker Odds</title>
+<style>
+  :root{
+    --bg:#0d1512; --felt:#123a2b; --felt2:#0f2f23; --line:#1f5a42; --card:#0b1813;
+    --ink:#e9f2ee; --mute:#8fb3a3; --accent:#f2c14e; --good:#4fd18b; --bad:#ef6a5f; --tie:#7fb7ff;
+    --s:#1b1b1b; --h:#d63b3b; --d:#2a6fd6; --c:#1f9a52;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:16px}
+  h1{font-size:18px;margin:0 0 12px;letter-spacing:.3px;color:var(--mute);font-weight:600}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mute);margin:28px 0 10px;font-weight:700}
+  h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);margin:16px 0 8px;font-weight:600}
+  .entry{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+  #q{flex:1;min-width:0;font:600 22px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:12px 14px;border-radius:10px;
+     border:2px solid var(--line);background:#08100d;color:var(--ink);outline:none;letter-spacing:1px}
+  #q:focus{border-color:var(--accent)}
+  #q.err{border-color:var(--bad)}
+  button{font:inherit;color:var(--ink);background:#173b2d;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
+  button:hover{background:#1d4a38}
+  button.pri{background:var(--accent);color:#1a1405;border-color:var(--accent);font-weight:700}
+  button.sm{padding:4px 8px;font-size:12.5px}
+  button.danger{border-color:#6b2d28;color:#ffb4ad;background:#2a1513}
+  input[type=number],input[type=text]{font:600 15px system-ui;padding:8px;border-radius:8px;border:1px solid var(--line);background:#08100d;color:var(--ink);min-width:0}
+  select{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:#08100d;color:var(--ink);max-width:100%}
+  .preview{min-height:22px;font-size:13.5px;color:var(--mute);margin:2px 0 6px}
+  .preview b{color:var(--ink)}
+  .hint{color:var(--mute);font-size:12.5px;margin:0 0 14px}
+  .hint code{background:#0a1a14;padding:1px 5px;border-radius:4px;color:var(--ink)}
+  .kbd{font-family:ui-monospace,monospace;border:1px solid #2f6f55;border-bottom-width:2px;padding:0 5px;border-radius:4px;font-size:11.5px}
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+  .table{background:radial-gradient(ellipse at center,var(--felt),var(--felt2));border:1px solid var(--line);border-radius:18px;padding:16px}
+  .row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+  .grp .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);margin-bottom:6px}
+  .slots{display:flex;gap:6px}
+  .slot{width:52px;height:72px;border-radius:8px;border:2px dashed #2f6f55;display:flex;flex-direction:column;align-items:center;justify-content:center;
+        cursor:pointer;user-select:none;font-weight:700;background:rgba(0,0,0,.12);position:relative}
+  .slot.next{border-color:var(--accent);border-style:solid}
+  .slot.filled{background:#fbfbf7;border:2px solid #fbfbf7}
+  .slot.after{opacity:.55}
+  .slot.after::after{content:"after";position:absolute;bottom:-15px;font-size:9.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
+  .slot .r{font-size:24px;line-height:1}
+  .slot .su{font-size:20px;line-height:1}
+  .gap{width:6px}
+  .made{margin-top:14px;font-size:15px;color:var(--accent);min-height:21px;font-weight:600}
+  .picker{margin-top:12px;display:grid;grid-template-columns:repeat(13,1fr);gap:4px}
+  .pc{aspect-ratio:3/4;border-radius:6px;background:#fbfbf7;border:none;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      font-weight:700;font-size:14px;line-height:1.05;cursor:pointer;color:inherit}
+  .pc:hover{outline:2px solid var(--accent);background:#fbfbf7}
+  .pc.used{opacity:.15;cursor:default;outline:none}
+  .S{color:var(--s)} .H{color:var(--h)} .D{color:var(--d)} .C{color:var(--c)}
+  .actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;align-items:center}
+  .actions input{width:96px}
+  .actions .f{border-color:#555}.actions .w{border-color:var(--good)}.actions .l{border-color:var(--bad)}.actions .x{border-color:var(--tie)}
+  .bombrow{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;background:rgba(242,193,78,.08);border:1px solid rgba(242,193,78,.45);border-radius:10px;padding:8px 10px;font-size:13px}
+  .bombrow.on{display:flex}
+  .bombrow input{width:84px}
+  .bombrow b{color:var(--accent)}
+  .blindbtn{font-weight:800;min-width:52px}
+  .blindbtn.on{background:#7fb7ff;color:#08182b;border-color:#7fb7ff}
+  .tag.sb,.tag.bb{background:#16304d;color:var(--tie);margin-right:4px}
+  button.bomb.on{background:var(--accent);color:#1a1405;border-color:var(--accent);font-weight:700}
+  .tag.b{background:#3a3010;color:var(--accent);margin-right:4px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+  .big{font:800 56px/1 system-ui,sans-serif;letter-spacing:-1px}
+  .sub{color:var(--mute);font-size:12.5px}
+  .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#20352c;margin:10px 0 6px}
+  .bar div{height:100%;transition:width .12s}
+  .legend{display:flex;gap:12px;font-size:13px;flex-wrap:wrap}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
+  .opp{display:flex;align-items:center;gap:8px;margin:14px 0}
+  .opp button{width:36px;padding:6px 0;font-weight:700}
+  .opp .n{font:800 22px/1 system-ui;width:28px;text-align:center}
+  .dist div.r{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;font-size:12.5px;margin:3px 0}
+  .dist .t{height:8px;background:#1c3027;border-radius:4px;overflow:hidden}
+  .dist .t i{display:block;height:100%;background:var(--accent);transition:width .12s}
+  .dist .p{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+  .pot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pot label{font-size:12px;color:var(--mute)}
+  .pot input{width:100%}
+  .verdict{margin-top:8px;font-weight:700;font-size:15px}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1d4a38;border:1px solid var(--good);padding:10px 16px;border-radius:10px;
+         font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+  .toast.show{opacity:1}
+  .toast.bad{border-color:var(--bad);background:#3a1a17}
+  /* session */
+  .sbar{margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .note{font-size:12.5px;color:var(--accent);margin:6px 0}
+  .sgrid{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start}
+  @media (max-width:860px){.sgrid{grid-template-columns:1fr}}
+  .form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form label{display:block;font-size:12px;color:var(--mute);margin-bottom:3px}
+  .form .full{grid-column:1/-1}
+  .form4 .full{grid-column:1/-1}
+  .form input{width:100%}
+  .step{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#1a1405;align-items:center;justify-content:center;font-size:12px;margin-right:6px}
+  .form4{grid-template-columns:2fr 1fr 1fr 1fr}
+  .form4 .wide{grid-column:auto}
+  @media (max-width:640px){.form4{grid-template-columns:1fr 1fr}.form4 .wide{grid-column:1/-1}}
+  .buyrow{flex-wrap:wrap;align-items:center}
+  .buyrow input{flex:0 1 180px}
+  .sgrid .stats{align-content:start}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+  .chip{background:#173b2d;border:1px solid var(--line);border-radius:14px;padding:3px 4px 3px 10px;font-size:13px;display:inline-flex;align-items:center;gap:4px}
+  .chip button{background:none;border:none;padding:0 6px;color:var(--mute)}
+  .inl{display:flex;gap:6px}
+  .inl input{flex:1}
+  .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--mute)}
+  .stat .v{font:800 24px/1.15 system-ui;margin-top:3px;font-variant-numeric:tabular-nums}
+  .stat .d{font-size:12px;color:var(--mute);margin-top:2px}
+  .pos{color:var(--good)} .neg{color:var(--bad)}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px}
+  .log{background:var(--card);border:1px solid var(--line);border-radius:12px;max-height:520px;overflow:auto}
+  .log table{width:100%;border-collapse:collapse;font-size:13px}
+  .log th{position:sticky;top:0;background:#0f2019;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);padding:8px;font-weight:600}
+  .log td{padding:6px 8px;border-top:1px solid #16352a;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .log td.cards{font-family:ui-monospace,monospace;font-weight:700}
+  .log .mc{background:#fbfbf7;border-radius:3px;padding:0 3px;margin-right:2px}
+  .log td .del{background:none;border:none;color:var(--mute);padding:0 4px}
+  .tag{display:inline-block;border-radius:5px;padding:1px 6px;font-size:11.5px;font-weight:700}
+  .tag.f{background:#2a2f2d;color:#bbb}.tag.w{background:#16402a;color:var(--good)}.tag.l{background:#3d1b18;color:var(--bad)}.tag.x{background:#16304d;color:var(--tie)}
+  .hg{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;max-width:640px}
+  .hc{aspect-ratio:1;border-radius:3px;font-size:10.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#13241d;color:#56786a;line-height:1.05;cursor:default}
+  .hc b{font-size:11px}
+  .hc small{font-size:9.5px;opacity:.9}
+  .hc.has{color:var(--ink)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:860px){.two{grid-template-columns:1fr}}
+  .empty{color:var(--mute);font-size:13px;padding:16px}
+  .confirm{display:inline-flex;gap:6px;align-items:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Live Poker Odds + Session Tracker · Texas Hold'em</h1>
+
+  <h2><span class="step">1</span> Session &amp; buy-in</h2>
+  <div class="sbar">
+    <select id="ssel"></select>
+    <button id="snew">+ New session</button>
+    <span id="sdel"></span>
+    <span class="sub" id="sclock"></span>
+  </div>
+  <div class="note" id="snote"></div>
+  <div class="panel">
+    <div class="form form4">
+      <div class="wide"><label>Session name / game</label><input id="fname" type="text" placeholder="e.g. 1/2 NL at Bay 101"></div>
+      <div><label>Small blind</label><input id="fsb" type="number" inputmode="decimal" min="0" placeholder="1"></div>
+      <div><label>Big blind</label><input id="fbb" type="number" inputmode="decimal" min="0" placeholder="2"></div>
+      <div><label>Table seats (max)</label><select id="fmax" style="width:100%"><option value="2">2-max</option><option value="3">3-max</option><option value="4">4-max</option><option value="5">5-max</option><option value="6">6-max</option><option value="7">7-max</option><option value="8">8-max</option><option value="9">9-max</option><option value="10">10-max</option></select></div>
+      <div class="full">
+        <label>Buy-ins &amp; rebuys</label>
+        <div class="inl buyrow"><input id="fbuy" type="number" inputmode="decimal" min="0" placeholder="buy-in amount"><button class="pri" id="addbuy">Add buy-in</button><div class="chips" id="buyins"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="step">2</span> Hands: log them one by one</h2>
+  <div class="entry">
+    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ahkd 7c8c9d   then  f / w40 / l25  + Enter">
+    <button id="sbBtn" class="blindbtn" title="I'm the small blind this hand ( [ )">SB</button>
+    <button id="bbBtn" class="blindbtn" title="I'm the big blind this hand ( ] )">BB</button>
+    <button id="clr" title="Clear (Esc)">Clear</button>
+  </div>
+  <div class="preview" id="preview"></div>
+  <p class="hint">
+    <b>Cards:</b> rank <code>2–9 t j q k a</code> + suit <code>s h d c</code>, e.g. <code>ahkd 7c8c9d</code>. Odds update as you type.<br>
+    <b>Log the hand:</b> add a result where you acted, then press <span class="kbd">Enter</span>:
+    <code>f</code> fold · <code>w40</code> won 40 · <code>l25</code> lost 25 · <code>x10</code> split (net +10).
+    Examples: <code>7h2c f</code> (folded preflop) · <code>jsts 9h8d2c f</code> (folded the flop) · <code>ahkd 7c8c9d w60</code>.
+    Cards typed <i>after</i> the result are the runout you saw after folding: <code>qsjd f 9c8c2h</code> tells you if you'd have won.<br>
+    <b>Blinds:</b> tap <b>SB</b> or <b>BB</b> (or press <span class="kbd">[</span> / <span class="kbd">]</span>) when you're in the blinds. Folding with no amount charges the blind, and hands where you only put in the blind (including checking the BB and folding on the flop) don't count as hands you played. After an SB hand it moves to BB on its own.<br>
+    <b>Bomb pot:</b> type <code>b</code> (or tap 💣) and the hand goes straight to the flop: <code>b ahkd 7c8c9d w90</code>. Fold on the flop with no amount and it counts the ante as lost.<br>
+    <span class="kbd">Esc</span> clears · <span class="kbd">-</span> someone folded (<span class="kbd">+</span> undo) · the fold count resets every hand · you can also tap the cards and buttons below.
+  </p>
+
+  <div class="grid">
+    <div class="table">
+      <div class="row">
+        <div class="grp"><div class="lbl">Your hand</div><div class="slots" id="hs"></div></div>
+        <div class="grp"><div class="lbl">Flop · Turn · River</div><div class="slots" id="bs"></div></div>
+      </div>
+      <div class="made" id="made"></div>
+      <div class="actions">
+        <input id="amt" type="number" inputmode="decimal" min="0" placeholder="amount">
+        <button class="f" data-r="f">Fold</button>
+        <button class="w" data-r="w">Won</button>
+        <button class="l" data-r="l">Lost</button>
+        <button class="x" data-r="x">Split</button>
+        <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣 Bomb pot</button>
+      </div>
+      <div class="bombrow" id="bombrow">
+        <span>💣 Bomb pot: everyone puts in</span><input id="bAnte" type="number" inputmode="decimal" min="0" placeholder="ante">
+        <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
+        <span id="bInfo"></span>
+      </div>
+      <div class="picker" id="picker"></div>
+    </div>
+
+    <div class="panel">
+      <div class="sub">Your equity</div>
+      <div class="big" id="eq">—</div>
+      <div class="bar"><div id="bw" style="background:var(--good);width:0"></div><div id="bt" style="background:var(--tie);width:0"></div><div id="bl" style="background:var(--bad);width:0"></div></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--good)"></span>Win <b id="w">–</b></span>
+        <span><span class="dot" style="background:var(--tie)"></span>Tie <b id="t">–</b></span>
+        <span><span class="dot" style="background:var(--bad)"></span>Lose <b id="l">–</b></span>
+      </div>
+      <div class="sub" id="samp" style="margin-top:6px">&nbsp;</div>
+      <div class="opp">
+        <span class="sub" style="width:96px" id="tlabel">Seated</span>
+        <button id="tm">−</button><span class="n" id="tn">2</span><button id="tp">+</button>
+      </div>
+      <div class="opp" style="margin-top:-6px">
+        <span class="sub" style="width:96px">Folded so far</span>
+        <button id="fm">−</button><span class="n" id="fn">0</span><button id="fp">+</button>
+        <button id="fold1" class="sm" style="white-space:nowrap" title="Someone folded (-)">Someone folded</button>
+      </div>
+      <div class="sub" style="margin:-4px 0 12px">You vs <b id="on" style="color:var(--ink);font-size:15px">1</b> still in<span id="oppInfo"></span></div>
+      <h3>Pot odds</h3>
+      <div class="pot">
+        <div><label>Pot (before the call)</label><input id="pot" type="number" inputmode="decimal" min="0" placeholder="e.g. 100"></div>
+        <div><label>To call</label><input id="call" type="number" inputmode="decimal" min="0" placeholder="e.g. 25"></div>
+      </div>
+      <div class="verdict" id="verdict"></div>
+      <h3>Your final hand by the river</h3>
+      <div class="dist" id="dist"></div>
+    </div>
+  </div>
+
+  <h2><span class="step">3</span> How it's going</h2>
+  <div class="sgrid">
+    <div class="panel">
+      <div class="form"><div class="full"><label>Current stack (optional, updates profit live)</label><input id="fstack" type="number" inputmode="decimal" min="0" placeholder="what's in front of you now"></div></div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+  <div class="chart"><div class="sub" style="margin-bottom:4px">Running net from logged hands</div><div id="chart"></div></div>
+  <div class="two">
+    <div>
+      <h3>Hand log</h3>
+      <div class="log" id="log"></div>
+    </div>
+    <div>
+      <h3>Starting hands this session</h3>
+      <div class="sub" style="margin-bottom:8px">Number = times dealt. Green or red = net won or lost with that hand. Hover over a hand for details.</div>
+      <div class="hg" id="hg"></div>
+      <div id="topHands"></div>
+    </div>
+  </div>
+
+  <h2><span class="step">4</span> Cash out</h2>
+  <div class="panel"><div class="form"><div class="full" id="cashbox"></div></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+"use strict";
+const RANKS = "23456789TJQKA", RL = RANKS.toLowerCase();
+const SUITS = "shdc";
+const SUIT_SYM = ["♠","♥","♦","♣"];
+const SUIT_CLS = ["S","H","D","C"];
+const CAT = ["High card","Pair","Two pair","Three of a kind","Straight","Flush","Full house","Four of a kind","Straight flush"];
+const NAME_PL = ["Twos","Threes","Fours","Fives","Sixes","Sevens","Eights","Nines","Tens","Jacks","Queens","Kings","Aces"];
+const NAME_1 = ["Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King","Ace"];
+const RES_NAME = {f:"Fold", w:"Won", l:"Lost", x:"Split"};
+const $ = id => document.getElementById(id);
+const pct = x => (x*100).toFixed(1) + "%";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let opps = 1;
+try { const o = +localStorage.getItem("po_opps"); if (o>=1 && o<=9) opps = o; } catch(e){}
+// Table size is set once; folds reset every hand. Opponents still in = table - you - folded.
+let tableSize = 9, folded = 0, maxSeats = 9;
+try { const m = +localStorage.getItem("po_max"); if (m>=2 && m<=10) maxSeats = m; } catch(e){}
+try { const t = +localStorage.getItem("po_table"); if (t>=2 && t<=10) tableSize = t; } catch(e){}
+try { if (localStorage.getItem("po_table")===null) tableSize = maxSeats; } catch(e){}
+tableSize = Math.min(tableSize, maxSeats);
+let bombAnte = null, bombPlayers = null;
+try { const j = JSON.parse(localStorage.getItem("po_bomb")||"null"); if (j){ bombAnte=j.ante??null; bombPlayers=j.players??null; } } catch(e){}
+// In a bomb pot the opponents are everyone else who put in the ante.
+const effOpps = () => Math.max(1, Math.min(9, ((P && P.bomb && bombPlayers>=2) ? bombPlayers : tableSize) - 1 - folded));
+
+// =================== evaluator ===================
+const rc = new Int8Array(13), sm = new Int32Array(4);
+function pop(x){ x = x - ((x>>1)&0x55555555); x = (x&0x33333333)+((x>>2)&0x33333333); return (((x+(x>>4))&0x0F0F0F0F)*0x01010101)>>>24; }
+function straightHigh(m){ const ext=(m<<1)|((m>>12)&1); for(let h=13;h>=4;h--) if(((ext>>(h-4))&31)===31) return h-1; return -1; }
+function top5(m){ let v=0,k=0; for(let r=12;r>=0&&k<5;r--) if(m&(1<<r)){v=v*16+r;k++;} while(k<5){v*=16;k++;} return v; }
+const SHIFT = 1048576;
+function evalCards(cs, n){
+  rc.fill(0); sm[0]=sm[1]=sm[2]=sm[3]=0; let mask=0;
+  for (let i=0;i<n;i++){ const c=cs[i], r=c>>2; rc[r]++; sm[c&3]|=1<<r; mask|=1<<r; }
+  for (let s=0;s<4;s++) if (pop(sm[s])>=5){ const sh=straightHigh(sm[s]); return sh>=0 ? 8*SHIFT+sh : 5*SHIFT+top5(sm[s]); }
+  let quad=-1,t1=-1,t2=-1,p1=-1,p2=-1;
+  for (let r=12;r>=0;r--){ const k=rc[r];
+    if (k===4) quad=r; else if (k===3){ if(t1<0)t1=r; else if(t2<0)t2=r; } else if (k===2){ if(p1<0)p1=r; else if(p2<0)p2=r; } }
+  if (quad>=0){ let kk=0; for(let r=12;r>=0;r--) if(r!==quad&&rc[r]){kk=r;break;} return 7*SHIFT+quad*16+kk; }
+  if (t1>=0 && (t2>=0||p1>=0)) return 6*SHIFT + t1*16 + Math.max(t2,p1);
+  const st=straightHigh(mask); if (st>=0) return 4*SHIFT+st;
+  if (t1>=0) return 3*SHIFT + t1*256 + (top5(mask&~(1<<t1))>>12);
+  if (p1>=0&&p2>=0) return 2*SHIFT + p1*256 + p2*16 + (top5(mask&~(1<<p1)&~(1<<p2))>>16);
+  if (p1>=0) return SHIFT + p1*4096 + (top5(mask&~(1<<p1))>>8);
+  return top5(mask);
+}
+function describe(score){
+  const cat=Math.floor(score/SHIFT), v=score%SHIFT, nib=i=>(v>>(4*i))&15;
+  switch(cat){
+    case 8: return nib(0)===12 ? "Royal flush" : `Straight flush, ${NAME_1[nib(0)]} high`;
+    case 7: return `Four of a kind, ${NAME_PL[nib(1)]}`;
+    case 6: return `Full house, ${NAME_PL[nib(1)]} full of ${NAME_PL[nib(0)]}`;
+    case 5: return `Flush, ${NAME_1[nib(4)]} high`;
+    case 4: return `Straight, ${NAME_1[nib(0)]} high`;
+    case 3: return `Three of a kind, ${NAME_PL[(v>>8)&15]}`;
+    case 2: return `Two pair, ${NAME_PL[nib(2)]} and ${NAME_PL[nib(1)]}`;
+    case 1: return `Pair of ${NAME_PL[(v>>12)&15]}`;
+    default: return `${NAME_1[nib(4)]} high`;
+  }
+}
+
+// =================== simulation ===================
+// One Monte Carlo batch; accumulates into acc. Returns iterations done.
+function makeSim(hero, board, nOpp){
+  const used=new Set([...hero,...board]); const deck=[]; for(let c=0;c<52;c++) if(!used.has(c)) deck.push(c);
+  const d=Int32Array.from(deck), D=d.length, nb=board.length, needB=5-nb, need=needB+2*nOpp;
+  const hc=new Int32Array(7), oc=new Int32Array(7);
+  hc[0]=hero[0]; hc[1]=hero[1]; for(let i=0;i<nb;i++){hc[2+i]=board[i];oc[2+i]=board[i];}
+  return function run(iters, acc){
+    for (let it=0; it<iters; it++){
+      for (let i=0;i<need;i++){ const j=i+((Math.random()*(D-i))|0); const t=d[i]; d[i]=d[j]; d[j]=t; }
+      for (let i=0;i<needB;i++){ hc[2+nb+i]=d[i]; oc[2+nb+i]=d[i]; }
+      const hs=evalCards(hc,7); let best=-1, ties=0;
+      for (let o=0;o<nOpp;o++){
+        oc[0]=d[needB+2*o]; oc[1]=d[needB+2*o+1]; const s=evalCards(oc,7);
+        if (s>best){ best=s; ties=(s===hs)?1:0; if (best>hs) break; } else if (s===best&&s===hs) ties++;
+      }
+      if (acc.dist) acc.dist[Math.floor(hs/SHIFT)]++;
+      if (hs>best){acc.w++;acc.eq+=1;} else if (hs===best){acc.t++;acc.eq+=1/(ties+1);} else acc.l++;
+      acc.n++;
+    }
+  };
+}
+function equitySync(hero, board, nOpp, iters=20000){
+  const acc={n:0,eq:0,w:0,t:0,l:0}; makeSim(hero,board,nOpp)(iters,acc); return acc.eq/acc.n;
+}
+const preCache = {};
+function preflopEq(hero, nOpp){
+  const k = handKey(hero)+"|"+nOpp;
+  if (preCache[k]===undefined) preCache[k] = equitySync(hero, [], nOpp, 30000);
+  return preCache[k];
+}
+function handKey(h){
+  let a=h[0], b=h[1]; if ((b>>2)>(a>>2)) [a,b]=[b,a];
+  const ra=RANKS[a>>2], rb=RANKS[b>>2];
+  return ra===rb ? ra+rb : ra+rb+((a&3)===(b&3)?"s":"o");
+}
+
+let gen=0;
+const res={n:0,eq:0,w:0,t:0,l:0,dist:new Float64Array(9)};
+const MAX_ITERS=400000;
+function startSim(){
+  gen++; const myGen=gen;
+  res.n=res.eq=res.w=res.t=res.l=0; res.dist.fill(0);
+  const cs=P.cards;
+  if (cs.length<2){ renderResults(true); return; }
+  const run=makeSim(cs.slice(0,2), cs.slice(2), effOpps());
+  (function chunk(){
+    if (myGen!==gen) return;
+    const t0=performance.now();
+    do { run(500,res); } while (performance.now()-t0<14 && res.n<MAX_ITERS);
+    renderResults(false);
+    if (res.n<MAX_ITERS) setTimeout(chunk,0);
+  })();
+}
+
+// =================== parser ===================
+// Grammar: cards (rank+suit), optional result letter f/w/l/x with optional amount, optional cards after.
+function parse(str){
+  const s=str.toLowerCase(), n=s.length;
+  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false};
+  let i=0;
+  while (i<n){
+    const ch=s[i];
+    if (ch===" "||ch===","||ch==="\t"||ch==="|"){ i++; continue; }
+    if (ch==="b"){ out.bomb=true; i++; continue; }
+    if ("fwlx".includes(ch)){
+      if (out.r){ out.bad="Only one result per hand"; break; }
+      out.r=ch; out.at=out.cards.length; i++;
+      while (s[i]===" ") i++;
+      let j=i; while (j<n && /[0-9.]/.test(s[j])) j++;
+      let end=j;
+      if (j>i && j<n && SUITS.includes(s[j])){ end = (j-2>=i && s.slice(j-2,j)==="10") ? j-2 : j-1; }
+      if (end>i){ const v=parseFloat(s.slice(i,end)); if (isNaN(v)){ out.bad="Bad amount"; break; } out.amt=v; }
+      i=end; continue;
+    }
+    let rk;
+    if (ch==="1" && s[i+1]==="0"){ rk=8; i+=2; } else { rk=RL.indexOf(ch); if (rk<0){ out.bad=`"${str[i]}" isn't a card`; break; } i++; }
+    if (i>=n){ out.partial=true; break; }
+    const su=SUITS.indexOf(s[i]);
+    if (su<0){ out.bad="Card needs a suit: s h d c"; break; }
+    i++;
+    const c=rk*4+su;
+    if (out.cards.includes(c)){ out.bad=`${fmt(c)} is already used`; break; }
+    if (out.cards.length>=7){ out.bad="Max 7 cards"; break; }
+    out.cards.push(c);
+  }
+  return out;
+}
+function fmt(c){ return RL[c>>2]+SUITS[c&3]; }
+function serialize(p){
+  const at = p.r ? p.at : p.cards.length;
+  const before=p.cards.slice(0,at), after=p.cards.slice(at);
+  let s = (p.bomb ? "b " : "") + before.slice(0,2).map(fmt).join("");
+  if (before.length>2) s += " " + before.slice(2).map(fmt).join("");
+  if (p.r) s += " " + p.r + (p.amt!=null ? p.amt : "");
+  if (after.length) s += " " + after.map(fmt).join("");
+  return s;
+}
+
+// =================== odds UI ===================
+let P = parse("");
+function cardHTML(c){
+  const r = RANKS[c>>2]==="T" ? "10" : RANKS[c>>2];
+  return `<span class="r ${SUIT_CLS[c&3]}">${r}</span><span class="su ${SUIT_CLS[c&3]}">${SUIT_SYM[c&3]}</span>`;
+}
+function renderSlots(){
+  const cs=P.cards, nextIdx=cs.length;
+  const mk=i=>{
+    const el=document.createElement("div");
+    const filled = i<cs.length;
+    el.className="slot"+(filled?" filled":"")+(i===nextIdx?" next":"")+(filled&&P.r&&i>=P.at&&i>=2?" after":"");
+    if (filled){ el.innerHTML=cardHTML(cs[i]); el.title="Click to remove";
+      el.onclick=()=>{ const p={...P,cards:cs.slice()}; p.cards.splice(i,1); if (p.r && i<p.at) p.at--; setText(serialize(p)); }; }
+    return el;
+  };
+  const hs=$("hs"), bs=$("bs"); hs.innerHTML=""; bs.innerHTML="";
+  hs.append(mk(0),mk(1)); bs.append(mk(2),mk(3),mk(4));
+  let g=document.createElement("div"); g.className="gap"; bs.append(g,mk(5));
+  g=document.createElement("div"); g.className="gap"; bs.append(g,mk(6));
+}
+function buildPicker(){
+  const p=$("picker"); p.innerHTML="";
+  for (let s=0;s<4;s++) for (let r=12;r>=0;r--){
+    const c=r*4+s, b=document.createElement("button");
+    b.className="pc"; b.dataset.c=c; b.innerHTML=cardHTML(c);
+    b.onclick=()=>{ if (P.cards.includes(c)||P.cards.length>=7) return; const p={...P,cards:[...P.cards,c]}; setText(serialize(p)); };
+    p.append(b);
+  }
+}
+function renderPicker(){ document.querySelectorAll(".pc").forEach(b=>b.classList.toggle("used",P.cards.includes(+b.dataset.c))); }
+function renderMade(){
+  const cs=P.cards;
+  if (cs.length<2){ $("made").textContent=""; return; }
+  if (cs.length<5){
+    const k=handKey(cs.slice(0,2));
+    let t = k.length===2 ? `Pocket ${NAME_PL[RANKS.indexOf(k[0])]}` : k.replace(/T/g,"10").replace(/s$/," suited").replace(/o$/," offsuit");
+    if (cs.length>2) t = "You have: " + describe(evalCards(cs,cs.length));
+    $("made").textContent=t; return;
+  }
+  $("made").textContent="You have: "+describe(evalCards(cs,cs.length));
+}
+function renderResults(empty){
+  if (empty||res.n===0){
+    $("eq").textContent="—"; $("eq").style.color=""; ["w","t","l"].forEach(k=>$(k).textContent="–");
+    ["bw","bt","bl"].forEach(k=>$(k).style.width="0");
+    $("samp").textContent="Enter your two hole cards to start."; $("dist").innerHTML=""; renderVerdict(); return;
+  }
+  const n=res.n, eq=res.eq/n;
+  const no=effOpps();
+  $("eq").textContent=pct(eq); $("eq").style.color = eq>=1/(no+1) ? "var(--good)" : "var(--bad)";
+  $("w").textContent=pct(res.w/n); $("t").textContent=pct(res.t/n); $("l").textContent=pct(res.l/n);
+  $("bw").style.width=(res.w/n*100)+"%"; $("bt").style.width=(res.t/n*100)+"%"; $("bl").style.width=(res.l/n*100)+"%";
+  const ci=1.96*Math.sqrt(eq*(1-eq)/n)*100;
+  $("samp").textContent=`${n.toLocaleString()} runouts · ±${ci.toFixed(2)}% · even share vs ${no}: ${pct(1/(no+1))}`;
+  let h="";
+  for (let c=8;c>=0;c--){ const p=res.dist[c]/n; if (p<0.00005&&c>=7) continue;
+    h+=`<div class="r"><span>${CAT[c]}</span><span class="t"><i style="width:${(p*100).toFixed(2)}%"></i></span><span class="p">${pct(p)}</span></div>`; }
+  $("dist").innerHTML=h; renderVerdict();
+}
+function renderVerdict(){
+  const pot=parseFloat($("pot").value), call=parseFloat($("call").value), v=$("verdict");
+  if (!(pot>0)||!(call>0)){ v.innerHTML=`<span class="sub">Enter the pot and the amount to call to see the equity you need.</span>`; return; }
+  const need=call/(pot+call);
+  if (!res.n){ v.innerHTML=`Need <b>${pct(need)}</b> equity to call`; return; }
+  const eq=res.eq/res.n, ev=eq*(pot+call)-call, good=eq>=need;
+  v.innerHTML=`Need <b>${pct(need)}</b> · You have <b>${pct(eq)}</b><br><span style="color:${good?"var(--good)":"var(--bad)"}">${good?"Calling is profitable":"Calling loses money"} (EV ${ev>=0?"+":""}${ev.toFixed(2)})</span>`;
+}
+function renderPreview(){
+  const el=$("preview");
+  if (P.bad){ el.innerHTML=`<span class="neg">${esc(P.bad)}</span>`; return; }
+  if (P.cards.length<2 && !P.r){ el.innerHTML = P.bomb ? `💣 <b>Bomb pot</b>: enter your two cards, then the flop` : ""; return; }
+  if (P.bomb && !(bombAnte>0 && bombPlayers>=2)){ el.innerHTML=`💣 Set the bomb pot ante and number of players below`; return; }
+  if (P.bomb && P.r && P.at-2<3){ el.innerHTML=`<span class="neg">Bomb pots go straight to the flop. Put the result after the flop cards.</span>`; return; }
+  if (!P.r && P.bomb && P.cards.length<5){ el.innerHTML=`💣 <b>Bomb pot</b> · pot ${money(bombAnte*bombPlayers,false)} · ${bombPlayers} players · enter the flop`; return; }
+  if (!P.r){ el.innerHTML=`Add <b>f</b>, <b>w40</b>, <b>l25</b> or <b>x10</b> and press Enter to log this hand`; return; }
+  if (P.at<2){ el.innerHTML=`<span class="neg">Put your two cards before the result</span>`; return; }
+  const street = streetName(P.at-2);
+  const net = handNet(P);
+  const bl = (!P.bomb && blind) ? `<b>${blind.toUpperCase()}</b> · ` : "";
+  const blWarn = (!P.bomb && blind && !blindAmtNow()) ? ` · <span class="neg">set the blinds in section 1 so it can charge the ${blind.toUpperCase()}</span>` : "";
+  el.innerHTML=`<span class="kbd">Enter</span> logs: ${P.bomb?"💣 ":""}${bl}<b>${handKey(P.cards.slice(0,2))}</b> · ${RES_NAME[P.r]} ${P.r==="f"?street:""} · <b class="${net>0?"pos":net<0?"neg":""}">${money(net)}</b>`+
+    (P.cards.length>P.at && P.at>=2 && P.r==="f" ? ` · plus the runout you saw after folding` : "") + blWarn;
+}
+function streetName(nb){ return nb===0?"preflop":nb===3?"on the flop":nb===4?"on the turn":nb===5?"on the river":`with ${nb} board cards`; }
+// ---- blinds ----
+let blind=null;   // "sb" | "bb" | null for the current hand
+function blindAmtNow(){ const s=cur(); if (!s||!blind) return null; const v = blind==="sb" ? s.sb : s.bb; return v>0 ? v : null; }
+function setBlind(b, toggle){ blind = (toggle && blind===b) ? null : b; renderBlind(); renderPreview(); }
+function renderBlind(){ $("sbBtn").classList.toggle("on",blind==="sb"); $("bbBtn").classList.toggle("on",blind==="bb"); }
+// Net for the hand being typed: bomb pot rules, else a blind fold with no amount costs the blind.
+function handNet(p){
+  if (p.bomb) return bombNet(p.r,p.amt);
+  if (blind && p.r==="f" && p.amt==null) return -(blindAmtNow()||0);
+  return netOf(p.r,p.amt);
+}
+// A blind hand where all you lost was the blind is not a voluntary play.
+function blindOnly(h){ return !!h.blind && h.r==="f" && (h.net==null || -h.net <= (h.blindAmt||0) + 1e-9); }
+// Bomb pot defaults when no amount is typed: fold/lose = lose the ante, win = everyone else's antes.
+function bombNet(r,a){ if (a!=null) return netOf(r,a); const A=bombAnte||0, N=bombPlayers||0;
+  return r==="w" ? A*(N-1) : (r==="l"||r==="f") ? -A : 0; }
+function netOf(r,a){ a=a||0; return r==="w"?a : r==="l"||r==="f"? -a : a; }
+function money(x,plus=true){ if (x==null||isNaN(x)) return "–"; const s=Math.abs(x)%1?Math.abs(x).toFixed(2):String(Math.abs(x)); return (x<0?"−":(plus&&x>0?"+":""))+"$"+s; }
+
+let lastText=null;
+function onInputChanged(){
+  const text=$("q").value;
+  if (text===lastText) return; lastText=text;
+  const prevCards=P.cards.join(), prevBomb=P.bomb;
+  P=parse(text);
+  $("q").classList.toggle("err",!!P.bad);
+  renderSlots(); renderPicker(); renderMade(); renderPreview(); renderBomb();
+  if (P.cards.join()!==prevCards || P.bomb!==prevBomb) startSim();
+}
+function setText(t){ $("q").value=t; onInputChanged(); $("q").focus(); }
+$("q").addEventListener("input", onInputChanged);
+$("q").addEventListener("keydown", e=>{
+  if (e.key==="["){ e.preventDefault(); setBlind("sb"); return; }
+  if (e.key==="]"){ e.preventDefault(); setBlind("bb"); return; }
+  if (e.key==="+"||e.key==="="){ e.preventDefault(); setFolded(folded-1); }
+  else if (e.key==="-"||e.key==="_"){ e.preventDefault(); setFolded(folded+1); }
+  else if (e.key==="Enter"){ e.preventDefault(); commit(); }
+});
+document.addEventListener("keydown", e=>{
+  if (e.key==="Escape"){ clearAll(); e.preventDefault(); return; }
+  const tag=document.activeElement&&document.activeElement.tagName;
+  if (tag==="INPUT"||tag==="SELECT"||tag==="TEXTAREA") return;
+  if (e.key==="["){ setBlind("sb"); return; }
+  if (e.key==="]"){ setBlind("bb"); return; }
+  if (e.key==="+"||e.key==="="){ setFolded(folded-1); return; }
+  if (e.key==="-"){ setFolded(folded+1); return; }
+  if (/^[0-9tjqkashdcfwlxTJQKASHDCFWLX ]$/.test(e.key)&&!e.metaKey&&!e.ctrlKey) $("q").focus();
+});
+function clearAll(){ folded=0; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
+$("clr").onclick=clearAll;
+$("sbBtn").onclick=()=>{ setBlind("sb",true); $("q").focus(); };
+$("bbBtn").onclick=()=>{ setBlind("bb",true); $("q").focus(); };
+function seatCount(){ return (P.bomb && bombPlayers>=2) ? bombPlayers : tableSize; }
+function renderOpp(){
+  $("tn").textContent = seatCount();
+  $("tlabel").innerHTML = (P.bomb&&bombPlayers>=2) ? "In bomb pot" : `Seated <span style="opacity:.75">(of ${maxSeats})</span>`; $("fn").textContent = folded; $("on").textContent = effOpps();
+  $("oppInfo").innerHTML = "" + (P.bomb&&bombPlayers>=2 ? " (bomb pot players)" : "") + (seatCount()-1>9 ? " · max 9 opponents simulated" : "");
+}
+function setFolded(n){
+  const max = seatCount()-2;               // at least one opponent stays in
+  const f = Math.max(0, Math.min(max, n));
+  if (f===folded) return;
+  folded=f; renderOpp(); renderBomb(); startSim();
+}
+function setTable(n){
+  if (P.bomb && bombPlayers>=2){ bombPlayers=Math.max(2,Math.min(maxSeats,n)); saveBomb(); }
+  else { tableSize=Math.max(2,Math.min(maxSeats,n)); try{localStorage.setItem("po_table",tableSize);}catch(e){} if (sid) saveField("table",tableSize); }
+  folded=Math.min(folded, Math.max(0,seatCount()-2));
+  renderOpp(); renderBomb(); renderPreview(); startSim();
+}
+function setMaxSeats(m, save){
+  m=Math.max(2,Math.min(10,m)); const old=maxSeats; maxSeats=m;
+  // A full table follows the new max; a short-handed one is only capped.
+  if (tableSize>m || tableSize===old) tableSize=m;
+  try{ localStorage.setItem("po_max",m); localStorage.setItem("po_table",tableSize); }catch(e){}
+  if (save && sid){ saveField("maxSeats",m); saveField("table",tableSize); }
+  folded=Math.min(folded, Math.max(0,seatCount()-2));
+  renderOpp(); renderBomb(); startSim();
+}
+$("fmax").addEventListener("change", async e=>{ const v=+e.target.value; setMaxSeats(v, false); await ensureSession(); setMaxSeats(v, true); toast(`${maxSeats}-max table`); });
+$("tm").onclick=()=>setTable(seatCount()-1);
+$("tp").onclick=()=>setTable(seatCount()+1);
+$("fm").onclick=()=>setFolded(folded-1);
+$("fp").onclick=()=>setFolded(folded+1);
+$("fold1").onclick=()=>{ setFolded(folded+1); $("q").focus(); };
+$("pot").addEventListener("input",renderVerdict);
+$("call").addEventListener("input",renderVerdict);
+document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
+  const a=parseFloat($("amt").value);
+  const p={...P, cards:P.cards.slice()};
+  p.r=b.dataset.r; p.at = P.r ? P.at : P.cards.length; p.amt = isNaN(a) ? (P.r?P.amt:null) : a;
+  $("q").value=serialize(p); onInputChanged(); commit();
+});
+
+let autoPot=false;
+function renderBomb(){
+  const on=!!P.bomb;
+  $("bombBtn").classList.toggle("on",on); $("bombrow").classList.toggle("on",on);
+  if (document.activeElement!==$("bAnte")) $("bAnte").value = bombAnte??"";
+  if (document.activeElement!==$("bPlayers")) $("bPlayers").value = bombPlayers??"";
+  const ok = bombAnte>0 && bombPlayers>=2;
+  $("bInfo").innerHTML = ok ? `= <b>${money(bombAnte*bombPlayers,false)}</b> pot · you vs ${effOpps()} · straight to the flop` : "";
+  renderOpp();
+  if (on && ok && ($("pot").value==="" || autoPot)){ $("pot").value = bombAnte*bombPlayers; autoPot=true; renderVerdict(); }
+  if (!on && autoPot){ $("pot").value=""; autoPot=false; renderVerdict(); }
+}
+function saveBomb(){ try{ localStorage.setItem("po_bomb",JSON.stringify({ante:bombAnte,players:bombPlayers})); }catch(e){} }
+$("bombBtn").onclick=()=>{
+  const p={...P, cards:P.cards.slice(), bomb:!P.bomb};
+  setText(serialize(p));
+  if (p.bomb && !(bombAnte>0)) $("bAnte").focus();
+};
+function numOrNullB(v){ const x=parseFloat(v); return isNaN(x)?null:x; }
+$("bAnte").addEventListener("input",e=>{ bombAnte=numOrNullB(e.target.value); saveBomb(); renderBomb(); renderPreview(); });
+$("bPlayers").addEventListener("input",e=>{ const v=parseInt(e.target.value,10); bombPlayers=isNaN(v)?null:Math.max(2,Math.min(10,v)); saveBomb(); renderBomb(); renderPreview(); startSim(); });
+$("pot").addEventListener("input",()=>{ autoPot=false; });
+
+let toastT;
+function toast(msg,bad){ const t=$("toast"); t.textContent=msg; t.className="toast show"+(bad?" bad":""); clearTimeout(toastT); toastT=setTimeout(()=>t.className="toast",2200); }
+
+// =================== storage ===================
+// Saved storage (claude db) when available; otherwise this browser only.
+const store = (() => {
+  let db=null, mode="pending";
+  const mem = { sessions:{}, hands:{} };
+  const sesSubs=new Set(), handSubs=new Map();
+  function memLoad(){ try{ const j=JSON.parse(localStorage.getItem("po_tracker")||"null"); if (j){ mem.sessions=j.sessions||{}; mem.hands=j.hands||{}; } }catch(e){} }
+  function memSave(){ try{ localStorage.setItem("po_tracker",JSON.stringify(mem)); }catch(e){} }
+  function memSessions(){ return Object.entries(mem.sessions).map(([id,d])=>({id,...d})).sort((a,b)=>b.startedAt-a.startedAt); }
+  function memHands(sid){ return Object.entries(mem.hands[sid]||{}).map(([id,d])=>({id,...d})).sort((a,b)=>a.t-b.t); }
+  function memNotify(sid){ memSave(); sesSubs.forEach(cb=>cb(memSessions())); if (sid&&handSubs.has(sid)) handSubs.get(sid).forEach(cb=>cb(memHands(sid))); }
+  const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  // one write at a time per document
+  const q=new Map();
+  function queued(key, fn){ const prev=q.get(key)||Promise.resolve(); const p=prev.catch(()=>{}).then(fn); q.set(key,p); return p; }
+  async function retry(fn){ try{ return await fn(); }catch(e){ if (e&&e.code==="unavailable"){ await new Promise(r=>setTimeout(r,400+Math.random()*600)); return fn(); } throw e; } }
+  return {
+    async init(){
+      let api=null;
+      for (let i=0;i<30 && !(window.claude&&typeof window.claude.use==="function");i++) await new Promise(r=>setTimeout(r,100));
+      if (window.claude&&typeof window.claude.use==="function"){ try{ api=await window.claude.use("db"); }catch(e){ api=null; } }
+      if (api){ db=api; mode="db"; } else { mode="local"; memLoad(); }
+      return mode;
+    },
+    get mode(){ return mode; },
+    subSessions(cb, err){
+      if (mode==="db") return db.collection("sessions").orderBy("startedAt","desc").limit(200)
+        .onSnapshot(s=>cb(s.docs.map(d=>({id:d.id,...d.data()})), s.metadata), err);
+      sesSubs.add(cb); setTimeout(()=>cb(memSessions(),{fromCache:false}),0); return ()=>sesSubs.delete(cb);
+    },
+    subHands(sid, cb, err){
+      if (mode==="db") return db.collection("sessions/"+sid+"/hands").orderBy("t","asc").limit(1000)
+        .onSnapshot(s=>cb(s.docs.map(d=>({id:d.id,...d.data()})), s.metadata), err);
+      if (!handSubs.has(sid)) handSubs.set(sid,new Set()); handSubs.get(sid).add(cb);
+      setTimeout(()=>cb(memHands(sid),{fromCache:false}),0); return ()=>handSubs.get(sid).delete(cb);
+    },
+    async addSession(data){
+      if (mode==="db"){ const ref=db.collection("sessions").doc(); await retry(()=>ref.set(data)); return ref.id; }
+      const id=rid(); mem.sessions[id]=data; memNotify(); return id;
+    },
+    updateSession(sid, patch){
+      if (mode==="db") return queued("s/"+sid, ()=>retry(()=>db.doc("sessions/"+sid).update(patch)));
+      Object.assign(mem.sessions[sid],patch); memNotify(sid); return Promise.resolve();
+    },
+    async addHand(sid, data){
+      if (mode==="db"){ const ref=db.collection("sessions/"+sid+"/hands").doc(); await retry(()=>ref.set(data)); return ref.id; }
+      (mem.hands[sid]=mem.hands[sid]||{})[rid()]=data; memNotify(sid);
+    },
+    async deleteHand(sid, hid){
+      if (mode==="db") return queued("h/"+hid, ()=>retry(()=>db.doc(`sessions/${sid}/hands/${hid}`).delete()));
+      delete (mem.hands[sid]||{})[hid]; memNotify(sid);
+    },
+    async deleteSession(sid){
+      if (mode==="db"){
+        const hs=await db.collection("sessions/"+sid+"/hands").limit(1000).get();
+        for (const d of hs.docs) await retry(()=>db.doc(`sessions/${sid}/hands/${d.id}`).delete());
+        await retry(()=>db.doc("sessions/"+sid).delete()); return;
+      }
+      delete mem.sessions[sid]; delete mem.hands[sid]; memNotify();
+    }
+  };
+})();
+
+// =================== session state ===================
+let sessions=[], hands=[], sid=null, unsubHands=null, sessionsLoaded=false;
+const cur=()=>sessions.find(s=>s.id===sid)||null;
+
+function selectSession(id){
+  if (id===sid && unsubHands) return;
+  sid=id; hands=[];
+  const ss=sessions.find(x=>x.id===id);
+  if (ss && ss.maxSeats>=2) maxSeats=ss.maxSeats;
+  if (ss && ss.table>=2) tableSize=Math.min(ss.table,maxSeats);
+  if (ss){ renderOpp(); startSim(); }
+  if (unsubHands){ unsubHands(); unsubHands=null; }
+  if (id){
+    const t=setTimeout(()=>setNote("Can't reach your saved hands yet. They'll appear when the connection is back."),10000);
+    unsubHands=store.subHands(id, (list,meta)=>{ if (!meta||!meta.fromCache){ clearTimeout(t); setNote(""); } hands=list; renderSession(); },
+      e=>{ clearTimeout(t); setNote("Couldn't load hands for this session."); });
+  }
+  renderSession();
+}
+function setNote(s){ $("snote").textContent = s || (store.mode==="local" ? "Saving in this browser only. Open this page on claude.ai to save your sessions to your account." : ""); }
+
+async function newSession(){
+  const prev=sessions[0];
+  const d=new Date();
+  const data={ name: prev&&prev.name ? prev.name : "Session", sb: prev?prev.sb??null:null, bb: prev?prev.bb??null:null,
+    buyins:[], stack:null, cashout:null, startedAt:Date.now(), endedAt:null, table:tableSize, maxSeats };
+  try { const id=await store.addSession(data); selectSession(id); toast("New session started"); return id; }
+  catch(e){ toast(e&&e.code==="quota_exceeded"?"Storage is full. Delete old sessions to make room.":"Couldn't create the session", true); return null; }
+}
+
+async function commit(){
+  const p=P;
+  if (p.bad){ toast(p.bad,true); return; }
+  if (p.cards.length<2){ toast("Enter your two cards first",true); return; }
+  if (!p.r){ toast("Add a result: f, w40, l25 or x10",true); return; }
+  if (p.at<2){ toast("Put your two cards before the result",true); return; }
+  const hero=p.cards.slice(0,2), pre=p.cards.slice(2,p.at), post=p.cards.slice(p.at);
+  if (p.bomb){
+    if (!(bombAnte>0 && bombPlayers>=2)){ toast("Set the bomb pot ante and players first",true); $("bAnte").focus(); return; }
+    if (pre.length<3){ toast("Bomb pots go straight to the flop. Enter the flop before the result.",true); return; }
+  }
+  if (pre.length===1||pre.length===2){ toast("The board needs 0, 3, 4 or 5 cards when you act",true); return; }
+  if (pre.length+post.length>5){ toast("Too many board cards",true); return; }
+  const no=effOpps();
+  const eqPre=preflopEq(hero,no);
+  const eq = pre.length ? equitySync(hero,pre,no) : eqPre;
+  let eqR=null;
+  if (post.length && pre.length+post.length>=3) eqR = equitySync(hero,pre.concat(post),no);
+  const doc={ t:Date.now(), hero, pre, post, opps:no, r:p.r, amt:p.amt, net:handNet(p), key:handKey(hero),
+    bomb:!!p.bomb, ante:p.bomb?bombAnte:null, players:p.bomb?bombPlayers:null,
+    blind: (!p.bomb && blind) ? blind : null, blindAmt: (!p.bomb && blind) ? blindAmtNow() : null,
+    eqPre:+eqPre.toFixed(4), eq:+eq.toFixed(4), eqR: eqR==null?null:+eqR.toFixed(4) };
+  const id = await ensureSession();
+  if (!id) return;
+  try { await store.addHand(id, doc); }
+  catch(e){ toast(e&&e.code==="quota_exceeded"?"Storage is full. Delete old sessions to make room.":"Couldn't save that hand. Try again.",true); return; }
+  toast(`Logged ${doc.bomb?"💣 ":""}${doc.blind?doc.blind.toUpperCase()+" ":""}${doc.key} · ${RES_NAME[doc.r]} · ${money(doc.net)}`);
+  // Blinds move one seat each hand: SB is followed by BB, then you're out of the blinds. Bomb pots don't move the button.
+  if (!doc.bomb){ blind = doc.blind==="sb" ? "bb" : null; renderBlind(); }
+  $("amt").value="";
+  clearAll();
+}
+
+// ---------- session form ----------
+const debouncers={};
+function saveField(field, val){
+  if (!sid) return;
+  clearTimeout(debouncers[field]);
+  debouncers[field]=setTimeout(()=>{ store.updateSession(sid,{[field]:val}).catch(()=>toast("Couldn't save. Try again.",true)); },500);
+}
+const numOrNull=v=>{ const x=parseFloat(v); return isNaN(x)?null:x; };
+let creating=null;
+async function ensureSession(){ if (sid) return sid; if (!creating) creating=newSession().finally(()=>{creating=null;}); return creating; }
+$("fname").addEventListener("input",async e=>{ await ensureSession(); saveField("name",e.target.value); });
+$("fsb").addEventListener("input",async e=>{ await ensureSession(); saveField("sb",numOrNull(e.target.value)); });
+$("fbb").addEventListener("input",async e=>{ await ensureSession(); saveField("bb",numOrNull(e.target.value)); });
+$("fstack").addEventListener("input",async e=>{ await ensureSession(); saveField("stack",numOrNull(e.target.value)); });
+async function addBuy(){
+  const v=numOrNull($("fbuy").value); if (!(v>0)) { toast("Enter a buy-in amount",true); return; }
+  const id=await ensureSession(); if (!id) return;
+  const s=cur(); const list=[...((s&&s.buyins)||[]), v];
+  await store.updateSession(id,{buyins:list}).catch(()=>toast("Couldn't save the buy-in",true));
+  $("fbuy").value=""; toast(`Buy-in ${money(v,false)} added`);
+}
+$("addbuy").onclick=addBuy;
+$("fbuy").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();addBuy();} });
+$("snew").onclick=newSession;
+$("ssel").onchange=e=>selectSession(e.target.value);
+
+function setVal(id,v){ const el=$(id); if (document.activeElement===el) return; el.value = v==null ? "" : v; }
+
+// ---------- stats ----------
+function computeStats(s, all){
+  const hs=all.filter(h=>!h.bomb), bombs=all.filter(h=>h.bomb);
+  const st={n:all.length};
+  st.bombs=bombs.length; st.bombWon=bombs.filter(h=>h.r==="w").length; st.bombNet=bombs.reduce((a,h)=>a+(h.net||0),0);
+  const notPlayed=h=>(h.r==="f"&&(!h.pre||h.pre.length===0)) || blindOnly(h);
+  const folded=hs.filter(notPlayed);
+  const played=hs.filter(h=>!notPlayed(h));
+  const blindHands=hs.filter(h=>h.blind);
+  st.blindHands=blindHands.length; st.blindOnly=hs.filter(blindOnly).length;
+  st.blindCost=hs.filter(blindOnly).reduce((a,h)=>a+(h.net||0),0);
+  st.blindPlayedNet=blindHands.filter(h=>!blindOnly(h)).reduce((a,h)=>a+(h.net||0),0);
+  st.vpip = hs.length ? played.length/hs.length : null;
+  st.played=played.length; st.foldedPre=folded.length;
+  st.won = played.filter(h=>h.r==="w").length;
+  st.split = played.filter(h=>h.r==="x").length;
+  st.lost = played.filter(h=>h.r==="l"||h.r==="f").length;
+  st.winRate = played.length ? (st.won + st.split*0.5)/played.length : null;
+  st.expWin = played.length ? played.reduce((a,h)=>a+(h.eqPre||0),0)/played.length : null;
+  st.avgFoldEq = folded.length ? folded.reduce((a,h)=>a+(h.eqPre||0),0)/folded.length : null;
+  st.avgPlayEq = st.expWin;
+  const foldsAll=all.filter(h=>h.r==="f");
+  const withRun=foldsAll.filter(h=>h.eqR!=null && (h.pre.length+h.post.length)===5);
+  st.foldsWithRunout=withRun.length;
+  st.wouldWin=withRun.filter(h=>h.eqR>=0.5).length;
+  st.handsNet=all.reduce((a,h)=>a+(h.net||0),0);
+  const buy=((s&&s.buyins)||[]).reduce((a,b)=>a+b,0); st.buy=buy;
+  if (s && s.cashout!=null){ st.profit=s.cashout-buy; st.profitSrc="cash-out"; }
+  else if (s && s.stack!=null && buy>0){ st.profit=s.stack-buy; st.profitSrc="current stack"; }
+  else { st.profit=st.handsNet; st.profitSrc="logged hands"; }
+  const end = s&&s.endedAt ? s.endedAt : Date.now();
+  st.hours = s ? Math.max(0,(end-s.startedAt)/3.6e6) : 0;
+  st.perHr = st.hours>0.05 ? st.profit/st.hours : null;
+  st.handsHr = st.hours>0.05 ? all.length/st.hours : null;
+  st.bb100 = s&&s.bb>0&&all.length ? (st.handsNet/s.bb)/all.length*100 : null;
+  return st;
+}
+function statBox(k,v,d,cls=""){ return `<div class="stat"><div class="k">${k}</div><div class="v ${cls}">${v}</div><div class="d">${d||"&nbsp;"}</div></div>`; }
+function dur(h){ const m=Math.round(h*60); return m<60?`${m}m`:`${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`; }
+
+function renderSession(){
+  // selector
+  const sel=$("ssel");
+  sel.innerHTML = sessions.length ? sessions.map(s=>{
+    const d=new Date(s.startedAt); const lbl=`${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})} ${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})} · ${s.name||"Session"}${s.endedAt?" (ended)":" (live)"}`;
+    return `<option value="${esc(s.id)}"${s.id===sid?" selected":""}>${esc(lbl)}</option>`; }).join("")
+    : `<option>${sessionsLoaded?"No sessions yet — log a hand or add a buy-in":"Loading…"}</option>`;
+  const s=cur();
+  setVal("fmax", maxSeats);
+  setVal("fname", s?s.name:""); setVal("fsb", s?s.sb:""); setVal("fbb", s?s.bb:""); setVal("fstack", s?s.stack:"");
+  $("buyins").innerHTML = s&&s.buyins&&s.buyins.length
+    ? s.buyins.map((b,i)=>`<span class="chip">${money(b,false)}<button data-i="${i}" title="Remove">×</button></span>`).join("") + `<span class="sub" style="align-self:center">total ${money(s.buyins.reduce((a,b)=>a+b,0),false)}</span>`
+    : `<span class="sub">None yet</span>`;
+  $("buyins").querySelectorAll("button").forEach(b=>b.onclick=()=>{ const list=s.buyins.slice(); list.splice(+b.dataset.i,1); store.updateSession(sid,{buyins:list}); });
+  // cash out
+  const cb=$("cashbox");
+  if (!s) cb.innerHTML="";
+  else if (s.endedAt) {
+    cb.innerHTML=`<div class="sub">Ended ${new Date(s.endedAt).toLocaleString()} · cashed out <b style="color:var(--ink)">${money(s.cashout,false)}</b></div><button class="sm" id="reopen" style="margin-top:6px">Reopen session</button>`;
+    $("reopen").onclick=()=>store.updateSession(sid,{endedAt:null,cashout:null});
+  } else {
+    cb.innerHTML=`<label>Cash out</label><div class="inl"><input id="fcash" type="number" inputmode="decimal" min="0" placeholder="final amount"><button class="pri" id="docash">Cash out &amp; end</button></div>`;
+    $("docash").onclick=()=>{ const v=numOrNull($("fcash").value); if (v==null){toast("Enter your cash-out amount",true);return;}
+      store.updateSession(sid,{cashout:v,endedAt:Date.now()}).then(()=>toast("Session ended")); };
+  }
+  // delete
+  const sd=$("sdel");
+  sd.innerHTML = s ? `<button class="sm danger" id="sdelb">Delete session</button>` : "";
+  if (s) $("sdelb").onclick=()=>{
+    sd.innerHTML=`<span class="confirm"><span class="sub">Delete this session and its ${hands.length} hands?</span><button class="sm danger" id="sdy">Delete</button><button class="sm" id="sdn">Cancel</button></span>`;
+    $("sdn").onclick=renderSession;
+    $("sdy").onclick=async()=>{ const id=sid; sd.innerHTML=`<span class="sub">Deleting…</span>`;
+      try{ await store.deleteSession(id); toast("Session deleted"); }catch(e){ toast("Couldn't delete the session",true); renderSession(); } };
+  };
+  renderStats(s); renderLog(); renderGrid(); renderChart(); renderClock();
+}
+function renderClock(){
+  const s=cur(); if (!s){ $("sclock").textContent=""; return; }
+  const end=s.endedAt||Date.now(); $("sclock").textContent=`${s.endedAt?"Played":"Running"} ${dur((end-s.startedAt)/3.6e6)} · ${hands.length} hands`;
+}
+function renderStats(s){
+  const st=computeStats(s,hands), c=x=>x>0?"pos":x<0?"neg":"";
+  let h="";
+  h+=statBox("Profit", money(st.profit), `from ${st.profitSrc}${st.buy?` · in for ${money(st.buy,false)}`:""}`, c(st.profit));
+  h+=statBox("Per hour", st.perHr==null?"–":money(Math.round(st.perHr*100)/100), st.hours?`over ${dur(st.hours)}`:"", c(st.perHr));
+  h+=statBox("Hands", st.n, st.handsHr?`${st.handsHr.toFixed(0)} per hour`:"");
+  h+=statBox("Hands played", st.vpip==null?"–":pct(st.vpip), `${st.played} played · ${st.foldedPre} folded${st.blindOnly?` (incl. ${st.blindOnly} blind-only)`:""}${st.bombs?" · bomb pots not counted":""}`);
+  h+=statBox("Won when played", st.winRate==null?"–":pct(st.winRate), st.played?`${st.won}W · ${st.lost}L · ${st.split} split`:"");
+  h+=statBox("Expected win %", st.expWin==null?"–":pct(st.expWin), st.expWin==null?"avg preflop equity of played hands":(st.winRate>=st.expWin?`running <span class="pos">above</span> expectation`:`running <span class="neg">below</span> expectation`));
+  h+=statBox("Folded hands' equity", st.avgFoldEq==null?"–":pct(st.avgFoldEq), st.avgFoldEq==null?"avg preflop equity of folds":`vs ${st.avgPlayEq==null?"–":pct(st.avgPlayEq)} for the hands you played`);
+  h+=statBox("Folds that would've won", st.foldsWithRunout?`${st.wouldWin}/${st.foldsWithRunout}`:"–", st.foldsWithRunout?"by equity on the full runout":"type the full board after f to track this");
+  if (st.blindHands) h+=statBox("Blinds", money(st.blindCost), `${st.blindOnly} of ${st.blindHands} blind hands were just the blind${st.blindHands>st.blindOnly?` · played ones net <span class="${st.blindPlayedNet>0?"pos":st.blindPlayedNet<0?"neg":""}">${money(st.blindPlayedNet)}</span>`:""}`, st.blindCost<0?"neg":"");
+  if (st.bombs) h+=statBox("💣 Bomb pots", `${st.bombWon}/${st.bombs} won`, `net <span class="${st.bombNet>0?"pos":st.bombNet<0?"neg":""}">${money(st.bombNet)}</span>`);
+  h+=statBox("Net from logged hands", money(st.handsNet), st.bb100!=null?`${st.bb100.toFixed(1)} bb/100`:"", c(st.handsNet));
+  $("stats").innerHTML=h;
+}
+function miniCards(cs){ return (cs||[]).map(c=>`<span class="mc ${SUIT_CLS[c&3]}">${RANKS[c>>2]}${SUIT_SYM[c&3]}</span>`).join(""); }
+function renderLog(){
+  const el=$("log");
+  if (!hands.length){ el.innerHTML=`<div class="empty">No hands yet. Type something like <code>ahkd 7c8c9d w40</code> and press Enter.</div>`; return; }
+  const rows=hands.slice().reverse().map(h=>{
+    const tm=new Date(h.t).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+    const street = h.r==="f" ? ` <span class="sub">${h.pre.length===0?"pre":h.pre.length===3?"flop":h.pre.length===4?"turn":"river"}</span>` : "";
+    const run = h.post&&h.post.length ? ` <span class="sub">→</span> ${miniCards(h.post)}` : "";
+    const eqTxt = h.eqR!=null ? `${pct(h.eq)} <span class="sub">→ ${pct(h.eqR)}</span>` : pct(h.eq);
+    return `<tr><td class="sub">${tm}</td><td class="cards">${miniCards(h.hero)}</td><td class="cards">${miniCards(h.pre)}${run}</td>
+      <td>${h.blind?`<span class="tag ${h.blind}">${h.blind.toUpperCase()}</span>`:""}${h.bomb?`<span class="tag b" title="Bomb pot ${money(h.ante,false)} × ${h.players}">💣</span>`:""}<span class="tag ${h.r}">${RES_NAME[h.r]}</span>${street}</td><td class="${h.net>0?"pos":h.net<0?"neg":""}">${h.net?money(h.net):""}</td>
+      <td title="Preflop ${pct(h.eqPre)} vs ${h.opps}">${eqTxt}</td><td><button class="del" data-id="${esc(h.id)}" title="Delete hand">×</button></td></tr>`;
+  }).join("");
+  el.innerHTML=`<table><thead><tr><th>Time</th><th>Hand</th><th>Board</th><th>Result</th><th>Net</th><th>Equity</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  el.querySelectorAll("button.del").forEach(b=>b.onclick=()=>store.deleteHand(sid,b.dataset.id).then(()=>toast("Hand deleted")).catch(()=>toast("Couldn't delete that hand",true)));
+}
+function renderGrid(){
+  const by={};
+  hands.forEach(h=>{ const k=h.key; const o=by[k]||(by[k]={n:0,played:0,won:0,net:0}); o.n++; if(!(h.r==="f"&&h.pre.length===0)&&!h.bomb&&!blindOnly(h)) o.played++; if(h.r==="w") o.won++; o.net+=h.net||0; });
+  const maxAbs=Math.max(1,...Object.values(by).map(o=>Math.abs(o.net)));
+  let g="";
+  for (let i=12;i>=0;i--) for (let j=12;j>=0;j--){
+    const hi=RANKS[Math.max(i,j)], lo=RANKS[Math.min(i,j)];
+    const k = i===j ? hi+lo : (j<i ? hi+lo+"s" : hi+lo+"o");
+    const o=by[k];
+    let style="", cls="hc";
+    if (o){ cls+=" has";
+      const a=0.25+0.6*Math.min(1,Math.abs(o.net)/maxAbs);
+      style = o.net>0?`background:rgba(79,209,139,${a})`: o.net<0?`background:rgba(239,106,95,${a})`:`background:#2a4a3d`; }
+    const tip = o ? `${k}: dealt ${o.n}, played ${o.played}, won ${o.won}, net ${money(o.net)}` : `${k}: not dealt yet`;
+    g+=`<div class="${cls}" style="${style}" title="${tip}"><b>${k.replace(/[so]$/,"")}</b><small>${o?o.n:(k.length===3?k[2]:"")}</small></div>`;
+  }
+  $("hg").innerHTML=g;
+  const top=Object.entries(by).sort((a,b)=>b[1].n-a[1].n||b[1].net-a[1].net).slice(0,8);
+  $("topHands").innerHTML = top.length ? `<h3>Most dealt</h3><div class="sub">`+top.map(([k,o])=>`<b style="color:var(--ink)">${k}</b> ×${o.n} (played ${o.played}, won ${o.won}, <span class="${o.net>0?"pos":o.net<0?"neg":""}">${money(o.net)}</span>)`).join(" · ")+`</div>` : "";
+}
+function renderChart(){
+  const el=$("chart");
+  if (hands.length<2){ el.innerHTML=`<div class="empty" style="padding:8px">The chart appears once you've logged a couple of hands.</div>`; return; }
+  const pts=[0]; let run=0; hands.forEach(h=>{ run+=h.net||0; pts.push(run); });
+  const W=1000,H=170,pad=40, mn=Math.min(0,...pts), mx=Math.max(0,...pts), span=(mx-mn)||1;
+  const x=i=>pad+(W-pad-6)*i/(pts.length-1), y=v=>6+(H-18)*(1-(v-mn)/span);
+  const path=pts.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  const col = run>=0?"var(--good)":"var(--bad)";
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
+    <line x1="${pad}" x2="${W-6}" y1="${y(0)}" y2="${y(0)}" stroke="#2f6f55" stroke-dasharray="3 4"/>
+    <text x="${pad-4}" y="${y(mx)+4}" fill="#8fb3a3" font-size="10" text-anchor="end">${money(mx,false)}</text>
+    <text x="${pad-4}" y="${y(mn)+4}" fill="#8fb3a3" font-size="10" text-anchor="end">${money(mn,false)}</text>
+    <path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="${x(pts.length-1)}" cy="${y(run)}" r="3.5" fill="${col}"/>
+    <text x="${W-8}" y="${Math.max(12,y(run)-8)}" fill="${col}" font-size="12" font-weight="700" text-anchor="end">${money(run)}</text>
+  </svg>`;
+}
+setInterval(()=>{ if (cur()&&!cur().endedAt){ renderClock(); renderStats(cur()); } },30000);
+
+// =================== boot ===================
+buildPicker(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); $("q").focus();
+store.init().then(mode=>{
+  setNote("");
+  const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
+  store.subSessions((list,meta)=>{
+    if (!meta||!meta.fromCache){ clearTimeout(t); sessionsLoaded=true; setNote(""); }
+    sessions=list;
+    if (!sid || !sessions.find(s=>s.id===sid)){
+      const live=sessions.find(s=>!s.endedAt)||sessions[0];
+      selectSession(live?live.id:null);
+    } else renderSession();
+  }, e=>{ clearTimeout(t); sessionsLoaded=true; setNote("Couldn't load saved sessions."); renderSession(); });
+});
+})();
+</script>
+</body>
+</html>
