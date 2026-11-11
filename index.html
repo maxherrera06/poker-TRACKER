@@ -81,6 +81,28 @@
   .stable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);padding:8px;font-weight:600;border-bottom:1px solid var(--line)}
   .stable td{padding:8px;border-top:1px solid #16352a;font-variant-numeric:tabular-nums;white-space:nowrap}
   .stable tr.cur td{background:rgba(242,193,78,.06)}
+  .stable tr.srow{cursor:pointer}
+  .stable tr.srow:hover td{background:rgba(255,255,255,.03)}
+  .stable tr.srow td:first-child::before{content:"▸";display:inline-block;width:14px;color:var(--mute);transition:transform .15s}
+  .stable tr.srow.open td:first-child::before{transform:rotate(90deg);color:var(--accent)}
+  .stable tr.srow.open td{background:rgba(242,193,78,.08)}
+  .stable tr.sdet>td{padding:0;white-space:normal;background:#0a1511}
+  .sd{padding:14px 16px 16px;border-left:3px solid var(--accent)}
+  .sd .stats{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:10px 0}
+  .sd .stat .v{font-size:19px}
+  .sd details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:8px}
+  .sd summary{cursor:pointer;padding:10px 12px;font-weight:700;font-size:13.5px;list-style:none;display:flex;gap:10px;align-items:center}
+  .sd summary::-webkit-details-marker{display:none}
+  .sd summary::after{content:"▾";color:var(--mute)}
+  .sd details[open] summary::after{content:"▴"}
+  .sd summary .sub{font-weight:400;margin-left:auto}
+  .sd .dbody{padding:0 12px 12px}
+  .sd .dbody table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .sd .dbody td,.sd .dbody th{padding:5px 6px;border-top:1px solid #16352a;white-space:nowrap;text-align:left}
+  .sd .dbody th{font-size:10.5px;text-transform:uppercase;color:var(--mute);font-weight:600;border-top:none}
+  .sd .head{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--mute)}
+  .sd .head b{color:var(--ink)}
+  .sd .closebtn{margin-left:auto}
   .insights{display:grid;gap:8px}
   .insight{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
   .insight.bad{border-left-color:var(--bad)} .insight.good{border-left-color:var(--good)}
@@ -1055,6 +1077,34 @@ function renderStats(s){
   $("stats").innerHTML=h;
 }
 function miniCards(cs){ return (cs||[]).map(c=>`<span class="mc ${SUIT_CLS[c&3]}">${RANKS[c>>2]}${SUIT_SYM[c&3]}</span>`).join(""); }
+function handRowHTML(h, withDel){
+  const tm=new Date(h.t).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  const street = h.r==="f" ? ` <span class="sub">${h.pre.length===0?"pre":h.pre.length===3?"flop":h.pre.length===4?"turn":"river"}</span>` : "";
+  const run = h.post&&h.post.length ? ` <span class="sub">→</span> ${miniCards(h.post)}` : "";
+  const eqTxt = h.eqR!=null ? `${pct(h.eq)} <span class="sub">→ ${pct(h.eqR)}</span>` : pct(h.eq);
+  return `<tr><td class="sub">${tm}</td><td class="cards">${miniCards(h.hero)}</td><td class="cards">${miniCards(h.pre)}${run}</td>
+    <td>${h.blind?`<span class="tag ${h.blind}">${h.blind.toUpperCase()}</span>`:""}${h.bomb?`<span class="tag b" title="Bomb pot ${money(h.ante,false)} × ${h.players}">💣</span>`:""}<span class="tag ${h.r}">${RES_NAME[h.r]}</span>${street}</td><td class="${h.net>0?"pos":h.net<0?"neg":""}">${h.net?money(h.net):""}</td>
+    <td title="Preflop ${pct(h.eqPre)} vs ${h.opps}">${eqTxt}</td>${withDel?`<td><button class="del" data-id="${esc(h.id)}" title="Delete hand">×</button></td>`:""}</tr>`;
+}
+// Running-net chart for a list of hands; bomb pots are marked with red dots.
+function netChartSVG(hs, H=170){
+  if (hs.length<2) return `<div class="empty" style="padding:8px">The chart appears once there are a couple of hands.</div>`;
+  const pts=[0]; let run=0; hs.forEach(h=>{ run+=h.net||0; pts.push(run); });
+  const W=1000,pad=52, mn=Math.min(0,...pts), mx=Math.max(0,...pts), span=(mx-mn)||1;
+  const x=i=>pad+(W-pad-70)*i/(pts.length-1), y=v=>8+(H-26)*(1-(v-mn)/span);
+  const path=pts.map((v,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  const col=run>=0?"var(--good)":"var(--bad)";
+  const dots=hs.map((h,i)=>h.bomb?`<circle cx="${x(i+1)}" cy="${y(pts[i+1])}" r="4" fill="var(--bad)"><title>💣 ${h.key} ${money(h.net)}</title></circle>`:"").join("");
+  const r2=v=>Math.round(v*100)/100;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
+    <line x1="${pad}" x2="${W-70}" y1="${y(0)}" y2="${y(0)}" stroke="#2f6f55" stroke-dasharray="3 4"/>
+    <text x="${pad-6}" y="${y(mx)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">${money(r2(mx),false)}</text>
+    ${mn<0?`<text x="${pad-6}" y="${y(mn)+4}" fill="#8fb3a3" font-size="11" text-anchor="end">−${money(r2(-mn),false)}</text>`:""}
+    <path d="${path}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>${dots}
+    <text x="${x(pts.length-1)+8}" y="${y(run)+4}" fill="${col}" font-size="13" font-weight="700">${money(r2(run))}</text>
+    <text x="${pad}" y="${H-2}" fill="#8fb3a3" font-size="11">hand 1</text><text x="${W-70}" y="${H-2}" fill="#8fb3a3" font-size="11" text-anchor="end">hand ${hs.length}</text>
+  </svg>`;
+}
 function renderLog(){
   const el=$("log");
   if (!hands.length){ el.innerHTML=`<div class="empty">No hands yet. Type something like <code>ahkd 7c8c9d w40</code> and press Enter.</div>`; return; }
@@ -1132,6 +1182,45 @@ async function loadAll(force){
   }catch(e){ $("ovNote").textContent="Couldn't load every session. Showing what loaded."; }
   ovLoading=false; renderAll();
 }
+let openSid=null; const openDetails=new Set();   // which session is expanded, and which of its sections are open
+function sessionDetailHTML(s, st, hs){
+  const c=x=>x>0?"pos":x<0?"neg":"";
+  const k=sec=>`${s.id}:${sec}`, op=sec=>openDetails.has(k(sec))?" open":"";
+  const r2=v=>Math.round(v*100)/100;
+  const start=new Date(s.startedAt), end=s.endedAt?new Date(s.endedAt):null;
+  const tf=d=>d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  let g="";
+  g+=statBox("Profit", money(r2(st.profit)), `from ${st.profitSrc}`, c(st.profit));
+  g+=statBox("Per hour", st.perHr==null?"–":money(r2(st.perHr)), dur(st.hours), c(st.perHr));
+  g+=statBox("Hands", st.n, st.handsHr?`${st.handsHr.toFixed(0)}/hr`:"");
+  g+=statBox("Played", st.vpip==null?"–":pct(st.vpip), `${st.played} of ${st.normal}`);
+  g+=statBox("Won when played", st.winRate==null?"–":pct(st.winRate), st.expWin==null?"":`expected ${pct(st.expWin)}`, st.winRate!=null&&st.expWin!=null?(st.winRate>=st.expWin?"pos":"neg"):"");
+  if (st.bb100!=null) g+=statBox("bb/100", st.bb100.toFixed(1), "", c(st.bb100));
+  if (st.bombs) g+=statBox("💣 Bomb pots", `${st.bombWon}/${st.bombs}`, `net <span class="${c(st.bombNet)}">${money(r2(st.bombNet))}</span>`);
+  if (st.blindHands) g+=statBox("Blinds", money(r2(st.blindCost)), `${st.blindOnly} blind-only`, c(st.blindCost));
+  // sections
+  const sorted=hs.slice().sort((a,b)=>a.t-b.t);
+  const logRows=sorted.slice().reverse().map(h=>handRowHTML(h,false)).join("");
+  const by={}; hs.forEach(h=>{ const o=by[h.key]||(by[h.key]={n:0,net:0,won:0}); o.n++; o.net+=h.net||0; if (h.r==="w") o.won++; });
+  const shRows=Object.entries(by).sort((a,b)=>b[1].net-a[1].net||b[1].n-a[1].n).map(([key,o])=>`<tr><td><b>${key}</b></td><td>${o.n}</td><td>${o.won}</td><td class="${c(o.net)}">${o.net?money(r2(o.net)):"–"}</td></tr>`).join("");
+  const wins=hs.filter(h=>h.net>0).sort((a,b)=>b.net-a.net).slice(0,5), losses=hs.filter(h=>h.net<0).sort((a,b)=>a.net-b.net).slice(0,5);
+  const bigRows=list=>list.map(h=>handRowHTML(h,false)).join("") || `<tr><td class="sub">None</td></tr>`;
+  const bombs=hs.filter(h=>h.bomb);
+  const thead=`<thead><tr><th>Time</th><th>Hand</th><th>Board</th><th>Result</th><th>Net</th><th>Equity</th></tr></thead>`;
+  const sec=(id,title,meta,body)=>`<details data-k="${esc(k(id))}"${op(id)}><summary><span>${title}</span><span class="sub">${meta}</span></summary><div class="dbody">${body}</div></details>`;
+  return `<div class="sd">
+    <div class="head"><span><b>${esc(s.name||"Session")}</b></span><span>${start.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})} · ${tf(start)}–${end?tf(end):"now"}</span>
+      ${s.sb!=null&&s.bb!=null?`<span>$${s.sb}/$${s.bb}</span>`:""}<span>In for <b>${money(st.buy,false)}</b>${(s.buyins||[]).length>1?` (${s.buyins.map(b=>money(b,false)).join(" + ")})`:""}</span>
+      <span>Out <b>${s.cashout!=null?money(s.cashout,false):(s.endedAt?"–":"still playing")}</b></span>
+      <button class="sm closebtn">Close</button></div>
+    <div class="stats">${g}</div>
+    <div class="chart" style="margin-top:0"><div class="sub">Running net, hand by hand${bombs.length?' · <span style="color:var(--bad)">●</span> = bomb pot':""}</div>${netChartSVG(sorted)}</div>
+    ${sec("big","Biggest pots",`${wins.length} wins · ${losses.length} losses`, `<div class="sub" style="margin:4px 0">Wins</div><table>${thead}${bigRows(wins)}</table><div class="sub" style="margin:10px 0 4px">Losses</div><table>${thead}${bigRows(losses)}</table>`)}
+    ${sec("log","Hand log",`${hs.length} hands`, hs.length?`<table>${thead}${logRows}</table>`:`<div class="sub">No hands logged.</div>`)}
+    ${sec("start","Starting hands",`${Object.keys(by).length} different hands`, `<table><thead><tr><th>Hand</th><th>Dealt</th><th>Won</th><th>Net</th></tr></thead>${shRows}</table>`)}
+    ${bombs.length?sec("bomb","💣 Bomb pots",`${bombs.length} played · ${money(r2(st.bombNet))}`, `<table>${thead}${bombs.slice().sort((a,b)=>b.t-a.t).map(h=>handRowHTML(h,false)).join("")}</table>`):""}
+  </div>`;
+}
 function handsOf(s){ return s.id===sid ? hands : (handsCache[s.id]||[]); }
 function renderAll(){
   if (!viewIsAll()) return;
@@ -1202,11 +1291,16 @@ function renderAll(){
   $("ovSessions").innerHTML=`<thead><tr><th>Date</th><th>Session</th><th>Stakes</th><th>Time</th><th>Hands</th><th>In for</th><th>Out</th><th>Profit</th><th>💣</th></tr></thead><tbody>`+
     rows.slice().reverse().map(({s,st,hs})=>{
       const d=new Date(s.startedAt), bn=hs.filter(h=>h.bomb).reduce((a,h)=>a+(h.net||0),0);
-      return `<tr class="${s.id===sid?"cur":""}"><td>${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})} ${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}</td>
+      const open = openSid===s.id;
+      return `<tr class="srow ${s.id===sid?"cur":""} ${open?"open":""}" data-sid="${esc(s.id)}" title="Click for this session's details"><td>${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})} ${d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})}</td>
         <td>${esc(s.name||"Session")}${s.endedAt?"":` <span class="tag w">live</span>`}</td><td>${s.sb!=null&&s.bb!=null?`$${s.sb}/$${s.bb}`:"–"}</td>
         <td>${dur(st.hours)}</td><td>${hs.length}</td><td>${money(st.buy,false)}</td><td>${s.cashout!=null?money(s.cashout,false):"–"}</td>
-        <td class="${c(st.profit)}"><b>${money(Math.round(st.profit*100)/100)}</b></td><td class="${c(bn)}">${bn?money(Math.round(bn*100)/100):""}</td></tr>`;
+        <td class="${c(st.profit)}"><b>${money(Math.round(st.profit*100)/100)}</b></td><td class="${c(bn)}">${bn?money(Math.round(bn*100)/100):""}</td></tr>`+
+        (open ? `<tr class="sdet"><td colspan="9">${sessionDetailHTML(s,st,hs)}</td></tr>` : "");
     }).join("")+`</tbody>`;
+  $("ovSessions").querySelectorAll("tr.srow").forEach(tr=>tr.onclick=()=>{ openSid = openSid===tr.dataset.sid ? null : tr.dataset.sid; renderAll(); });
+  $("ovSessions").querySelectorAll(".sd details").forEach(d=>d.addEventListener("toggle",()=>{ if (d.open) openDetails.add(d.dataset.k); else openDetails.delete(d.dataset.k); }));
+  $("ovSessions").querySelectorAll(".sd .closebtn").forEach(b=>b.onclick=e=>{ e.stopPropagation(); openSid=null; renderAll(); });
   // starting hands
   const by={}; all.forEach(h=>{ const o=by[h.key]||(by[h.key]={n:0,net:0}); o.n++; o.net+=h.net||0; });
   const list=Object.entries(by).filter(([k,o])=>o.net!==0);
