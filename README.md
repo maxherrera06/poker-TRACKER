@@ -23,6 +23,14 @@ No build step, no dependencies. Open `index.html` in a browser.
 - **All sessions view.** A tab at the top with totals across every session: profit, $/hr, bb/100, hands played, win rate vs expected, bomb pots, blinds, biggest win and loss, a running-profit chart (with and without bomb pots), key takeaways, a per-session table, and your best and worst starting hands. Click any session in the table to expand it: its own stats, a hand-by-hand profit chart (bomb pots marked), and collapsible sections for biggest pots, the full hand log, starting hands and bomb pots. It's read-only, so your live session keeps running.
 - **Visuals.** Running-profit chart, a 13×13 starting-hand grid colored by net result, and a full hand log with per-hand delete.
 
+## Fast play screen
+
+- **Oval table:** every seat sits where it really is, with you at the bottom, the dealer chip, the board in the middle and your cards in front of you. Tap a player for **out → raised → back in**; **drag** a player to another seat to move them; tap an empty seat when someone sits down. **⚙ Seats** is where you enter VPIPs, your seat, the dealer, and mark players who left.
+- **Card keypad:** tap a rank then a suit (either order) — two taps per card. ⌫ removes the last card.
+- **Result bar:** **Fold** logs instantly (blinds charged automatically); **Won / Lost / Split** ask for one number.
+- **Pot and to call:** quick bet-size chips, or type `20/5` in the box (pot 20, 5 to call) or just `/5`.
+- **Stack** is always shown next to the box. On phones a sticky bar keeps the suggested action and your equity on screen.
+
 ## Entering hands
 
 Cards are a rank (`2–9 t j q k a`, or `10`) plus a suit (`s h d c`). Spaces don't matter.

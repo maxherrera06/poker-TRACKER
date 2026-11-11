@@ -13,7 +13,9 @@
     --s:#1b1b1b; --h:#d63b3b; --d:#2a6fd6; --c:#1f9a52;
   }
   *{box-sizing:border-box}
-  body{margin:0;color:var(--ink);font:15px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  [hidden]{display:none!important}
+  body{margin:0;color:var(--ink);
+       background-image:radial-gradient(1200px 500px at 50% -120px,rgba(212,175,55,.09),transparent 70%),repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 6px)!important;font:15px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
        background:radial-gradient(1200px 500px at 50% -120px,rgba(212,175,55,.08),transparent 70%),var(--bg);background-attachment:fixed;min-height:100vh}
   .brand{display:flex;align-items:baseline;gap:12px;margin:6px 0 14px;flex-wrap:wrap}
   .brand .logo{font:600 40px/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.5px;
@@ -21,6 +23,8 @@
   .brand .logo i{font-style:italic}
   .brand .suit{font-size:26px;color:var(--accent);filter:drop-shadow(0 0 8px rgba(212,175,55,.35))}
   .brand .tag2{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mute)}
+  .panel{background:linear-gradient(180deg,#141417,#0e0e10)!important;border-color:#26262c!important}
+  .action{backdrop-filter:blur(4px)}
   .panel,.stat,.chart,.log,.table,.money,.insight,.sd details{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 10px 30px rgba(0,0,0,.35)}
   input:focus,select:focus{outline:none;border-color:var(--accent)!important}
   ::selection{background:rgba(212,175,55,.35)}
@@ -142,6 +146,94 @@
   button.bomb.on{background:var(--accent);color:#1a1406;border-color:var(--accent);font-weight:700}
   .tag.b{background:#3a3010;color:var(--accent);margin-right:4px}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+  /* ---- play console ---- */
+  .entry{align-items:stretch}
+  .entry .bomb{font-size:18px;padding:0 12px}
+  .stackpill{display:flex;flex-direction:column;justify-content:center;padding:4px 14px;border:1px solid rgba(212,175,55,.35);border-radius:10px;background:linear-gradient(180deg,#17150d,#0e0d09);min-width:96px}
+  .stackpill span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#cbb26a}
+  .stackpill b{font:800 18px/1.1 Inter,system-ui;font-variant-numeric:tabular-nums}
+  .playcol{display:flex;flex-direction:column;gap:10px;min-width:0}
+  .felt{position:relative;aspect-ratio:16/10.5;border-radius:999px;margin:34px 46px 40px;
+    background:radial-gradient(ellipse at 50% 38%,#202026 0%,#141418 45%,#0b0b0d 100%);
+    border:12px solid #141417;box-shadow:0 0 0 1px rgba(212,175,55,.45),inset 0 0 0 1px rgba(212,175,55,.25),inset 0 0 60px rgba(0,0,0,.8),0 30px 60px rgba(0,0,0,.6)}
+  .feltmark{position:absolute;left:50%;top:69%;transform:translate(-50%,-50%);font:600 22px/1 "Cormorant Garamond",Georgia,serif;color:rgba(212,175,55,.10);white-space:nowrap;pointer-events:none;letter-spacing:1px}
+  .feltbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .fhead{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--mute)}
+  .fctl{display:flex;gap:6px}
+  .felt{margin-top:34px!important}
+  .center{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center}
+  .center .slots{justify-content:center}
+  .center .made{margin-top:8px;font-size:13px;min-height:18px}
+  .potline{font-size:12px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
+  .potline b{color:var(--ink)}
+  .herohand{position:absolute;left:50%;bottom:9%;transform:translateX(-50%)}
+  .felt .slot{width:44px;height:62px;border-radius:7px}
+  .felt .slot .r{font-size:20px} .felt .slot .su{font-size:17px}
+  .felt .slot.after::after{bottom:-13px}
+  .herohand .slot{width:52px;height:72px} .herohand .slot .r{font-size:24px} .herohand .slot .su{font-size:20px}
+  .gap{width:4px}
+  #seats{position:absolute;inset:0}
+  .seat{position:absolute;transform:translate(-50%,-50%);width:96px;min-height:0;padding:6px 6px 5px;text-align:center;border-radius:12px;
+    background:linear-gradient(180deg,#1b1b20,#121215);border:1px solid #2c2c33;cursor:pointer;user-select:none;touch-action:none;transition:box-shadow .15s,opacity .15s}
+  .seat:hover{border-color:#4a4a52}
+  .seat.dragging{z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 0 2px var(--accent);cursor:grabbing;transition:none}
+  .seat.dropok{box-shadow:0 0 0 2px var(--accent)}
+  .seat .sp{font:800 12.5px/1.1 Inter,system-ui;letter-spacing:.3px}
+  .seat .sv{font-size:11px;color:var(--mute);margin-top:2px}
+  .seat .se{font:800 13px/1.2 Inter,system-ui;font-variant-numeric:tabular-nums;margin-top:1px;min-height:15px}
+  .seat.me{border-color:var(--accent);background:linear-gradient(180deg,#2a2412,#15130b);box-shadow:0 0 18px rgba(212,175,55,.18)}
+  .seat.me .sv{color:var(--accent);font-weight:800;letter-spacing:1.5px}
+  .seat.fold{opacity:.35} .seat.fold .se{visibility:hidden}
+  .seat.fold::after,.seat.raise::after{position:absolute;top:-8px;right:-6px;font:800 9.5px/1 Inter;padding:3px 5px;border-radius:5px;letter-spacing:.5px}
+  .seat.fold::after{content:"OUT";background:#3a1513;color:#ff8a80}
+  .seat.raise{border-color:#e08a3c;background:linear-gradient(180deg,#2a1c10,#15110c)} .seat.raise::after{content:"RAISED";background:#e08a3c;color:#111}
+  .seat.emptyseat{background:transparent;border-style:dashed;opacity:.55}
+  .seat.emptyseat .sv{font-size:18px;line-height:1}
+  .seat .vpipIn{width:54px;margin-top:4px;padding:2px 4px;font-size:13px;font-weight:700;text-align:center;border-radius:6px}
+  .seat .ebtns{display:flex;gap:3px;justify-content:center;margin-top:4px}
+  .seat .mini{padding:1px 6px;font-size:11px;border-radius:6px}
+  .seat .leave{color:#ff9a8f}
+  .dbtn{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#f6f4ee;color:#111;font:900 11px/22px Inter;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.6);pointer-events:none}
+  .seathelp{font-size:12px;color:var(--mute);text-align:center;margin-top:-8px}
+  .keypad{display:flex;flex-direction:column;gap:6px}
+  .keypad .ranks{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}
+  .keypad .suits{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .kb{padding:10px 0;font:800 16px/1 Inter,system-ui;border-radius:9px;background:linear-gradient(180deg,#1d1d22,#141418);border:1px solid #2c2c33}
+  .kb.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .kb:disabled{opacity:.2;cursor:default}
+  .kb.suit{font-size:24px;padding:8px 0;background:#f6f4ee;border-color:#f6f4ee}
+  .kb.suit:hover{background:#fff}
+  .kb.back{font-size:14px;color:var(--mute)}
+  .resbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .rb{flex:1;min-width:70px;padding:11px 0;font-weight:800;border-radius:10px}
+  .rb.f{border-color:#3a3a42} .rb.w{border-color:#2f6b4c;color:var(--good)} .rb.l{border-color:#6b2f2f;color:#ff8a80} .rb.x{border-color:#2f4a6b;color:var(--tie)}
+  .rb.on{background:#24242a}
+  .resin{display:flex;gap:6px;align-items:center;flex-basis:100%;flex-wrap:wrap}
+  .resin .sub{flex-basis:100%}
+  .resin input{min-width:0}
+  .resin input{flex:1;font-size:18px;font-weight:800;padding:9px 10px}
+  .miniact{display:none}
+  @media (max-width:860px){
+    .entry{flex-wrap:wrap} .entry #q{flex-basis:100%} .entry button{flex:1} .stackpill{flex:1.4}
+    .felt{aspect-ratio:1/1.32;margin:30px 24px 30px!important}
+    .seat{width:62px;padding:4px 2px;border-radius:10px} .seat .sp{font-size:11px} .seat .se{font-size:12px} .seat:not(.me) .sv{display:none}
+    .seat.edit-s .sv{display:block}
+    .felt .slot{width:30px;height:42px;border-radius:5px} .felt .slot .r{font-size:14px} .felt .slot .su{font-size:12px}
+    .center .made{font-size:12px} .potline{font-size:11px}
+    .herohand{bottom:12%} .herohand .slot{width:40px;height:56px} .herohand .slot .r{font-size:19px} .herohand .slot .su{font-size:16px}
+    .feltmark{font-size:16px;top:64%}
+    .miniact{display:flex;position:fixed;left:8px;right:8px;bottom:8px;z-index:20;gap:10px;align-items:center;padding:10px 14px;border-radius:14px;
+      background:rgba(14,14,16,.92);backdrop-filter:blur(8px);border:1px solid #2c2c33;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+    .miniact .ma{font:900 22px/1 Inter,system-ui;letter-spacing:.5px}
+    .miniact .ms{font-weight:800;font-size:13px}
+    .miniact .me{margin-left:auto;text-align:right;font-size:11px;color:var(--mute)} .miniact .me b{display:block;font-size:17px;color:var(--ink)}
+    .miniact.fold .ma{color:#ff8a80} .miniact.call .ma{color:var(--good)} .miniact.raise .ma,.miniact.bet .ma{color:var(--accent)} .miniact.check .ma{color:var(--tie)}
+    .miniact.off{display:none}
+    body{padding-bottom:70px}
+
+    .keypad .ranks{grid-template-columns:repeat(7,1fr)}
+    .kb{padding:13px 0}
+  }
   .keynums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
   .keynums>div{background:#0f0f12;border:1px solid var(--line);border-radius:12px;padding:8px 10px}
   .keynums .lbl{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--mute)}
@@ -159,45 +251,6 @@
   .action .arow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .action .asize{font:800 16px/1 Inter,system-ui;color:var(--ink);opacity:.9}
   .action .tip{font-size:12.5px;margin-top:7px;padding-top:7px;border-top:1px dashed rgba(255,255,255,.12);color:#d9cfae}
-  .seatbox{margin-top:12px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-  .seathead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
-  .seathead .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#cbb26a;font-weight:700}
-  .seathead .grow{flex:1}
-  .seathead b{font-variant-numeric:tabular-nums}
-  .seats{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:6px;margin-top:8px}
-  .seat{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#121215;cursor:pointer;user-select:none;position:relative;min-height:74px}
-  .seat:hover{border-color:#4a4a52}
-  .seat .st1{display:flex;align-items:center;gap:6px}
-  .seat .pl{font-weight:800;font-size:13px}
-  .seat .sn{font-size:10.5px;color:var(--mute)}
-  .seat .dchip{margin-left:auto;background:#f6f4ee;color:#111;font:800 10px/1 Inter;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
-  .seat .vp{display:flex;align-items:center;gap:4px;margin-top:5px;font-size:11px;color:var(--mute);cursor:text;flex-wrap:wrap}
-  .seat .vpipIn{width:58px;padding:3px 4px;font-size:13px;font-weight:700;border-radius:6px;text-align:center}
-  .seat .sty{flex-basis:100%;font-size:10.5px;color:#cbb26a;min-height:13px}
-  .seat .iob{padding:2px 9px;font-size:11.5px;font-weight:700;color:var(--good);border-color:#2f5a44}
-  .seat .iob.out{color:var(--bad);border-color:#5a2f2f}
-  .seat .rbtn{margin-left:6px;padding:1px 7px;font-size:11px;font-weight:800}
-  .seat .rbtn.on{background:#e08a3c;border-color:#e08a3c;color:#111}
-  .seat .st2 .seq{margin-left:auto}
-  .seat .st2{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px;font-size:11.5px}
-  .seat .stt{color:var(--mute)} .seat .seq{font-weight:800;font-variant-numeric:tabular-nums}
-  .seat .st2{align-items:center}
-  .seat.emptyseat{border-style:dashed;background:transparent;opacity:.75;cursor:default}
-  .seat.emptyseat .emp{font-size:11.5px;color:var(--mute);margin:6px 0}
-  .seat .join{width:100%}
-  .seat .leave{color:#ff9a8f}
-  .seat.me{border-color:var(--accent);background:linear-gradient(180deg,rgba(212,175,55,.14),rgba(212,175,55,.04))}
-  .seat.me .youtag{font:800 11px/1 Inter;letter-spacing:1.5px;color:var(--accent);margin-top:8px}
-  .seat.fold{opacity:.38} .seat.fold .stt{color:var(--bad)}
-  .seat.call{border-color:#4a7dbf;background:rgba(74,125,191,.10)} .seat.call .stt{color:var(--tie);font-weight:800}
-  .seat.raise{border-color:#e08a3c;background:rgba(224,138,60,.10)} .seat.raise .stt{color:#ffb070;font-weight:800}
-  .seat .st3{display:none;gap:4px;margin-top:5px}
-  .seatbox.edit .seat .st3{display:flex}
-  .seat .mini{padding:2px 7px;font-size:11px;border-radius:6px}
-  .pickwrap{margin-top:12px}
-  .pickwrap summary{cursor:pointer;font-size:12.5px;color:#cbb26a;font-weight:700;list-style:none}
-  .pickwrap summary::-webkit-details-marker{display:none}
-  .pickwrap summary::before{content:"▸ "} .pickwrap[open] summary::before{content:"▾ "}
   .action{border-radius:14px;padding:12px 14px;margin-bottom:14px;border:2px solid var(--line);background:#141418}
   .action .a{font:900 34px/1 system-ui;letter-spacing:1px}
   .action .why{font-size:13px;color:var(--ink);margin-top:6px;opacity:.9}
@@ -306,14 +359,50 @@
     </div>
   </div>
 
-  <h2><span class="step">2</span> Hands: log them one by one</h2>
+  <h2><span class="step">2</span> Play</h2>
   <div class="entry">
-    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ahkd 7c8c9d   then  f / w40 / l25  + Enter">
-    <button id="sbBtn" class="blindbtn" title="I'm the small blind this hand ( [ )">SB</button>
-    <button id="bbBtn" class="blindbtn" title="I'm the big blind this hand ( ] )">BB</button>
-    <button id="clr" title="Clear (Esc)">Clear</button>
+    <input id="q" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="ahkd 7c8c9d · 20/5 = pot/to call · f w40 l25 ⏎">
+    <button id="sbBtn" class="blindbtn" title="I'm the small blind ( [ )">SB</button>
+    <button id="bbBtn" class="blindbtn" title="I'm the big blind ( ] )">BB</button>
+    <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣</button>
+    <button id="clr" title="New hand (Esc)">New hand</button>
+    <div class="stackpill" title="Buy-ins plus everything you've logged"><span>Stack</span><b id="liveStack">–</b></div>
   </div>
   <div class="preview" id="preview"></div>
+      <div class="bombwarn" id="bombwarn">
+        <div class="t">🚫 NO MORE BOMB POTS</div>
+        <div class="d" id="bombwarnTxt"></div>
+        <button id="sitOut">Sit this one out</button>
+      </div>
+      <div class="bombrow" id="bombrow">
+        <span>💣 Bomb pot: everyone puts in</span><input id="bAnte" type="number" inputmode="decimal" min="0" placeholder="ante">
+        <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
+        <span id="bInfo"></span>
+      </div>
+
+  <div class="grid">
+    <div class="playcol">
+      <div class="feltbar">
+        <div class="fhead"><span id="tlabel">Seated</span> <button id="tm" class="sm">−</button><b id="tn">9</b><button id="tp" class="sm">+</button>
+          <span class="vs">· vs <b id="on">1</b><span id="oppInfo"></span></span></div>
+        <div class="fctl"><button id="fold1" class="sm" title="Next player to act folds (-)">Next folds</button><button id="seatEditBtn" class="sm">⚙ Seats</button></div>
+      </div>
+      <div class="felt" id="seatbox">
+        <div class="feltmark">Max's <i>Lucky</i> Odds</div>
+        <div class="center"><div class="slots board" id="bs"></div><div class="made" id="made"></div><div class="potline" id="potline"></div></div>
+        <div class="herohand"><div class="slots" id="hs"></div></div>
+        <div id="seats"></div>
+        <div class="dbtn" id="dealerChip" hidden>D</div>
+      </div>
+      <div class="seathelp" id="seatHelp"></div>
+      <div class="keypad" id="picker"><div class="ranks" id="kRanks"></div><div class="suits" id="kSuits"></div></div>
+      <div class="resbar" id="resbar">
+        <button class="rb f" data-r="f" title="Log a fold">Fold</button>
+        <button class="rb w" data-r="w">Won</button>
+        <button class="rb l" data-r="l">Lost</button>
+        <button class="rb x" data-r="x">Split</button>
+        <span class="resin" id="resin" hidden><span class="sub" id="resLbl"></span><input id="resAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$"><button id="resGo" class="pri">Log</button><button id="resX" class="sm">✕</button></span>
+      </div>
   <details class="howto"><summary>How to enter hands <span class="sub">· cards, results, $ amounts, blinds, bomb pots, shortcuts</span></summary><p class="hint">
     <b>Cards:</b> rank <code>2–9 t j q k a</code> + suit <code>s h d c</code>, e.g. <code>ahkd 7c8c9d</code>. Odds update as you type.<br>
     <b>Log the hand:</b> add a result where you acted, then press <span class="kbd">Enter</span>:
@@ -325,54 +414,7 @@
     <b>Bomb pot:</b> type <code>b</code> (or tap 💣) and the hand goes straight to the flop: <code>b ahkd 7c8c9d w90</code>. Fold on the flop with no amount and it counts the ante as lost.<br>
     <span class="kbd">Esc</span> clears · <span class="kbd">-</span> someone folded (<span class="kbd">+</span> undo) · the fold count resets every hand · you can also tap the cards and buttons below.
   </p></details>
-
-  <div class="grid">
-    <div class="table">
-      <div class="row">
-        <div class="grp"><div class="lbl">Your hand</div><div class="slots" id="hs"></div></div>
-        <div class="grp"><div class="lbl">Flop · Turn · River</div><div class="slots" id="bs"></div></div>
-      </div>
-      <div class="made" id="made"></div>
-      <div class="money">
-        <div><div class="lbl">In this hand</div><div class="inhand" id="inhand">$0</div></div>
-        <input id="addAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$ amt">
-        <button id="addBtn" title="Add what you just put in (or type $2 in the box)">+ Put in</button>
-        <button id="addBB" class="sm" title="Add one big blind">+1 BB</button>
-        <button id="addUndo" class="sm" title="Remove the last amount you added">Undo</button>
-        <div class="stack"><div class="lbl">Stack now ≈</div><b id="liveStack">–</b></div>
-      </div>
-      <div class="actions">
-        <input id="amt" type="number" inputmode="decimal" min="0" placeholder="amount">
-        <button class="f" data-r="f">Fold</button>
-        <button class="w" data-r="w">Won</button>
-        <button class="l" data-r="l">Lost</button>
-        <button class="x" data-r="x">Split</button>
-        <button class="bomb" id="bombBtn" title="Bomb pot (or type b)">💣 Bomb pot</button>
-      </div>
-      <div class="bombwarn" id="bombwarn">
-        <div class="t">🚫 NO MORE BOMB POTS</div>
-        <div class="d" id="bombwarnTxt"></div>
-        <button id="sitOut">Sit this one out</button>
-      </div>
-      <div class="bombrow" id="bombrow">
-        <span>💣 Bomb pot: everyone puts in</span><input id="bAnte" type="number" inputmode="decimal" min="0" placeholder="ante">
-        <span>×</span><input id="bPlayers" type="number" inputmode="numeric" min="2" max="10" placeholder="players"><span>players</span>
-        <span id="bInfo"></span>
-      </div>
-      <div class="seatbox" id="seatbox">
-        <div class="seathead"><span class="lbl">Table</span>
-          <span class="sub" id="tlabel">Seated</span><button id="tm" class="sm">−</button><b id="tn">9</b><button id="tp" class="sm">+</button>
-          <span class="sub">· you vs <b id="on" style="color:var(--ink)">1</b> still in<span id="oppInfo"></span></span>
-          <span class="grow"></span>
-          <button id="fold1" class="sm" title="Next player to act folds (-)">Next folds</button>
-          <button id="seatEditBtn" class="sm">Edit seats</button>
-        </div>
-        <div class="sub" id="seatHelp" style="margin-top:6px"></div>
-        <div class="seats" id="seats"></div>
-      </div>
-      <details class="pickwrap" id="pickwrap"><summary>Tap to pick cards</summary><div class="picker" id="picker"></div></details>
     </div>
-
     <div class="panel">
       <div class="action" id="action"><div class="arow"><div class="a" id="actionA">—</div><div class="asize" id="actionSize"></div></div>
         <div class="why" id="actionWhy">Enter your cards to get a suggestion.</div><div class="tip" id="actionTip" hidden></div></div>
@@ -457,6 +499,7 @@
     </div>
   </div>
 </div>
+<div class="miniact off" id="miniAct"><span class="ma" id="maA"></span><span class="ms" id="maS"></span><span class="me">equity<b id="maE"></b></span></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -702,8 +745,11 @@ function startSim(){
 // =================== parser ===================
 // Grammar: cards (rank+suit), optional result letter f/w/l/x with optional amount, optional cards after.
 function parse(str){
+  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false, adds:[], collect:null, potIn:null, callIn:null};
+  // "20/5" = pot 20, to call 5;  "/5" = to call 5;  "20/" = pot 20
+  const pm=str.match(/(\d+(?:\.\d+)?)?\s*\/\s*(\d+(?:\.\d+)?)?/);
+  if (pm){ if (pm[1]) out.potIn=parseFloat(pm[1]); if (pm[2]) out.callIn=parseFloat(pm[2]); str=str.replace(pm[0]," ".repeat(pm[0].length)); }
   const s=str.toLowerCase(), n=s.length;
-  const out={cards:[], at:-1, r:null, amt:null, bad:"", partial:false, bomb:false, adds:[], collect:null};
   let i=0;
   while (i<n){
     const ch=s[i];
@@ -751,6 +797,7 @@ function serialize(p){
   let s = (p.bomb ? "b " : "") + before.slice(0,2).map(fmt).join("");
   if (before.length>2) s += " " + before.slice(2).map(fmt).join("");
   if (p.adds && p.adds.length) s += " " + p.adds.map(a=>"$"+a).join(" ");
+  if (p.potIn!=null || p.callIn!=null) s += " " + (p.potIn??"") + "/" + (p.callIn??"");
   if (p.r) s += " " + p.r + (p.collect!=null ? "@"+p.collect : (p.amt!=null ? p.amt : ""));
   if (after.length) s += " " + after.map(fmt).join("");
   return s;
@@ -777,16 +824,28 @@ function renderSlots(){
   let g=document.createElement("div"); g.className="gap"; bs.append(g,mk(5));
   g=document.createElement("div"); g.className="gap"; bs.append(g,mk(6));
 }
+// Card keypad: tap a rank, then a suit (or suit then rank). ⌫ removes the last card.
+let padRank=null, padSuit=null;
 function buildPicker(){
-  const p=$("picker"); p.innerHTML="";
-  for (let s=0;s<4;s++) for (let r=12;r>=0;r--){
-    const c=r*4+s, b=document.createElement("button");
-    b.className="pc"; b.dataset.c=c; b.innerHTML=cardHTML(c);
-    b.onclick=()=>{ if (P.cards.includes(c)||P.cards.length>=7) return; const p={...P,cards:[...P.cards,c]}; setText(serialize(p)); };
-    p.append(b);
-  }
+  $("kRanks").innerHTML = "AKQJT98765432".split("").map(ch=>`<button class="kb rk" data-r="${RANKS.indexOf(ch)}">${ch==="T"?"10":ch}</button>`).join("") + `<button class="kb back" id="kBack" title="Remove last card">⌫</button>`;
+  $("kSuits").innerHTML = [0,1,2,3].map(su=>`<button class="kb suit ${SUIT_CLS[su]}" data-s="${su}">${SUIT_SYM[su]}</button>`).join("");
+  document.querySelectorAll("#kRanks .rk").forEach(b=>b.onclick=()=>{ const r=+b.dataset.r; if (padSuit!=null){ padAdd(r,padSuit); return; } padRank = padRank===r ? null : r; renderPicker(); });
+  document.querySelectorAll("#kSuits .suit").forEach(b=>b.onclick=()=>{ const su=+b.dataset.s; if (padRank!=null){ padAdd(padRank,su); return; } padSuit = padSuit===su ? null : su; renderPicker(); });
+  $("kBack").onclick=()=>{ padRank=padSuit=null; if (!P.cards.length){ renderPicker(); return; } const p={...P,cards:P.cards.slice()}; const i=p.cards.length-1; p.cards.pop(); if (p.r && i<p.at) p.at--; setText(serialize(p)); };
 }
-function renderPicker(){ document.querySelectorAll(".pc").forEach(b=>b.classList.toggle("used",P.cards.includes(+b.dataset.c))); }
+function padAdd(r,su){
+  const c=r*4+su; padRank=padSuit=null;
+  if (P.cards.includes(c)){ toast("That card is already out",true); renderPicker(); return; }
+  if (P.cards.length>=7){ renderPicker(); return; }
+  setText(serialize({...P, cards:[...P.cards,c]}));
+}
+function renderPicker(){
+  if (!$("kRanks")) return;
+  document.querySelectorAll("#kRanks .rk").forEach(b=>{ const r=+b.dataset.r; const used=[0,1,2,3].every(su=>P.cards.includes(r*4+su));
+    b.disabled = used || P.cards.length>=7 || (padSuit!=null && P.cards.includes(r*4+padSuit)); b.classList.toggle("on", padRank===r); });
+  document.querySelectorAll("#kSuits .suit").forEach(b=>{ const su=+b.dataset.s;
+    b.disabled = P.cards.length>=7 || (padRank!=null && P.cards.includes(padRank*4+su)); b.classList.toggle("on", padSuit===su); });
+}
 function renderMade(){
   const cs=P.cards;
   if (cs.length<2){ $("made").textContent=""; return; }
@@ -929,15 +988,18 @@ function renderAction(){
   const pos=myPos(), hero=P.cards.length>=2?P.cards.slice(0,2):null;
   $("posLbl").textContent = pos || "—";
   $("posRank").textContent = hero ? `${showKey(handKey(hero))} · ${topLabel(handTop(hero))}` : (mapOn()?"":"set your seat");
-  if (!d){ box.className="action"; $("actionA").textContent="—"; $("actionSize").textContent=""; $("actionWhy").textContent="Enter your cards to get a suggestion."; $("actionTip").hidden=true;
+  if (!d){ const ma=$("miniAct"); if (ma) ma.className="miniact off"; box.className="action"; $("actionA").textContent="—"; $("actionSize").textContent=""; $("actionWhy").textContent="Enter your cards to get a suggestion."; $("actionTip").hidden=true;
     $("need").textContent="—"; $("need").style.color=""; $("ratio").textContent="no bet"; return; }
   box.className="action "+d.cls; $("actionA").textContent=d.a; $("actionSize").textContent=d.size||"";
+  const ma=$("miniAct"); if (ma){ ma.className="miniact "+d.cls+(viewIsAll()?" off":""); $("maA").textContent=d.a; $("maS").textContent=d.size||""; $("maE").textContent=pct(d.eq); }
   $("actionWhy").innerHTML=d.why; $("actionTip").hidden=!(d.tip||d.thin); $("actionTip").innerHTML=[d.thin?`<b>${d.thin}</b>`:"", d.tip?("👤 "+esc(d.tip)):""].filter(Boolean).join("<br>");
   if (d.call>0){ $("need").textContent=pct(d.need); $("ratio").textContent=`pot odds ${(d.pot/d.call).toFixed(1)}:1${d.potGiven?"":" (pot = blinds)"}`; $("need").style.color = d.eq>=d.need?"var(--good)":"var(--bad)"; }
   else { $("need").textContent="0%"; $("need").style.color=""; $("ratio").textContent="no bet to call"; }
 }
 function renderVerdict(){
   renderAction();
+  const pl=$("potline"); if (pl){ const pv=parseFloat($("pot").value), cv=parseFloat($("call").value);
+    pl.innerHTML = `Pot <b>${pv>0?money(pv,false):"blinds"}</b> · to call <b>${cv>0?money(cv,false):"–"}</b>`; }
   const pot=parseFloat($("pot").value), call=parseFloat($("call").value), v=$("verdict");
   if (!(pot>0)||!(call>0)){ v.innerHTML=`<span class="sub">Enter the pot and the bet to see the exact EV of calling.</span>`; return; }
   const need=call/(pot+call);
@@ -952,7 +1014,7 @@ function renderPreview(){
   if (P.bomb && !(bombAnte>0 && bombPlayers>=2)){ el.innerHTML=`💣 Set the bomb pot ante and number of players below`; return; }
   if (P.bomb && P.r && P.at-2<3){ el.innerHTML=`<span class="neg">Bomb pots go straight to the flop. Put the result after the flop cards.</span>`; return; }
   if (!P.r && P.bomb && P.cards.length<5){ el.innerHTML=`💣 <b>Bomb pot</b> · pot ${money(bombAnte*bombPlayers,false)} · ${bombPlayers} players · enter the flop`; return; }
-  if (!P.r){ el.innerHTML=`Add <b>f</b>, <b>w40</b>, <b>l25</b> or <b>x10</b> and press Enter to log this hand`; return; }
+  if (!P.r){ el.innerHTML=`When the hand ends: tap <b>Fold / Won / Lost / Split</b> below, or type <b>f</b>, <b>w40</b>, <b>l25</b> + Enter`; return; }
   if (P.at<2){ el.innerHTML=`<span class="neg">Put your two cards before the result</span>`; return; }
   const street = streetName(P.at-2);
   const net = handNet(P);
@@ -983,7 +1045,6 @@ function handNet(p){
 }
 function renderMoney(){
   const inv = invested(P);
-  $("inhand").textContent = money(inv,false);
   const s = cur();
   const buy = ((s&&s.buyins)||[]).reduce((a,b)=>a+b,0);
   if (!s || !buy){ $("liveStack").textContent="–"; $("liveStack").title="Add a buy-in in section 1"; return; }
@@ -1012,6 +1073,9 @@ function onInputChanged(){
   const prevCards=P.cards.join(), prevBomb=P.bomb;
   P=parse(text);
   $("q").classList.toggle("err",!!P.bad);
+  if (P.potIn!=null && $("pot").value!==String(P.potIn)) $("pot").value=P.potIn;
+  if (P.callIn!=null && $("call").value!==String(P.callIn)) $("call").value=P.callIn;
+  if (P.potIn!=null || P.callIn!=null) renderVerdict();
   renderSlots(); renderPicker(); renderMade(); renderPreview(); renderBomb(); renderMoney();
   if (P.cards.join()!==prevCards || P.bomb!==prevBomb) startSim();
 }
@@ -1037,10 +1101,6 @@ document.addEventListener("keydown", e=>{
 });
 function clearAll(){ resetHandSeats(); $("call").value=""; if (!autoPot) $("pot").value=""; renderOpp(); $("q").value=""; lastText=null; onInputChanged(); startSim(); $("q").focus(); }
 $("clr").onclick=clearAll;
-$("addBtn").onclick=()=>{ const v=parseFloat($("addAmt").value); if (!(v>0)){ toast("Enter how much you put in",true); return; } $("addAmt").value=""; addMoney(v); };
-$("addAmt").addEventListener("keydown",e=>{ if (e.key==="Enter"){ e.preventDefault(); $("addBtn").click(); } });
-$("addBB").onclick=()=>{ const s=cur(); const bb=s&&s.bb>0?s.bb:null; if (!bb){ toast("Set the big blind in section 1 first",true); return; } addMoney(bb); };
-$("addUndo").onclick=()=>{ if (!(P.adds||[]).length) return; const p={...P, cards:P.cards.slice(), adds:P.adds.slice(0,-1)}; setText(serialize(p)); };
 $("sbBtn").onclick=()=>{ setBlind("sb",true); $("q").focus(); };
 $("bbBtn").onclick=()=>{ setBlind("bb",true); $("q").focus(); };
 function seatCount(){ return (P.bomb && bombPlayers>=2) ? bombPlayers : tableSize; }
@@ -1051,51 +1111,91 @@ function renderOpp(){
   $("oppInfo").innerHTML = (P.bomb&&bombPlayers>=2 ? " (bomb pot players)" : "");
   renderSeats();
 }
+function seatXY(seat){
+  // place seats around the oval in real table order, with you at the bottom
+  const N=maxSeats, ref=(seatCfg.me>=1&&seatCfg.me<=N)?seatCfg.me:1;
+  const idx=((seat-ref)%N+N)%N, ang=(90+idx*360/N)*Math.PI/180;
+  return { x:50+50*Math.cos(ang), y:50+50*Math.sin(ang) };
+}
 function renderSeats(){
   const box=$("seats"); if (!box) return;
-  if (document.activeElement && document.activeElement.classList.contains("vpipIn") && box.contains(document.activeElement)) return;   // don't redraw while you're typing a VPIP
+  if (document.activeElement && document.activeElement.classList.contains("vpipIn") && box.contains(document.activeElement)) return;
   const on=mapOn(), labels=posLabels(), edit = seatEdit || !on;
   $("seatbox").classList.toggle("edit", edit);
-  $("seatEditBtn").textContent = edit ? "Done" : "Edit seats";
-  $("seatHelp").innerHTML = P.bomb ? "Bomb pot: everyone's in with any two cards. Use − to remove players who fold on the flop." :
-    (!on ? "Set up once: tap <b>★</b> on your seat and <b>D</b> on the dealer button. After that the dealer moves by itself every hand." :
-    (edit ? "Tap <b>★</b> or <b>D</b> to move your seat or the dealer, and <b>Left</b> when someone gets up. Empty seats are skipped for positions and the dealer." :
-     "Enter each player's <b>VPIP</b> (blank = 30%). Tap a player to switch them <b>In / Out</b>, and hit <b>R</b> if they raised. <span class=\"kbd\">-</span> takes out the next player to act. Someone left or joined? Use <b>Edit seats → Left</b>, or <b>+ Player sat down</b> on an empty seat."));
-  const order = on ? preflopOrder() : occupied();
-  const empties = allSeats().filter(x=>seatCfg.empty && seatCfg.empty[x]);
-  box.innerHTML = order.map(seat=>{
-    const me=seat===seatCfg.me, st=me?"in":(seatAct[seat]||"in"), v=vpipOf(seat), lab=labels[seat];
-    return `<div class="seat ${me?"me":""} ${st}" data-seat="${seat}">
-      <div class="st1"><span class="pl">${lab||("Seat "+seat)}</span><span class="sn">${lab?"seat "+seat:""}</span>${seatCfg.btn===seat?'<span class="dchip" title="Dealer">D</span>':""}</div>
-      ${me?'<div class="youtag">YOU</div>':`<label class="vp">VPIP <input class="vpipIn" data-seat="${seat}" type="number" inputmode="numeric" min="1" max="100" placeholder="30" value="${v??""}">%<span class="sty">${v!=null?styleOf(v):""}</span></label>`}
-      <div class="st2">${me?"":`<button class="mini iob${st==="fold"?" out":""}" data-seat="${seat}" title="Tap when they fold / come back in">${st==="fold"?"Out":st==="raise"?"Raised":"In"}</button><span class="seq" id="seq-${seat}"></span>
-        ${st!=="fold"?`<button class="mini rbtn${st==="raise"?" on":""}" data-seat="${seat}" title="They raised">R</button>`:""}`}</div>
-      <div class="st3"><button class="mini setme" data-seat="${seat}" title="This is my seat">★ me</button><button class="mini setd" data-seat="${seat}" title="Dealer button is here">D</button>${me?"":`<button class="mini leave" data-seat="${seat}" title="This player left">Left</button>`}</div>
-    </div>`;
-  }).join("") + empties.map(seat=>`<div class="seat emptyseat" data-seat="${seat}" title="Tap when someone sits here"><div class="st1"><span class="pl">Seat ${seat}</span></div><div class="emp">Empty</div><button class="mini join" data-seat="${seat}">+ Player sat down</button></div>`).join("");
-  box.querySelectorAll(".leave").forEach(b=>b.onclick=()=>setEmpty(+b.dataset.seat,true));
-  box.querySelectorAll(".join").forEach(b=>b.onclick=()=>setEmpty(+b.dataset.seat,false));
-  box.querySelectorAll(".seat:not(.emptyseat)").forEach(el=>el.onclick=e=>{
-    if (e.target.closest("input,label,button")) return;
-    const seat=+el.dataset.seat; if (seat===seatCfg.me || P.bomb) return;
-    if (seatAct[seat]==="fold") delete seatAct[seat]; else { seatAct[seat]="fold"; foldStack.push(seat); }
-    afterSeatChange();
-  });
-  box.querySelectorAll(".iob").forEach(b=>b.onclick=()=>{ const seat=+b.dataset.seat; if (P.bomb) return;
-    if (seatAct[seat]==="fold") delete seatAct[seat]; else { seatAct[seat]="fold"; foldStack.push(seat); } afterSeatChange(); });
-  box.querySelectorAll(".rbtn").forEach(b=>b.onclick=()=>{ const seat=+b.dataset.seat; if (seatAct[seat]==="raise") delete seatAct[seat]; else seatAct[seat]="raise"; afterSeatChange(); });
+  $("seatEditBtn").textContent = edit ? "✓ Done" : "⚙ Seats";
+  $("seatHelp").innerHTML = P.bomb ? "💣 Bomb pot: everyone's in. Tap a player who folds on the flop." :
+    (!on ? "Setup (once): tap <b>★</b> on your seat and <b>D</b> on the dealer. Then hit ✓ Done." :
+    (edit ? "Type each player's <b>VPIP</b> · <b>★</b> your seat · <b>D</b> dealer · <b>✕</b> player left · tap an empty seat when someone sits down" :
+     "Tap a player: <b>out</b> → <b>raised</b> → back in · drag to move a player · <span class=\"kbd\">-</span> next player folds"));
+  const occ=occupied();
+  box.innerHTML = allSeats().map(seat=>{
+    const xy=seatXY(seat), style=`left:${xy.x}%;top:${xy.y}%`;
+    if (!occ.includes(seat)) return `<div class="seat emptyseat" data-seat="${seat}" style="${style}" title="Tap when someone sits here"><div class="sp">Seat ${seat}</div><div class="sv">+</div></div>`;
+    const me=seat===seatCfg.me, st=me?"in":(seatAct[seat]||"in"), v=vpipOf(seat), lab=labels[seat]||("Seat "+seat);
+    if (edit) return `<div class="seat ${me?"me":""}" data-seat="${seat}" style="${style}">
+        <div class="sp">${lab}${labels[seat]?` <span class="sub">#${seat}</span>`:""}</div>
+        ${me?'<div class="sv">YOU</div>':`<input class="vpipIn" data-seat="${seat}" type="number" inputmode="numeric" min="1" max="100" placeholder="VPIP" value="${v??""}">`}
+        <div class="ebtns"><button class="mini setme" data-seat="${seat}" title="My seat">★</button><button class="mini setd" data-seat="${seat}" title="Dealer">D</button>${me?"":`<button class="mini leave" data-seat="${seat}" title="Player left">✕</button>`}</div></div>`;
+    return `<div class="seat ${me?"me":""} ${st}" data-seat="${seat}" style="${style}">
+        <div class="sp">${lab}</div><div class="sv">${me?"YOU":(v!=null?`${v}% VPIP`:"VPIP ?")}</div>${me?"":`<div class="se" id="seq-${seat}"></div>`}</div>`;
+  }).join("");
+  // dealer chip sits between the dealer and the middle of the table
+  const dc=$("dealerChip");
+  if (seatCfg.btn && occ.includes(seatCfg.btn)){ const xy=seatXY(seatCfg.btn); dc.hidden=false; dc.style.left=(50+(xy.x-50)*0.68)+"%"; dc.style.top=(50+(xy.y-50)*0.62)+"%"; } else dc.hidden=true;
+  // buttons (edit mode)
+  box.querySelectorAll(".setme").forEach(b=>b.onclick=e=>{ e.stopPropagation(); seatEdit=true; seatCfg.me=+b.dataset.seat; delete seatAct[seatCfg.me]; saveSeats(); syncBlindFromSeat(); afterSeatChange(); });
+  box.querySelectorAll(".setd").forEach(b=>b.onclick=e=>{ e.stopPropagation(); seatEdit=true; seatCfg.btn=+b.dataset.seat; saveSeats(); syncBlindFromSeat(); afterSeatChange(); });
+  box.querySelectorAll(".leave").forEach(b=>b.onclick=e=>{ e.stopPropagation(); setEmpty(+b.dataset.seat,true); });
   let vt;
   box.querySelectorAll(".vpipIn").forEach(inp=>{
-    const apply=()=>{ const seat=+inp.dataset.seat, v=parseInt(inp.value,10);
+    inp.addEventListener("input",()=>{ const seat=+inp.dataset.seat, v=parseInt(inp.value,10);
       if (v>0 && v<=100) seatCfg.vpip[seat]=v; else delete seatCfg.vpip[seat];
-      saveSeats(); const sty=inp.parentElement.querySelector(".sty"); if (sty) sty.textContent = v>0&&v<=100 ? styleOf(v) : "";
-      clearTimeout(vt); vt=setTimeout(()=>{ renderBomb(); startSim(); },250); };
-    inp.addEventListener("input",apply);
-    inp.addEventListener("keydown",e=>{ if (e.key==="Enter"){ e.preventDefault(); inp.blur(); $("q").focus(); } e.stopPropagation(); });
-    inp.addEventListener("blur",()=>renderSeats());
+      saveSeats(); clearTimeout(vt); vt=setTimeout(()=>{ renderBomb(); startSim(); },250); });
+    inp.addEventListener("keydown",e=>{ e.stopPropagation(); if (e.key==="Enter"){ e.preventDefault(); const all=[...box.querySelectorAll(".vpipIn")], i=all.indexOf(inp); if (all[i+1]) all[i+1].focus(); else { inp.blur(); $("q").focus(); } } });
+    inp.addEventListener("blur",()=>setTimeout(()=>{ if (!box.contains(document.activeElement)) renderSeats(); },0));
   });
-  box.querySelectorAll(".setme").forEach(b=>b.onclick=()=>{ seatCfg.me=+b.dataset.seat; delete seatAct[seatCfg.me]; saveSeats(); syncBlindFromSeat(); afterSeatChange(); });
-  box.querySelectorAll(".setd").forEach(b=>b.onclick=()=>{ seatCfg.btn=+b.dataset.seat; saveSeats(); syncBlindFromSeat(); afterSeatChange(); });
+  // tap / drag on every seat
+  box.querySelectorAll(".seat").forEach(el=>{
+    el.addEventListener("pointerdown",e=>{
+      if (e.target.closest("input,button")) return;
+      const seat=+el.dataset.seat, sx=e.clientX, sy=e.clientY; let drag=false, over=null;
+      el.setPointerCapture(e.pointerId);
+      const move=ev=>{
+        const dx=ev.clientX-sx, dy=ev.clientY-sy;
+        if (!drag && Math.hypot(dx,dy)>8){ drag=true; el.classList.add("dragging"); }
+        if (!drag) return;
+        el.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        el.style.visibility="hidden"; const t=document.elementFromPoint(ev.clientX,ev.clientY); el.style.visibility="";
+        const tgt=t && t.closest && t.closest(".seat");
+        if (over && over!==tgt) over.classList.remove("dropok");
+        over = (tgt && tgt!==el) ? tgt : null; if (over) over.classList.add("dropok");
+      };
+      const up=()=>{
+        el.removeEventListener("pointermove",move); el.removeEventListener("pointerup",up); el.removeEventListener("pointercancel",up);
+        if (drag){ el.classList.remove("dragging"); el.style.transform=""; if (over){ over.classList.remove("dropok"); swapSeats(seat, +over.dataset.seat); } else renderSeats(); return; }
+        tapSeat(seat, el.classList.contains("emptyseat"));
+      };
+      el.addEventListener("pointermove",move); el.addEventListener("pointerup",up); el.addEventListener("pointercancel",up);
+    });
+  });
+}
+function tapSeat(seat, empty){
+  if (empty){ setEmpty(seat,false); toast(`Player sat down in seat ${seat}`); return; }
+  if (seatEdit || !mapOn() || seat===seatCfg.me || P.bomb && false) return;
+  const st=seatAct[seat]||"in";
+  if (st==="in"){ seatAct[seat]="fold"; foldStack.push(seat); }
+  else if (st==="fold") seatAct[seat]="raise";
+  else delete seatAct[seat];
+  afterSeatChange();
+}
+// Drag a player onto another seat: they swap (moving onto an empty seat just moves them).
+function swapSeats(a,b){
+  if (a===b) return; ensureEmptyMap();
+  const sw=(obj)=>{ const va=obj[a], vb=obj[b]; if (vb===undefined) delete obj[a]; else obj[a]=vb; if (va===undefined) delete obj[b]; else obj[b]=va; };
+  sw(seatCfg.vpip); sw(seatCfg.empty); sw(seatAct);
+  if (seatCfg.me===a) seatCfg.me=b; else if (seatCfg.me===b) seatCfg.me=a;
+  if (seatCfg.btn===a) seatCfg.btn=b; else if (seatCfg.btn===b) seatCfg.btn=a;
+  saveSeats(); syncBlindFromSeat(); afterSeatChange();
 }
 function afterSeatChange(){ renderOpp(); renderBomb(); startSim(); }
 function syncBlindFromSeat(){
@@ -1159,12 +1259,27 @@ document.querySelectorAll("#callChips button").forEach(b=>b.onclick=()=>{
 });
 $("pot").addEventListener("input",renderVerdict);
 $("call").addEventListener("input",renderVerdict);
-document.querySelectorAll(".actions button[data-r]").forEach(b=>b.onclick=()=>{
-  const a=parseFloat($("amt").value);
+// Result bar: Fold logs right away; Won / Lost / Split ask for one number.
+let resMode=null;
+const RES_LABEL={w:"Won how much (profit)?", l:"Lost how much?", x:"Split: up or down how much?"};
+function logResult(r, amt){
   const p={...P, cards:P.cards.slice()};
-  p.r=b.dataset.r; p.at = P.r ? P.at : P.cards.length; p.amt = isNaN(a) ? (P.r?P.amt:null) : a; if (!isNaN(a)) p.collect=null;
-  $("q").value=serialize(p); onInputChanged(); commit();
+  if (!p.r){ p.at=p.cards.length; } p.r=r;
+  if (amt!=null){ p.amt=amt; p.collect=null; }
+  $("q").value=serialize(p); onInputChanged(); closeRes(); commit();
+}
+function closeRes(){ resMode=null; $("resin").hidden=true; document.querySelectorAll(".rb").forEach(b=>b.classList.remove("on")); }
+document.querySelectorAll(".rb").forEach(b=>b.onclick=()=>{
+  const r=b.dataset.r;
+  if (P.cards.length<2){ toast("Enter your two cards first",true); return; }
+  if (r==="f"){ logResult("f", null); return; }
+  resMode=r; document.querySelectorAll(".rb").forEach(x=>x.classList.toggle("on",x===b));
+  $("resLbl").textContent=RES_LABEL[r]; $("resin").hidden=false; $("resAmt").value=""; $("resAmt").focus();
 });
+$("miniAct").onclick=()=>$("action").scrollIntoView({behavior:"smooth",block:"center"});
+$("resGo").onclick=()=>{ const v=parseFloat($("resAmt").value); logResult(resMode, isNaN(v)?null:Math.abs(v)); };
+$("resX").onclick=()=>{ closeRes(); $("q").focus(); };
+$("resAmt").addEventListener("keydown",e=>{ e.stopPropagation(); if (e.key==="Enter"){ e.preventDefault(); $("resGo").click(); } if (e.key==="Escape"){ closeRes(); $("q").focus(); } });
 
 let autoPot=false;
 function renderBomb(){
@@ -1345,7 +1460,6 @@ async function commit(){
   toast(`Logged ${doc.bomb?"💣 ":""}${doc.blind?doc.blind.toUpperCase()+" ":""}${doc.key} · ${RES_NAME[doc.r]} · ${money(doc.net)}`);
   // Blinds move one seat each hand: SB is followed by BB, then you're out of the blinds. Bomb pots don't move the button.
   if (!doc.bomb){ if (mapOn()) advanceButton(); else { blind = doc.blind==="sb" ? "bb" : null; renderBlind(); } }
-  $("amt").value="";
   clearAll();
 }
 
@@ -1785,7 +1899,7 @@ function renderAll(){
 }
 
 // =================== boot ===================
-buildPicker(); if (innerWidth<760) $("pickwrap").open=true; ensureEmptyMap(); saveSeats(); tableSize=occupied().length; syncBlindFromSeat(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
+buildPicker(); ensureEmptyMap(); saveSeats(); tableSize=occupied().length; syncBlindFromSeat(); renderOpp(); onInputChanged(); renderBomb(); renderSession(); applyView(); if (!viewIsAll()) $("q").focus();
 store.init().then(mode=>{
   setNote("");
   const t=setTimeout(()=>{ if(!sessionsLoaded) setNote("Can't reach your saved sessions yet. They'll appear when the connection is back."); },10000);
